@@ -487,6 +487,20 @@
   .collab { display: inline-block; margin-top: 16px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; background: var(--ink); color: #fff; border-radius: 999px; padding: 7px 14px; }
   .meta.meta4 { grid-template-columns: repeat(4, minmax(0,1fr)); max-width: 760px; }
   @media (max-width: 900px) { .meta.meta4 { grid-template-columns: 1fr 1fr; } }
+  /* personality card: slowly moving AI gradient, like an AI button */
+  @property --ai-a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+  .pcard { position: relative; isolation: isolate; overflow: hidden; background: #15131c; }
+  .pcard::before { content: ""; position: absolute; inset: 0; z-index: -2; border-radius: inherit; padding: 2px;
+    background: conic-gradient(from var(--ai-a), #7b5cff, #4fa3ff, #c86bff, #ff7ab6, #ffb86b, #7b5cff);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+    animation: ai-spin 8s linear infinite; }
+  .pcard::after { content: ""; position: absolute; inset: -40%; z-index: -1; pointer-events: none; opacity: .28; filter: blur(60px);
+    background: conic-gradient(from var(--ai-a), #7b5cff, #4fa3ff, #c86bff, #ff7ab6, #ffb86b, #7b5cff);
+    animation: ai-spin 14s linear infinite reverse; }
+  @keyframes ai-spin { to { --ai-a: 360deg; } }
+  .pcard .slider .bar i { background: linear-gradient(90deg, #7b5cff, #4fa3ff, #c86bff, #ff7ab6, #7b5cff); background-size: 300% 100%; animation: ai-slide 6s ease-in-out infinite alternate; }
+  @keyframes ai-slide { to { background-position: 100% 0; } }
+  @media (prefers-reduced-motion: reduce) { .pcard::before, .pcard::after, .pcard .slider .bar i { animation: none; } }
 </style>
 </head>
 <body>
