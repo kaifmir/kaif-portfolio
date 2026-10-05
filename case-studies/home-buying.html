@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400;1,500&family=Playfair+Display:ital,wght@0,600;1,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Figtree:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400;1,500&family=Playfair+Display:ital,wght@0,600;1,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 <style>
   /* Same tokens, type scale and components as the portfolio homepage */
   :root {
@@ -538,6 +538,17 @@
   .folder.hz::before { background: #6a5cf0; }
   .meta.meta4 { grid-template-columns: repeat(4, minmax(0,1fr)); max-width: 760px; }
   @media (max-width: 900px) { .meta.meta4 { grid-template-columns: 1fr 1fr; } }
+  /* sticky notes: real post-it pastels + handwriting */
+  .note { border: 0 !important; box-shadow: 0 1px 1px rgba(0,0,0,.08), 0 12px 18px -10px rgba(0,0,0,.30) !important; background: var(--pi) !important; border-radius: 2px 2px 14px 2px; }
+  .note:nth-child(5n+1) { --pi: #fff3a3; } /* canary yellow */
+  .note:nth-child(5n+2) { --pi: #ffd3e1; } /* pink */
+  .note:nth-child(5n+3) { --pi: #cfe8ff; } /* blue */
+  .note:nth-child(5n+4) { --pi: #d6f5c6; } /* green */
+  .note:nth-child(5n)   { --pi: #ffdcb8; } /* orange */
+  .note::after { background: linear-gradient(135deg, rgba(0,0,0,.09) 50%, transparent 50%); }
+  .note blockquote { font-family: "Caveat", "Bradley Hand", cursive; font-weight: 600; font-size: 25px; line-height: 27px; letter-spacing: 0; color: #2a2522; }
+  .note figcaption { font-family: "Caveat", cursive; font-weight: 500; font-size: 18px; letter-spacing: 0; text-transform: none; color: rgba(42,37,34,.65); }
+  .note figcaption::before { content: "— "; }
 </style>
 </head>
 <body>

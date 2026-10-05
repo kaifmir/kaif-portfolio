@@ -285,7 +285,6 @@
     -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent); }
   .t-track { display: flex; flex-direction: column; gap: 26px; will-change: transform; animation: t-up var(--dur, 30s) linear infinite; }
   .t-col[data-dir="down"] .t-track { animation-name: t-down; }
-  .ticker:hover .t-track { animation-play-state: paused; }
   @keyframes t-up   { from { transform: translateY(0); } to { transform: translateY(calc(-50% - 13px)); } }
   @keyframes t-down { from { transform: translateY(calc(-50% - 13px)); } to { transform: translateY(0); } }
   .t-item { height: var(--h, auto); border-radius: 28px; overflow: hidden; flex: none; background: var(--g, #eee);
