@@ -497,13 +497,12 @@
   /* moving aurora: soft AI colours drifting behind the content, no edge glow */
   .pcard::before { content: ""; position: absolute; inset: -25%; z-index: -2; pointer-events: none; filter: blur(36px);
     background:
-      radial-gradient(34% 38% at 20% 25%, rgba(123,92,255,.55), transparent 70%),
-      radial-gradient(32% 36% at 80% 20%, rgba(255,122,182,.80), transparent 70%),
-      radial-gradient(36% 40% at 70% 80%, rgba(79,163,255,.80), transparent 70%),
-      radial-gradient(30% 34% at 25% 80%, rgba(62,224,208,.70), transparent 70%),
-      radial-gradient(22% 26% at 50% 50%, rgba(255,184,107,.65), transparent 70%);
+      radial-gradient(40% 46% at 22% 28%, rgba(94,35,220,.70), transparent 70%),
+      radial-gradient(42% 48% at 78% 72%, rgba(214,120,236,.70), transparent 70%),
+      radial-gradient(30% 34% at 75% 22%, rgba(94,35,220,.35), transparent 70%),
+      radial-gradient(30% 34% at 25% 80%, rgba(214,120,236,.35), transparent 70%);
     animation: ai-aurora 12s ease-in-out infinite alternate; }
-  .pcard::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: rgba(255,255,255,.18); }
+  .pcard::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: rgba(255,255,255,.28); }
   @keyframes ai-aurora {
     0%   { transform: translate(0,0) rotate(0deg) scale(1); }
     33%  { transform: translate(6%,-4%) rotate(40deg) scale(1.08); }
@@ -513,7 +512,7 @@
   @property --gy { syntax: "<percentage>"; inherits: false; initial-value: 30%; }
   @keyframes ai-spin { to { --ai-a: 360deg; } }
   @keyframes ai-drift { to { --gx: 80%; --gy: 80%; } }
-  .pcard .slider .bar i { background: linear-gradient(90deg, #7b5cff, #4fa3ff, #c86bff, #ff7ab6, #7b5cff); background-size: 300% 100%; animation: ai-slide 6s ease-in-out infinite alternate; }
+  .pcard .slider .bar i { background: linear-gradient(90deg, #5e23dc, #d678ec, #5e23dc); background-size: 300% 100%; animation: ai-slide 6s ease-in-out infinite alternate; }
   @keyframes ai-slide { to { background-position: 100% 0; } }
   @media (prefers-reduced-motion: reduce) { .pcard::before, .pcard .slider .bar i { animation: none; } }
 </style>
