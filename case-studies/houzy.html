@@ -489,24 +489,33 @@
   @media (max-width: 900px) { .meta.meta4 { grid-template-columns: 1fr 1fr; } }
   /* personality card: light card with a clearly visible, slowly moving AI gradient */
   @property --ai-a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-  .pcard { position: relative; isolation: isolate; overflow: hidden; background: #fff; color: var(--ink); box-shadow: 0 24px 60px -28px rgba(123,92,255,.55), 0 10px 40px -20px rgba(255,122,182,.45); }
+  .pcard { position: relative; isolation: isolate; overflow: hidden; background: #fff; color: var(--ink); box-shadow: 0 24px 60px -28px rgba(123,92,255,.85), 0 10px 40px -20px rgba(255,122,182,.45); }
   .pcard > p, .pcard .slider p { color: var(--ink-70) !important; }
   .pcard .slider p b, .pcard h3 { color: var(--ink) !important; }
   .pcard .slider .lab { color: var(--ink-50) !important; }
   .pcard .slider .bar { background: rgba(23,19,19,.08) !important; }
-  /* Siri / Gemini style: a soft, blurred gradient glow around the inside edges that keeps moving (no hard stroke) */
-  .pcard::before { content: ""; position: absolute; inset: -60%; z-index: -2; pointer-events: none;
-    background: conic-gradient(from var(--ai-a), #7b5cff, #4fa3ff, #3ee0d0, #c86bff, #ff7ab6, #ffb86b, #7b5cff);
-    animation: ai-spin 5s linear infinite; }
-  .pcard::after { content: ""; position: absolute; inset: 14px; z-index: -1; border-radius: 22px; pointer-events: none;
-    background: #fff; filter: blur(14px); opacity: .97; }
+  /* moving aurora: soft AI colours drifting behind the content, no edge glow */
+  .pcard::before { content: ""; position: absolute; inset: -25%; z-index: -2; pointer-events: none; filter: blur(36px);
+    background:
+      radial-gradient(34% 38% at 20% 25%, rgba(123,92,255,.55), transparent 70%),
+      radial-gradient(32% 36% at 80% 20%, rgba(255,122,182,.80), transparent 70%),
+      radial-gradient(36% 40% at 70% 80%, rgba(79,163,255,.80), transparent 70%),
+      radial-gradient(30% 34% at 25% 80%, rgba(62,224,208,.70), transparent 70%),
+      radial-gradient(22% 26% at 50% 50%, rgba(255,184,107,.65), transparent 70%);
+    animation: ai-aurora 12s ease-in-out infinite alternate; }
+  .pcard::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: rgba(255,255,255,.18); }
+  @keyframes ai-aurora {
+    0%   { transform: translate(0,0) rotate(0deg) scale(1); }
+    33%  { transform: translate(6%,-4%) rotate(40deg) scale(1.08); }
+    66%  { transform: translate(-5%,5%) rotate(-30deg) scale(.95); }
+    100% { transform: translate(4%,3%) rotate(80deg) scale(1.05); } }
   @property --gx { syntax: "<percentage>"; inherits: false; initial-value: 20%; }
   @property --gy { syntax: "<percentage>"; inherits: false; initial-value: 30%; }
   @keyframes ai-spin { to { --ai-a: 360deg; } }
   @keyframes ai-drift { to { --gx: 80%; --gy: 80%; } }
   .pcard .slider .bar i { background: linear-gradient(90deg, #7b5cff, #4fa3ff, #c86bff, #ff7ab6, #7b5cff); background-size: 300% 100%; animation: ai-slide 6s ease-in-out infinite alternate; }
   @keyframes ai-slide { to { background-position: 100% 0; } }
-  @media (prefers-reduced-motion: reduce) { .pcard::before, .pcard::after, .pcard .slider .bar i { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .pcard::before, .pcard .slider .bar i { animation: none; } }
 </style>
 </head>
 <body>
