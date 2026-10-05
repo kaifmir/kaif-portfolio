@@ -489,21 +489,17 @@
   @media (max-width: 900px) { .meta.meta4 { grid-template-columns: 1fr 1fr; } }
   /* personality card: light card with a clearly visible, slowly moving AI gradient */
   @property --ai-a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-  .pcard { position: relative; isolation: isolate; overflow: hidden; background: #fff; color: var(--ink); box-shadow: 0 24px 50px -24px rgba(123,92,255,.45); }
+  .pcard { position: relative; isolation: isolate; overflow: hidden; background: #fff; color: var(--ink); box-shadow: 0 24px 60px -28px rgba(123,92,255,.55), 0 10px 40px -20px rgba(255,122,182,.45); }
   .pcard > p, .pcard .slider p { color: var(--ink-70) !important; }
   .pcard .slider p b, .pcard h3 { color: var(--ink) !important; }
   .pcard .slider .lab { color: var(--ink-50) !important; }
   .pcard .slider .bar { background: rgba(23,19,19,.08) !important; }
-  .pcard::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; padding: 3px;
-    background: conic-gradient(from var(--ai-a), #7b5cff, #4fa3ff, #c86bff, #ff7ab6, #ffb86b, #7b5cff);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
-    animation: ai-spin 6s linear infinite; }
-  .pcard::after { content: ""; position: absolute; inset: 3px; z-index: -2; border-radius: 29px; pointer-events: none;
-    background:
-      radial-gradient(60% 50% at var(--gx, 20%) 10%, rgba(123,92,255,.22), transparent 70%),
-      radial-gradient(55% 45% at 90% var(--gy, 30%), rgba(255,122,182,.20), transparent 70%),
-      radial-gradient(60% 55% at 30% 100%, rgba(79,163,255,.20), transparent 70%), #fff;
-    animation: ai-drift 10s ease-in-out infinite alternate; }
+  /* Siri / Gemini style: a soft, blurred gradient glow around the inside edges that keeps moving (no hard stroke) */
+  .pcard::before { content: ""; position: absolute; inset: -60%; z-index: -2; pointer-events: none;
+    background: conic-gradient(from var(--ai-a), #7b5cff, #4fa3ff, #3ee0d0, #c86bff, #ff7ab6, #ffb86b, #7b5cff);
+    animation: ai-spin 5s linear infinite; }
+  .pcard::after { content: ""; position: absolute; inset: 14px; z-index: -1; border-radius: 22px; pointer-events: none;
+    background: #fff; filter: blur(14px); opacity: .97; }
   @property --gx { syntax: "<percentage>"; inherits: false; initial-value: 20%; }
   @property --gy { syntax: "<percentage>"; inherits: false; initial-value: 30%; }
   @keyframes ai-spin { to { --ai-a: 360deg; } }
