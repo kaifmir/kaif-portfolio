@@ -4,12 +4,12 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Home Buying Research — Case Study — Kaif Saleem</title>
-<meta name="description" content="Home buying research for Housing.com: moderated research with first-time buyers, investors, brokers and developers, distilled into seven themes and turned into product direction, from RERA-linked trust signals and hotspot discovery to a renter cross-sell that lifted leads by 2%." />
+<meta name="description" content="Home buying research for Housing.com: moderated research with first-time buyers, investors, brokers and developers, distilled into seven themes, prioritised by impact vs effort, and shipped as product moves: a renter cross-sell (+2% leads), hotspot discovery (+1% leads per user) and live RERA trust signals." />
 <link rel="icon" type="image/png" href="../assets/favicon.png" />
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Figtree:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400;1,500&family=Playfair+Display:ital,wght@0,600;1,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Rubik:wght@400;500&family=Figtree:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400;1,500&family=Playfair+Display:ital,wght@0,600;1,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 <style>
   /* Same tokens, type scale and components as the portfolio homepage */
   :root {
@@ -35,6 +35,33 @@
   .wide { width: min(1198px, 100% - 32px); margin-inline: auto; }
 
   /* nav */
+  /* chapter nav: a rail on wide screens, a floating pill on smaller ones */
+  .chap { position: fixed; z-index: 45; opacity: 0; pointer-events: none; transition: opacity .3s; font-family: var(--sans); }
+  .chap.show { opacity: 1; pointer-events: auto; }
+  .chap ol { list-style: none; margin: 0; padding: 0; }
+  .chap a { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink-50); font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .chap a i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .45; transition: transform .2s, opacity .2s, background .2s; }
+  .chap a.on { color: var(--ink); } .chap a.on i { opacity: 1; background: var(--ink); box-shadow: 0 0 0 3px var(--lime); transform: scale(1.15); }
+  .chap-btn { display: none; }
+  @media (min-width: 1280px) {
+    .chap { left: 18px; top: 50%; transform: translateY(-50%); }
+    .chap ol { display: grid; gap: 4px; padding: 10px 8px; border-radius: 18px; transition: background .2s, box-shadow .2s; }
+    .chap a { padding: 5px 6px; }
+    .chap a span { max-width: 0; overflow: hidden; opacity: 0; transition: max-width .25s, opacity .2s; }
+    .chap a.on span { max-width: 160px; opacity: 1; }
+    .chap:hover ol { background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.12); }
+    .chap:hover a span { max-width: 160px; opacity: 1; }
+    .chap.on-dark a { color: rgba(255,255,255,.55); } .chap.on-dark a.on { color: #fff; } .chap.on-dark a.on i { background: #fff; }
+    .chap.on-dark:hover a { color: var(--ink-50); } .chap.on-dark:hover a.on { color: var(--ink); } .chap.on-dark:hover a.on i { background: var(--ink); }
+  }
+  @media (max-width: 1279px) {
+    .chap { right: 16px; bottom: 18px; }
+    .chap-btn { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-size: 13px; font-weight: 700; color: var(--lime); background: var(--ink); border: 0; border-radius: 999px; padding: 10px 14px 10px 16px; box-shadow: 0 10px 24px rgba(0,0,0,.25); cursor: pointer; }
+    .chap ol { position: absolute; right: 0; bottom: calc(100% + 8px); min-width: 210px; display: none; gap: 2px; padding: 8px; background: #fff; border-radius: 18px; box-shadow: 0 16px 40px rgba(0,0,0,.2); }
+    .chap.open ol { display: grid; }
+    .chap a { padding: 8px 10px; border-radius: 10px; font-size: 14px; }
+    .chap a.on { background: var(--tint); }
+  }
   nav.pill { position: fixed; top: 22px; left: 50%; transform: translateX(-50%); z-index: 50; background: #fff; border-radius: 999px; padding: 14px 40px; display: flex; gap: 54px; box-shadow: 0 6px 24px rgba(0,0,0,.08); }
   nav.pill a { font-size: 12px; line-height: 14.4px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-70); position: relative; }
   nav.pill a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 1.5px; background: currentColor; transform: scaleX(0); transition: transform .3s; }
@@ -321,7 +348,7 @@
   .dark .slot, .cover-art .slot { background: repeating-linear-gradient(135deg, rgba(23,19,19,.04) 0 12px, transparent 12px 24px), #fdfaf4; }
 
   /* hero stats */
-  .stats { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; max-width: 420px; margin-top: 32px; }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; max-width: 560px; margin-top: 32px; }
   .stats div { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 20px; padding: 16px 16px 14px; }
   .stats b { display: block; font-weight: 800; font-size: 30px; line-height: 1; letter-spacing: -.04em; }
   .stats b { color: var(--lime); }
@@ -393,7 +420,7 @@
   .res dt { color: var(--ink); font-weight: 700; }
 
   @media (max-width: 900px) {
-    .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .stats { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
     .hero-grid { grid-template-columns: 1fr; } .cover-art { margin-right: 0; }
     .about-grid.ctx-grid { grid-template-columns: 1fr; }
     .flow-screens img { height: 386px; }
@@ -466,6 +493,55 @@
   .trust-steps b { display: block; font-weight: 800; font-size: 18px; letter-spacing: -.03em; margin-top: 2px; }
   .trust-steps p { margin-top: 6px; font-size: 15px; line-height: 23px; color: var(--ink-70); }
   .trust-steps p strong { color: var(--ink); }
+  .trust-steps li.stopgap { background: #fff; border: 1.5px dashed var(--line); }
+  .upd { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-family: "Rubik", var(--sans); font-size: 12px; line-height: 16px; color: #434343; background: #f2f3f8; border-radius: 8px; padding: 6px 10px; }
+  .upd svg { color: #656565; }
+  .trust.solo { grid-template-columns: 1fr; }
+  .trust.solo .trust-steps { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .pdp-proto { margin: 48px 0 8px; display: grid; gap: 18px; }
+  .pdp-head { display: grid; gap: 10px; justify-items: center; text-align: center; }
+  .pdp-head h4 { font-weight: 800; font-size: 24px; line-height: 29px; letter-spacing: -.03em; }
+  .pdp-head mark { background: var(--lime); padding: 0 6px; border-radius: 6px; }
+  .pdp-seg { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--tint); }
+  .pdp-seg button { font: inherit; font-size: 13px; font-weight: 700; padding: 8px 16px; border: 0; border-radius: 999px; background: transparent; color: var(--ink-70); cursor: pointer; }
+  .pdp-seg button.on { background: var(--ink); color: var(--lime); }
+  .pdp-note { max-width: 560px; font-size: 15px; line-height: 22px; color: var(--ink-70); min-height: 44px; }
+  .pdp-win { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: #fff; box-shadow: 0 30px 60px -30px rgba(0,0,0,.35); }
+  .pdp-bar { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; background: #f2f2f0; border-bottom: 1px solid var(--line); }
+  .pdp-bar i { width: 10px; height: 10px; border-radius: 50%; background: #d9d6cf; }
+  .pdp-bar span { margin-left: 10px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--ink-50); background: #fff; border-radius: 6px; padding: 3px 10px; }
+  .pdp-scroll { height: clamp(380px, 64vh, 640px); overflow-y: auto; overscroll-behavior: contain; outline: none; }
+  .pdp-c { position: relative; width: 1280px; zoom: var(--pk, .7); }
+  .pdp-c > img { display: block; width: 1280px; height: auto; }
+  .pdp-mask { position: absolute; left: 352px; top: 150px; width: 200px; height: 34px; background: #fff; opacity: 0; transition: opacity .3s; }
+  .pdp-hl { position: absolute; left: 358px; top: 147px; width: 194px; height: 40px; border-radius: 10px; box-shadow: 0 0 0 3px var(--lime); background: rgba(228,255,58,.14); animation: proto-pulse 2.4s ease-in-out infinite; transition: opacity .3s; }
+  .pdp-hl .hl-tag { top: auto; bottom: -13px; font-size: 12px; }
+  .pdp-api { position: absolute; border-radius: 12px; box-shadow: 0 0 0 3px var(--lime); background: rgba(228,255,58,.14); opacity: 0; transition: opacity .3s; animation: proto-pulse 2.4s ease-in-out infinite; }
+  .pdp-api .hl-tag { top: auto; bottom: -13px; font-size: 12px; }
+  .pdp-api-tag { left: 857px; top: 201px; width: 82px; height: 38px; }
+  .pdp-api-st { left: 993px; top: 254px; width: 227px; height: 90px; }
+  .pdp-proto.off .pdp-api { opacity: 1; }
+  .pdp-upd { position: absolute; left: 358px; top: 150px; width: 196px; height: 34px; padding-left: 7px; background: #fff; font-family: "Rubik", var(--sans); font-size: 16px; line-height: 34px; color: #222222; white-space: nowrap; transition: opacity .3s; }
+  .pdp-proto.off .pdp-upd { opacity: 0; }
+  .pdp-proto.off .pdp-mask { opacity: 1; }
+  .pdp-ret { margin-top: 56px; }
+  .pdp-ret1 + .pdp-ret { margin-top: 72px; }
+  .pdp-ret1 .rt-chip { box-shadow: 0 0 0 3px var(--lime); animation: proto-pulse 2.4s ease-in-out infinite; }
+  .rt-chip { position: absolute; left: 990px; top: 117px; height: 32px; display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; border-radius: 8px; background: #edfff8; color: #0f8458; font-family: "Rubik", var(--sans); font-size: 14px; font-weight: 500; transition: opacity .3s; }
+  .rt-price { position: absolute; left: 752px; top: 474px; width: 466px; height: 104px; padding: 16px 2px 0; background: #fff; font-family: "Rubik", var(--sans); color: #222222; border-radius: 12px; box-shadow: 0 0 0 3px var(--lime); transition: opacity .3s; }
+  .rt-k { font-size: 14px; line-height: 16px; color: #656565; }
+  .rt-now { margin-top: 8px; display: flex; align-items: center; gap: 10px; font-size: 18px; line-height: 24px; font-weight: 500; }
+  .rt-up { font-size: 13px; line-height: 16px; font-weight: 500; color: #0f8458; background: #edfff8; border-radius: 6px; padding: 4px 8px; }
+  .rt-then { margin-top: 10px; display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 16px; color: #434343; }
+  .rt-then svg { color: #656565; } .rt-then b { font-weight: 500; color: #222222; }
+  .rt-price .hl-tag { top: auto; bottom: -13px; font-size: 12px; }
+  .rt-mask { opacity: 1 !important; }
+  .pdp-ret.off .rt-chip, .pdp-ret.off .rt-price { opacity: 0; }
+
+  .pdp-proto.off .pdp-hl { opacity: 0; }
+  .pdp-hint { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: rgba(23,19,19,.8); border-radius: 999px; padding: 6px 12px; white-space: nowrap; pointer-events: none; transition: opacity .4s; }
+  .pdp-win.touched .pdp-hint { opacity: 0; }
+  .pdp-proto figcaption { font-size: 14px; color: var(--ink-50); text-align: center; }
   .trust-shot { margin: 0; display: grid; gap: 14px; }
   .trust-shot img { width: 100%; height: auto; border-radius: 24px; border: 1px solid var(--line); box-shadow: 0 30px 60px -30px rgba(0,0,0,.35); }
   .trust-shot figcaption { font-size: 14px; color: var(--ink-50); text-align: center; }
@@ -485,10 +561,15 @@
   .hs-row b { font-weight: 800; font-size: 16px; letter-spacing: -.02em; }
   .hs-row small { font-size: 14px; line-height: 19px; color: var(--ink-70); }
   @media (max-width: 900px) { .hs-row li, .hs-row img { width: 180px; } }
-  .rent-wins { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
-  .rent-wins div { background: var(--ink); color: #fff; border-radius: 22px; padding: 18px 20px; display: grid; gap: 6px; }
-  .rent-wins b { font-weight: 900; font-size: 34px; line-height: 1; letter-spacing: -.05em; color: var(--lime); }
-  .rent-wins span { font-size: 14px; color: rgba(255,255,255,.75); }
+  .rfe-k { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-70); margin: 8px 0 12px; }
+  .rfe-row { margin-bottom: 24px; }
+  .rfe-row li { width: auto; }
+  .rfe-f { overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--line); background: #fff; margin-bottom: 10px; box-shadow: 0 14px 24px rgba(0,0,0,.10); scrollbar-width: thin; }
+  .rfe-f.ph { width: 210px; aspect-ratio: 360/800; }
+  .rfe-f.dk { width: 480px; aspect-ratio: 16/9; }
+  .rfe-row .rfe-f img { display: block; width: 100%; height: auto; border: 0; margin: 0; filter: none; }
+  .rfe-row li > b, .rfe-row li > small { max-width: 210px; }
+  @media (max-width: 900px) { .rfe-row li { width: auto; } .rfe-f.ph { width: 170px; } .rfe-f.dk { width: 300px; } .rfe-row .rfe-f img { width: 100%; } }
   .loop-flow { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 0; }
   .loop-flow li { position: relative; display: grid; gap: 6px; align-content: start; padding: 0 14px; text-align: center; }
   .loop-flow li > span { display: grid; place-items: center; width: 56px; height: 56px; margin: 0 auto 10px; border-radius: 50%; background: var(--tint-2); font-weight: 800; font-size: 17px; position: relative; z-index: 1; }
@@ -496,16 +577,12 @@
   .loop-flow li:not(:last-child)::after { content: ""; position: absolute; top: 28px; left: calc(50% + 34px); width: calc(100% - 68px); height: 2px; background: repeating-linear-gradient(90deg, var(--ink-50) 0 6px, transparent 6px 12px); }
   .loop-flow b { font-weight: 800; font-size: 19px; letter-spacing: -.03em; }
   .loop-flow em { font-style: normal; font-size: 15px; line-height: 22px; color: var(--ink-70); }
+  .loop-flow.six { grid-template-columns: repeat(6, minmax(0,1fr)); }
+  .loop-flow.six li { padding: 0 8px; }
+  .loop-flow.six b { font-size: 17px; }
+  .loop-flow.six em { font-size: 14px; line-height: 20px; }
+  @media (max-width: 1100px) { .loop-flow.six { grid-template-columns: repeat(3, minmax(0,1fr)); row-gap: 32px; } .loop-flow.six li:nth-child(3)::after { display: none; } }
   @media (max-width: 900px) { .loop-flow { grid-template-columns: 1fr 1fr; row-gap: 28px; } .loop-flow li::after { display: none; } }
-  .memory { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 40px; align-items: center; margin-top: 64px; }
-  .mem-copy h3 { font-weight: 800; font-size: clamp(26px, 2.4vw, 34px); line-height: 1.1; letter-spacing: -.04em; }
-  .mem-copy p { margin-top: 12px; font-size: 18px; line-height: 27px; color: var(--ink-70); }
-  .mem-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-  .mem-cards figure { margin: 0; display: grid; gap: 12px; }
-  .mem-cards img { width: 100%; height: auto; filter: drop-shadow(0 16px 28px rgba(0,0,0,.12)); }
-  .mem-cards figcaption { font-size: 14px; line-height: 20px; color: var(--ink-70); }
-  .mem-cards figcaption b { display: block; font-size: 16px; color: var(--ink); }
-  @media (max-width: 900px) { .memory { grid-template-columns: 1fr; } }
   .hello .tag + .tag { margin-left: -4px; }
   .star-mini { display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 10px; margin: -16px 0 36px; }
   .star-mini > div { background: var(--tint); border-radius: 18px; padding: 14px 16px; font-size: 15px; line-height: 21px; color: var(--ink-70); }
@@ -549,11 +626,366 @@
   .note blockquote { font-family: "Caveat", "Bradley Hand", cursive; font-weight: 600; font-size: 25px; line-height: 27px; letter-spacing: 0; color: #2a2522; }
   .note figcaption { font-family: "Caveat", cursive; font-weight: 500; font-size: 18px; letter-spacing: 0; text-transform: none; color: rgba(42,37,34,.65); }
   .note figcaption::before { content: "— "; }
+  /* journey landscape */
+  .journey { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 0; position: relative; }
+  .journey li { position: relative; padding: 0 6px; }
+  .journey li + li::before { content: "→"; position: absolute; left: -11px; top: 50%; transform: translateY(-50%); z-index: 1; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: #fff; font-size: 13px; font-weight: 800; box-shadow: 0 0 0 1px var(--line); }
+  .journey a, .beyond a { display: grid; gap: 8px; align-content: start; height: 100%; padding: 22px; border-radius: 26px; background: var(--tint); transition: transform .4s cubic-bezier(.34,1.56,.64,1); }
+  .journey a:hover, .beyond a:hover { transform: translateY(-4px); }
+  .journey span, .beyond span { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-50); }
+  .journey b, .beyond b { font-weight: 800; font-size: 22px; letter-spacing: -.03em; }
+  .journey em { font-style: normal; font-size: 15px; line-height: 21px; color: var(--ink-70); }
+  .journey i, .beyond i { justify-self: start; display: inline-block; margin-right: 6px; font-style: normal; font-size: 12px; font-weight: 700; letter-spacing: .06em; border-radius: 999px; padding: 4px 10px; background: #fff; border: 1px dashed rgba(23,19,19,.25); color: var(--ink-70); }
+  .journey i.ok { background: var(--lime); border: 0; color: var(--ink); }
+  .prio { margin-top: 56px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 460px); gap: 48px; align-items: center; }
+  .prio-copy h3 { margin-top: 6px; font-weight: 800; font-size: clamp(24px, 2.2vw, 32px); line-height: 1.12; letter-spacing: -.04em; }
+  .prio-copy > p { margin-top: 12px; font-size: 16px; line-height: 25px; color: var(--ink-70); }
+  .prio-list { list-style: none; display: grid; gap: 8px; margin-top: 20px; }
+  .prio-list li { background: var(--tint); border-radius: 16px; padding: 12px 16px; font-size: 14px; line-height: 20px; color: var(--ink-70); }
+  .prio-list b { display: block; color: var(--ink); font-size: 15px; }
+  .prio-list li.park { background: #fff; border: 1.5px dashed var(--line); }
+  .pm { position: relative; width: 100%; max-width: 460px; justify-self: center; margin: 0; padding: 0 0 0 26px; display: grid; gap: 30px; }
+  .pm-grid { position: relative; aspect-ratio: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 4px; }
+  .pm-q { border-radius: 18px; background: var(--tint); padding: 12px 14px; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-50); }
+  .pm-q:first-child { background: rgba(228,255,58,.35); color: var(--ink); }
+  .pm-q:nth-child(3), .pm-q:nth-child(4) { display: flex; align-items: flex-end; }
+  .pm-dot { position: absolute; transform: translate(-50%, -50%); display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; font-weight: 800; font-size: 14px; text-decoration: none; transition: transform .2s; }
+  .pm-dot:hover { transform: translate(-50%, -50%) scale(1.12); }
+  .pm-dot.s { background: var(--ink); color: var(--lime); }
+  .pm-dot.o { background: #fff; color: var(--ink); border: 2px dashed var(--ink); }
+  .pm-y { position: absolute; left: 0; top: 0; height: calc(100% - 60px); writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-50); }
+  .pm-x { position: absolute; left: 26px; right: 0; bottom: 34px; text-align: center; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-50); }
+  .pm figcaption { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; color: var(--ink-50); }
+  .pm figcaption i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .pm figcaption i.s { background: var(--ink); } .pm figcaption i.o { border: 2px dashed var(--ink); margin-left: 8px; }
+  @media (max-width: 900px) { .prio { grid-template-columns: 1fr; gap: 32px; } .pm-dot { width: 38px; height: 38px; font-size: 12px; } }
+  .journey i.dev { background: #fff; border: 1.5px solid var(--ink); color: var(--ink); }
+  .pm-dot.d { background: var(--lime); color: var(--ink); border: 2px solid var(--ink); }
+  .pm figcaption i.d { background: var(--lime); border: 2px solid var(--ink); margin-left: 8px; }
+  .stage-band.stage-sub { padding-top: 64px; }
+  .res-fn { margin-top: 12px; text-align: center; font-size: 13px; color: var(--ink-50); }
+  .bet { margin-top: 40px; border-radius: 28px; background: #fff; border: 1.5px solid var(--ink); padding: 26px 28px 10px; }
+  .bet > .k { display: inline-block; background: var(--ink); color: var(--lime); border-radius: 999px; padding: 4px 10px; }
+  .bet-q { margin-top: 12px; font-weight: 800; font-size: clamp(19px, 1.8vw, 24px); line-height: 1.3; letter-spacing: -.03em; color: var(--ink); }
+  .bet-rows { margin-top: 14px; }
+  .bet-r { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; padding: 16px 0; border-top: 1px solid var(--line); }
+  .bet-r > div { font-size: 16px; line-height: 24px; color: var(--ink-70); }
+  .bet-r > div:last-child { color: var(--ink); }
+  .bet-r small { display: block; margin-bottom: 4px; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-50); }
+  .bet-r > div:last-child small { color: var(--ink); }
+  .bet-r > div:last-child small::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 1.5px var(--ink); margin-right: 6px; vertical-align: 1px; }
+  .bet-r b { color: var(--ink); }
+  @media (max-width: 900px) { .bet-r { grid-template-columns: 1fr; gap: 10px; } .bet { padding: 22px 18px 6px; } }
+  .dir-why { margin-top: 14px !important; font-size: 15px !important; }
+  .dir-why b { display: block; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-50); margin-bottom: 2px; }
+  .sc-why { margin-top: -6px !important; font-size: 15px; line-height: 22px; color: var(--ink-70); }
+  .sc-why b { color: var(--ink); }
+  .reflect { padding: 96px 0 24px; }
+  .lrn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .lrn { background: var(--tint); border-radius: 24px; padding: 22px 22px 20px; display: grid; gap: 8px; align-content: start; }
+  .lrn b { font-weight: 800; font-size: 18px; line-height: 1.25; letter-spacing: -.03em; }
+  .lrn p { font-size: 15px; line-height: 22px; color: var(--ink-70); }
+  .lrn-do { margin-top: 4px; background: #fff; border-radius: 14px; padding: 10px 12px; color: var(--ink) !important; }
+  .lrn-do span { display: block; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-50); margin-bottom: 2px; }
+  .who-n { margin-left: 8px; vertical-align: middle; font-size: 13px; font-weight: 700; letter-spacing: .04em; background: var(--lime); border-radius: 999px; padding: 4px 10px; }
+  .who li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .role { margin-top: 64px; }
+  .role h3 { margin-top: 6px; font-weight: 800; font-size: clamp(24px, 2.2vw, 32px); letter-spacing: -.04em; }
+  .role-wrap { margin-top: 18px; overflow-x: auto; border-radius: 22px; border: 1px solid var(--line); }
+  .role-t { width: 100%; min-width: 640px; border-collapse: collapse; font-size: 15px; line-height: 21px; text-align: left; }
+  .role-t th, .role-t td { padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-70); }
+  .role-t thead th { background: var(--tint); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-50); }
+  .role-t tbody th { font-weight: 600; color: var(--ink); white-space: nowrap; }
+  .role-t tbody tr:last-child th, .role-t tbody tr:last-child td { border-bottom: 0; }
+  .rw { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
+  .rw.y { background: var(--lime); color: var(--ink); } .rw.p { background: var(--tint); color: var(--ink); border: 1px solid var(--line); } .rw.n { background: var(--ink); color: #fff; }
+  .beyond { margin-top: 16px; } .beyond a { grid-template-columns: auto 1fr auto auto; align-items: center; gap: 14px; }
+  .stage-band { padding: 140px 0 0; text-align: center; }
+  .stage-band .stage-no { display: inline-block; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; background: var(--ink); color: #fff; border-radius: 999px; padding: 6px 14px; }
+  .stage-band .stage-k { display: block; margin-top: 14px; font-family: var(--serif); font-style: italic; font-size: 28px; color: var(--ink-50); }
+  .stage-band .h2 { margin-top: 6px; }
+  .stage-band .sub { max-width: 640px; margin-inline: auto; }
+  .stage-band + .theme-sec { padding-top: 64px; }
+  .sol-sec { padding: 56px 0 0; }
+  .sol-sec .wide > .head { text-align: left; margin-left: 0; max-width: 820px; }
+  .solved-tag { background: var(--ink) !important; color: var(--lime) !important; }
+  .dir { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; border: 2px dashed rgba(23,19,19,.18); border-radius: 28px; padding: 26px 28px; }
+  .dir h3 { font-weight: 800; font-size: 22px; letter-spacing: -.03em; }
+  .dir p { margin-top: 6px; font-size: 16px; line-height: 24px; color: var(--ink-70); }
+  .dir-k { display: inline-block; margin-bottom: 6px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-50); }
+  .dir-two { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .dir-two > div, .dir-two > button { background: var(--tint); border-radius: 18px; padding: 14px 16px; display: grid; gap: 4px; }
+  .dir-two b { font-weight: 800; font-size: 16px; letter-spacing: -.02em; }
+  .dir-two span { font-size: 15px; line-height: 22px; color: var(--ink-70); }
+  .c4 { margin-top: 18px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 32px; align-items: center; }
+  .c4-pick { grid-template-columns: 1fr; margin-top: 0; }
+  .c4-pick button { font: inherit; text-align: left; cursor: pointer; border: 2px solid transparent; transition: border-color .2s, background .2s; }
+  .c4-pick button:hover { border-color: var(--line); }
+  .c4-pick button.on { background: #fff; border-color: var(--ink); }
+  .c4-pick em { font-style: normal; font-size: 13px; font-weight: 700; color: var(--ink); margin-top: 4px; }
+  .c4-pick button.on em { display: none; }
+  .c4-note { font-size: 13px; color: var(--ink-50); }
+  .c4-phone { width: min(300px, 100%); justify-self: center; }
+  .c4-screen { position: relative; aspect-ratio: 360 / 780; overflow: hidden; border-radius: 35px; background: #fff; }
+  .c4-pane { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity .35s; }
+  .c4-pane.on { opacity: 1; visibility: visible; }
+  .c4-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+  .c4-scroll::-webkit-scrollbar { display: none; }
+  .c4-c { position: relative; width: 360px; zoom: var(--ck, .78); font-family: "Rubik", var(--sans); color: #222222; }
+  .lf-top { height: 44px; display: flex; align-items: center; padding: 0 24px; font-size: 14px; font-weight: 500; }
+  .lf-hd { display: flex; align-items: center; gap: 12px; padding: 8px 16px 16px; border-bottom: 1px solid #e1e2e8; }
+  .lf-hd b { flex: 1; font-size: 18px; line-height: 20px; font-weight: 500; }
+  .lf-back, .lx-back { font-size: 20px; }
+  .lf-clear { font-size: 14px; font-weight: 500; color: #5e23dc; }
+  .lf-g { padding: 16px 16px 0; }
+  .lf-t { display: flex; align-items: center; gap: 8px; font-size: 14px; line-height: 16px; font-weight: 500; color: #222222; }
+  .lf-t svg { color: #656565; }
+  .lf-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .lf-chip { font: inherit; font-size: 12px; line-height: 16px; padding: 8px 12px; border-radius: 999px; border: 1px solid #e1e2e8; background: #ffffff; color: #434343; cursor: pointer; }
+  .lf-chip.on { border-color: #5e23dc; background: #f1ebff; color: #5e23dc; font-weight: 500; }
+  .lf-new { position: relative; margin: 24px 8px 0; padding: 16px 0 16px; border-radius: 16px; background: rgba(228,255,58,.10); box-shadow: 0 0 0 2.5px var(--lime); }
+  .lf-new .lf-g { padding: 14px 8px 0; }
+  .lf-nh { padding: 4px 8px 0; font-size: 16px; line-height: 20px; font-weight: 500; }
+  .lf-pad { height: 96px; }
+  .lf-cta { position: absolute; left: 0; right: 0; bottom: 0; padding: 4.4% 4.4% 6%; background: #ffffff; box-shadow: 0 -1px 0 #e1e2e8; }
+  .lf-show { width: 100%; font: inherit; font-family: "Rubik", var(--sans); font-size: 14px; font-weight: 500; color: #ffffff; background: #5e23dc; border: 0; border-radius: 8px; padding: 12px; cursor: pointer; }
+  .lx-img { position: relative; height: 240px; background-size: cover; background-position: center; }
+  .lx-back { position: absolute; left: 16px; top: 12px; width: 36px; height: 36px; border-radius: 50%; background: #ffffff; display: grid; place-items: center; font-size: 18px; }
+  .lx-cnt { position: absolute; right: 16px; bottom: 12px; font-size: 10px; line-height: 12px; color: #ffffff; background: rgba(0,0,0,.75); border-radius: 4px; padding: 4px 6px; }
+  .lx-body { padding: 16px; }
+  .lx-p { font-size: 22px; line-height: 28px; font-weight: 500; }
+  .lx-n { margin-top: 4px; font-size: 16px; line-height: 20px; }
+  .lx-l { margin-top: 4px; font-size: 14px; line-height: 16px; color: #656565; }
+  .lx-specs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .lx-specs span { font-size: 12px; line-height: 16px; color: #434343; background: #f2f3f8; border-radius: 4px; padding: 4px 8px; }
+  .lx-feel { position: relative; margin: 28px -8px 0; padding: 18px 12px 8px; border-radius: 16px; background: rgba(228,255,58,.10); box-shadow: 0 0 0 2.5px var(--lime); }
+  .lx-fh { font-size: 16px; line-height: 20px; font-weight: 500; margin-bottom: 4px; }
+  .lx-r { display: grid; grid-template-columns: 32px 1fr; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid #e1e2e8; }
+  .lx-r:last-child { border-bottom: 0; }
+  .lx-i { width: 32px; height: 32px; border-radius: 8px; background: #ffffff; display: grid; place-items: center; color: #5e23dc; }
+  .lx-r small { display: block; font-size: 12px; line-height: 16px; color: #656565; }
+  .lx-r b { display: block; font-size: 14px; line-height: 20px; font-weight: 400; }
+  .lx-view { margin-top: 20px; }
+  .lx-vimg { height: 150px; border-radius: 12px; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 10px; }
+  .lx-vimg span { font-size: 12px; line-height: 16px; color: #ffffff; background: rgba(0,0,0,.75); border-radius: 999px; padding: 4px 10px; }
+  .lx-view p { margin-top: 8px; font-size: 12px; line-height: 16px; color: #656565; }
+  @media (max-width: 900px) { .c4 { grid-template-columns: 1fr; } }
+  .dir .tag { background: #fff; border: 1px dashed rgba(23,19,19,.3); }
+  @media (max-width: 900px) { .journey { grid-template-columns: 1fr; gap: 12px; } .journey li + li::before { left: 50%; top: -17px; transform: translateX(-50%) rotate(90deg); } .beyond a, .dir { grid-template-columns: 1fr; } .stage-band { padding-top: 96px; } }
+  /* renter prototype: the Figma rent page, scrollable inside a phone; glides to the new section once */
+  .proto { margin: 0; display: grid; gap: 14px; justify-items: center; }
+  .proto figcaption { font-size: 14px; line-height: 20px; color: var(--ink-50); text-align: center; max-width: 380px; }
+  .proto-phone { width: min(320px, 100%); padding: 9px; border-radius: 44px; background: linear-gradient(160deg,#2b2b2e,#0d0d0f 55%,#1d1d20); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.14), inset 0 0 0 4px #050506, 0 40px 60px -20px rgba(0,0,0,.45); }
+  .proto-screen { position: relative; aspect-ratio: 360 / 780; overflow: hidden; border-radius: 35px; background: #fff; container-type: inline-size; }
+  .proto-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; outline: none; }
+  .proto-scroll::-webkit-scrollbar { display: none; }
+  .proto-content { position: relative; width: 360px; zoom: var(--k, .83); font-family: "Rubik", var(--sans); }
+  .proto-pad { height: 45px; }
+  .proto-page { display: block; width: 360px; height: auto; padding-bottom: 68px; box-sizing: content-box; }
+  .proto-sb { position: absolute; left: 0; right: 0; top: 0; z-index: 2; height: 12.5cqw; display: flex; align-items: center; justify-content: space-between; padding: 0 8cqw; background: #fff; font-size: 4.2cqw; font-weight: 700; pointer-events: none; }
+  .proto-sb i { width: 17cqw; height: 3.4cqw; background: linear-gradient(90deg, #171313 0 6cqw, transparent 6cqw 7.5cqw, #171313 7.5cqw 11cqw, transparent 11cqw 12.5cqw, #171313 12.5cqw); border-radius: 1cqw; opacity: .85; }
+  .proto-bar { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; z-index: 2; pointer-events: none; }
+  .proto-hl { position: absolute; left: 4%; right: 4%; top: 1609px; height: 410px; left: 14px; right: 14px; border-radius: 16px; box-shadow: 0 0 0 2.5px var(--lime); animation: proto-pulse 2.4s ease-in-out infinite; pointer-events: none; }
+  @keyframes proto-pulse { 50% { box-shadow: 0 0 0 2.5px var(--lime), 0 0 0 8px rgba(228,255,58,.25); } }
+  .proto-hint { position: absolute; left: 50%; top: 15%; z-index: 3; transform: translateX(-50%); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: rgba(23,19,19,.8); border-radius: 999px; padding: 6px 12px; white-space: nowrap; transition: opacity .4s; pointer-events: none; }
+  .proto-screen.touched .proto-hint { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) { .proto-hl { animation: none; } }
+  .proto-link { padding: 10px 20px; font-size: 12px; line-height: 20px; }
+  .proto-head { text-align: center; max-width: 340px; display: grid; gap: 8px; justify-items: center; }
+  .proto-k { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-50); }
+  .proto-head h4 { font-weight: 800; font-size: 22px; line-height: 27px; letter-spacing: -.03em; }
+  .proto-head mark { background: var(--lime); padding: 0 6px; border-radius: 6px; }
+  .proto-head p { font-size: 15px; line-height: 22px; color: var(--ink-70); }
+  .proto-head p b { color: var(--ink); }
+  .proto-tag { position: absolute; left: 50%; top: -12px; transform: translateX(-50%); font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); background: var(--lime); border-radius: 999px; padding: 4px 10px; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,.15); }
+  .proto-hl { background: rgba(228,255,58,.10); }
+  /* swipeable cross-sell cards, rebuilt from the Figma design */
+  .rc-row { position: absolute; left: 0; top: 1665px; width: 360px; height: 346px; display: flex; gap: 12px; padding: 0 24px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 24px; background: #fff; scrollbar-width: none; z-index: 1; }
+  .rc-row::-webkit-scrollbar { display: none; }
+  .rc-card { flex: none; width: 228px; height: 342px; box-sizing: border-box; padding: 8px; border: 1px solid #e1e2e8; border-radius: 8px; background: #fff; display: flex; flex-direction: column; scroll-snap-align: start; font-size: 12px; line-height: 16px; letter-spacing: .2px; color: #767676; }
+  .rc-img { position: relative; height: 135px; border-radius: 8px; background-size: cover; background-position: center; flex: none; }
+  .rc-rera { position: absolute; left: 8px; top: 8px; display: inline-flex; align-items: center; gap: 2px; height: 16px; padding: 0 6px 0 2px; border-radius: 8px; background: rgba(0,0,0,.8); color: #fff; font-size: 10px; line-height: 12px; letter-spacing: .6px; }
+  .rc-rera img { width: 14px; height: 14px; }
+  .rc-heart { position: absolute; right: 8px; top: 8px; width: 20px; height: 20px; }
+  .rc-meta { margin-top: 8px; display: flex; align-items: center; gap: 4px; color: #656565; }
+  .rc-meta i, .rc-meta2 i { width: 4px; height: 4px; border-radius: 50%; background: #767676; }
+  .rc-meta img { width: 14px; height: 14px; margin-left: 2px; }
+  .rc-price { margin-top: 8px; color: #222; font-size: 14px; font-weight: 500; letter-spacing: 0; }
+  .rc-sub { margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rc-name { margin-top: 16px; color: #222; font-weight: 500; }
+  .rc-meta2 { margin-top: 8px; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .rc-cta { margin-top: auto; display: flex; gap: 8px; }
+  .rc-wa { width: 32px; height: 32px; border-radius: 8px; background: #f2f3f8; display: grid; place-items: center; }
+  .rc-wa img { width: 16px; height: 16px; }
+  .rc-vp { flex: 1; height: 32px; border-radius: 8px; background: #f2f3f8; display: grid; place-items: center; color: #5e23dc; font-weight: 500; }
+  .proto-hl { z-index: 2; }
+  /* live results under the prototype */
+  .live-res { margin-top: 32px; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+  .live-res > div { background: var(--ink); color: #fff; border-radius: 24px; padding: 20px 22px; display: grid; gap: 6px; }
+  .live-res > div.win { background: var(--lime); color: var(--ink); }
+  .live-res b { font-weight: 900; font-size: 38px; line-height: 1; letter-spacing: -.05em; color: var(--lime); }
+  .live-res > div.win b { color: var(--ink); }
+  .live-res span { font-size: 15px; line-height: 21px; color: rgba(255,255,255,.75); }
+  .live-res > div.win span { color: var(--ink-70); }
+  .live-res.two { grid-template-columns: repeat(2, minmax(0,1fr)); max-width: 720px; }
+  .ss-col { min-width: 0; }
+  .ss { display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; margin-top: 56px; }
+  .ss-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin-bottom: 18px; }
+  .ss-head em { font-style: normal; font-size: 16px; line-height: 24px; color: var(--ink-70); }
+  .ss-tag { font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; border-radius: 8px; padding: 4px 10px; }
+  .ss-tag.yes { background: var(--lime); color: var(--ink); }
+  .ss-tag.no { background: var(--ink); color: #fff; text-decoration: line-through; text-decoration-color: var(--lime); text-decoration-thickness: 2px; }
+  @media (max-width: 900px) { .live-res.two { grid-template-columns: 1fr; } }
+  .sc-in { position: relative; }
+  .sc-hl { position: absolute; left: 3px; right: 3px; border: 2px dashed #e80067; border-radius: 10px; background: rgba(232,0,103,.06); pointer-events: none; }
+  .sc-tag { position: absolute; left: 50%; top: -11px; transform: translateX(-50%); white-space: nowrap; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: #e80067; border-radius: 999px; padding: 4px 9px; }
+  .sc-key { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-50); margin: -6px 0 14px; }
+  .sc-key i { width: 22px; height: 12px; border: 2px dashed #e80067; border-radius: 4px; background: rgba(232,0,103,.06); }
+  .sc-b { margin-top: 28px; }
+  .sc-b h4 { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; letter-spacing: -.03em; }
+  .sc-b h4 > span { font-size: 12px; letter-spacing: .08em; background: var(--tint); border-radius: 8px; padding: 3px 8px; }
+  .sc-b h4 i { font-style: normal; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: var(--ink); border-radius: 999px; padding: 4px 10px; }
+  .sc-b > p, .sc-cmp p { margin: 8px 0 18px; max-width: 640px; font-size: 16px; line-height: 24px; color: var(--ink-70); }
+  .sc-cmp { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 32px; align-items: center; }
+  .sc-cmp img { width: 100%; height: auto; border-radius: 20px; box-shadow: 0 14px 30px rgba(0,0,0,.10); }
+  @media (max-width: 900px) { .sc-cmp { grid-template-columns: 1fr; gap: 0; } }
+  .live-res-k { margin-top: 40px; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-50); }
+  @media (max-width: 900px) { .live-res { grid-template-columns: 1fr; } }
+  .derived { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 28px; align-items: center; margin-top: 36px; background: var(--tint); border-radius: 32px; padding: 32px; }
+  .dv-copy h3 { margin-top: 4px; font-weight: 800; font-size: clamp(24px, 2.2vw, 30px); line-height: 1.15; letter-spacing: -.035em; }
+  .dv-copy p { margin-top: 12px; font-size: 17px; line-height: 26px; color: var(--ink-70); }
+  .dv-copy p strong { color: var(--ink); }
+  .dv-stat { margin-top: 20px; display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; background: var(--lime); border-radius: 20px; padding: 16px 20px; }
+  .dv-stat b { font-weight: 900; font-size: 48px; line-height: 1; letter-spacing: -.05em; }
+  .dv-stat p { margin-top: 4px !important; font-size: 15px !important; line-height: 21px !important; color: var(--ink) !important; }
+  .dv-eg { display: grid; gap: 10px; }
+  .dv-ask { background: var(--ink); color: #fff; border-radius: 20px 20px 20px 6px; padding: 16px 18px; display: grid; gap: 4px; }
+  .dv-ask span { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.55); }
+  .dv-ask b { font-family: var(--serif); font-weight: 400; font-size: 24px; line-height: 28px; }
+  .dv-opt { display: grid; grid-template-columns: 32px 1fr; gap: 12px; align-items: start; background: #fff; border-radius: 18px; padding: 14px 16px; font-size: 15px; line-height: 22px; color: var(--ink-70); }
+  .dv-opt b { display: block; color: var(--ink); font-size: 16px; }
+  .dv-opt i { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; font-style: normal; font-weight: 800; }
+  .dv-opt.yes { box-shadow: inset 0 0 0 2px var(--lime); } .dv-opt.yes i { background: var(--lime); color: var(--ink); }
+  .dv-opt.no { opacity: .75; } .dv-opt.no i { background: var(--tint-2); color: #bb281b; } .dv-opt.no b { text-decoration: line-through; text-decoration-color: rgba(23,19,19,.35); }
+  .dv-note { font-size: 14px; line-height: 21px; color: var(--ink-50); padding: 0 4px; } .dv-note b { color: var(--ink); }
+  @media (max-width: 900px) { .derived { grid-template-columns: 1fr; padding: 22px; border-radius: 26px; } }
+  /* interactive hotspot screens */
+  .hsp { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 360px); gap: 48px; align-items: center; margin: 8px 0 48px; }
+  .hsp-copy h3 { margin-top: 4px; font-weight: 800; font-size: clamp(26px, 2.4vw, 34px); line-height: 1.1; letter-spacing: -.04em; }
+  .hsp-now { margin-top: 20px; background: var(--ink); color: #fff; border-radius: 22px; padding: 18px 20px; display: grid; gap: 6px; }
+  .hsp-now .k { color: rgba(255,255,255,.55); }
+  .hsp-now b { font-weight: 800; font-size: 20px; letter-spacing: -.03em; color: var(--lime); }
+  .hsp-now p { font-size: 15px; line-height: 22px; color: rgba(255,255,255,.8); }
+  .hsp-who { display: grid; gap: 12px; margin-top: 20px; }
+  .hb-who { font: inherit; text-align: left; cursor: pointer; display: grid; grid-template-columns: 40px 1fr; gap: 14px; background: var(--tint); border: 2px solid transparent; border-radius: 20px; padding: 14px 16px; font-size: 15px; line-height: 22px; color: var(--ink-70); transition: border-color .2s, background .2s; }
+  .hb-who > span { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: #fff; font-weight: 800; color: var(--ink); transition: background .2s; }
+  .hb-who b { display: block; color: var(--ink); font-size: 16px; }
+  .hb-who:hover { border-color: var(--line); }
+  .hb-who.on { background: #fff; border-color: var(--ink); }
+  .hb-who.on > span { background: var(--lime); }
+  .hsp-umb { margin-top: 14px; font-size: 14px; line-height: 21px; color: var(--ink-50); }
+  .srp { background: #f2f3f8; }
+  .srp-head { position: relative; background: #fff; }
+  .srp-head img { display: block; width: 360px; height: auto; }
+  .srp-q { position: absolute; left: 90px; top: 60px; width: 210px; height: 32px; background: #fff; font-size: 16px; line-height: 32px; color: #222; }
+  .srp-count { padding: 4px 16px 12px; font-size: 13px; color: #656565; }
+  .lc { margin: 0 0 18px; }
+  .lc > img { display: block; width: 360px; height: auto; }
+  .lc-t { background: #fff; margin: 0 8px; height: 144px; padding: 6px 8px 0; color: #222; }
+  .lc-meta { font-size: 12px; line-height: 16px; color: #434343; } .lc-meta b { font-weight: 500; color: #222; }
+  .lc-h { margin-top: 17px; font-size: 16px; line-height: 20px; }
+  .lc-p { margin-top: 2px; font-size: 18px; line-height: 24px; font-weight: 500; }
+  .lc-n { margin-top: 9px; font-size: 14px; line-height: 20px; color: #222; }
+  .lc-l { font-size: 13px; line-height: 18px; color: #656565; }
+  .srp-end { position: relative; margin: 0 8px; padding: 22px 0 22px 8px; border-radius: 16px; background: #fff; box-shadow: 0 0 0 2.5px var(--lime); animation: proto-pulse 2.4s ease-in-out infinite; }
+  .hs2-head { display: flex; justify-content: space-between; align-items: flex-start; padding: 0 16px 0 8px; }
+  .hs2-head b { display: block; font-size: 18px; line-height: 22px; font-weight: 500; color: #222; }
+  .hs2-head span { display: block; margin-top: 6px; font-size: 13px; line-height: 18px; color: #656565; }
+  .hs2-head .hs2-map { margin: 0; font-size: 15px; line-height: 22px; font-weight: 500; color: #5e23dc; white-space: nowrap; }
+  .hs2-row { margin-top: 16px; padding: 0 8px; gap: 16px; }
+  .hs2-c { flex: none; width: 248px; border: 1px solid #e1e2e8; border-radius: 12px; padding: 14px 16px 16px; display: grid; scroll-snap-align: start; }
+  .hs2-c b { font-size: 16px; line-height: 22px; font-weight: 400; color: #222; }
+  .hs2-c > span { margin-top: 4px; font-size: 14px; line-height: 18px; color: #656565; }
+  .hs2-c p { margin-top: 18px; display: flex; align-items: center; gap: 12px; font-size: 14px; line-height: 18px; color: #222; white-space: nowrap; }
+  .hs2-c i { width: 1px; height: 14px; background: #e1e2e8; }
+  .hs2-c em { font-style: normal; color: #0f8458; } .hs2-c em u { text-decoration: none; font-size: 11px; } .hs2-c em small { font-size: 14px; color: #656565; }
+  .srp-pad { height: 90px; }
+  .srp-nav { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; pointer-events: none; box-shadow: 0 -1px 0 #ececec; }
+  .hsp-lens-in .srp-end { margin: 0; animation: none; box-shadow: none; border-radius: 0; }
+  .hsp-tip { margin-top: 12px; font-size: 13px; color: var(--ink-50); }
+  .hsp-demo { position: relative; display: grid; gap: 16px; justify-items: center; }
+  .hsp-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .hsp-grp { display: grid; gap: 6px; justify-items: center; padding: 8px 10px 10px; border-radius: 18px; border: 1px dashed var(--line); transition: border-color .2s, background .2s; }
+  .hsp-grp.on { border: 1px solid var(--ink); background: #fff; }
+  .hsp-grp > span { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-50); }
+  .hsp-grp.on > span { color: var(--ink); }
+  .hsp-grp > div { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .hsp-tab { font: inherit; font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: #fff; color: var(--ink-70); cursor: pointer; }
+  .hsp-tab.on { background: var(--ink); color: var(--lime); border-color: var(--ink); }
+  .hsp-phone { width: min(320px, 100%); }
+  .hsp-screen { position: relative; aspect-ratio: 360 / 780; overflow: hidden; border-radius: 35px; background: #fff; }
+  .hsp-pane { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity .35s ease; }
+  .hsp-pane.on { opacity: 1; visibility: visible; }
+  .hsp-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; outline: none; }
+  .hsp-scroll::-webkit-scrollbar { display: none; }
+  .hsp-c { position: relative; width: 360px; zoom: var(--hk, .83); font-family: "Rubik", var(--sans); }
+  .hsp-c > img { display: block; width: 360px; height: auto; }
+  .hsp-nav { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; background: #fff; box-shadow: 0 -1px 0 #ececec; pointer-events: none; }
+  .hsp-hint { position: absolute; right: 10px; top: 46%; z-index: 3; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: rgba(23,19,19,.75); border-radius: 999px; padding: 5px 9px; pointer-events: none; transition: opacity .4s; }
+  .hsp-screen.touched .hsp-hint { opacity: 0; }
+  /* highlight of what changed */
+  .hl-box, .hn, .mc-row-wrap { box-shadow: 0 0 0 2.5px var(--lime); border-radius: 14px; }
+  .hl-box { position: absolute; left: 6px; right: 6px; background: rgba(228,255,58,.10); animation: proto-pulse 2.4s ease-in-out infinite; }
+  .hl-tag { position: absolute; left: 50%; top: -11px; transform: translateX(-50%); z-index: 2; font-family: var(--sans); font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); background: var(--lime); border-radius: 999px; padding: 4px 10px; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,.15); pointer-events: none; }
+  /* phase 1 home: hotspots nearby, rebuilt with Map view + FTB price range */
+  .hn { position: absolute; left: 4px; right: 4px; top: 418px; height: 186px; background: #f6f4ed; padding: 14px 0 0 12px; animation: proto-pulse 2.4s ease-in-out infinite; }
+  .hn-head { display: flex; justify-content: space-between; align-items: flex-start; padding-right: 12px; }
+  .hn-head b { display: block; font-size: 18px; line-height: 22px; font-weight: 500; color: #222; }
+  .hn-head span { display: block; margin-top: 4px; font-size: 12px; line-height: 16px; color: #656565; }
+  .hn-map { font: inherit; font-size: 13px; font-weight: 500; color: #5e23dc; background: none; border: 0; padding: 2px 0; cursor: pointer; white-space: nowrap; }
+  .hn-row { display: flex; gap: 12px; margin-top: 14px; overflow-x: auto; padding-right: 12px; scrollbar-width: none; scroll-snap-type: x mandatory; }
+  .hn-row::-webkit-scrollbar { display: none; }
+  .hc { flex: none; width: 236px; text-align: left; font: inherit; background: #fff; border: 1px solid #ebe8de; border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; cursor: pointer; scroll-snap-align: start; }
+  .hc b { font-size: 15px; line-height: 20px; font-weight: 500; color: #222; }
+  .hc-sub { font-size: 12px; color: #767676; }
+  .hc-row { margin-top: 8px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 13px; color: #222; }
+  .hc-row small, .mc-line small { display: block; font-size: 10px; letter-spacing: .3px; color: #767676; text-transform: uppercase; }
+  .hc-roi { color: #0f8458; font-weight: 500; } .hc-roi em { font-style: normal; color: #767676; font-weight: 400; }
+  /* interactive map view */
+  .map-stack { position: relative; width: 360px; height: 800px; }
+  .map-back { position: absolute; left: 16px; top: 52px; z-index: 3; width: 40px; height: 40px; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+  .map-back:hover { background: rgba(23,19,19,.06); }
+  .map-img { position: absolute; inset: 0; width: 360px; height: 800px; opacity: 0; transition: opacity .45s ease; }
+  .map-img.on { opacity: 1; }
+  .mc-band { position: absolute; left: 0; right: 0; top: 630px; height: 140px; background: linear-gradient(rgba(250,250,248,0), rgba(250,250,248,.96) 22%, rgba(250,250,248,.96)); }
+  .mc-row-wrap { position: absolute; left: 6px; right: 6px; top: 654px; height: 92px; border-radius: 16px; }
+  .mc-row { display: flex; gap: 12px; padding: 8px 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .mc-row::-webkit-scrollbar { display: none; }
+  .mc { flex: none; width: 290px; height: 74px; box-sizing: border-box; background: #fff; border: 1px solid #ececec; border-radius: 12px; padding: 12px 14px; scroll-snap-align: center; box-shadow: 0 6px 16px rgba(0,0,0,.08); display: grid; align-content: space-between; }
+  .mc b { font-size: 15px; font-weight: 500; color: #222; }
+  .mc-line { display: flex; justify-content: space-between; align-items: flex-end; font-size: 13px; color: #222; }
+  .mc a { color: #5e23dc; font-weight: 500; }
+  /* hover-to-zoom lens */
+  .hsp-lens { position: fixed; left: 50%; top: 50%; z-index: 80; cursor: zoom-out; width: min(560px, 92vw); transform: translate(-50%, -40%) scale(.92); opacity: 0; pointer-events: none; transition: opacity .3s ease, transform .4s cubic-bezier(.2,.8,.2,1); }
+  .hsp-lens .lens-x { position: absolute; right: -14px; top: -14px; z-index: 2; width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--ink); color: var(--lime); font-size: 22px; line-height: 1; cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,.25); }
+  .hsp-lens { cursor: default; }
+  .rl-sec { position: relative; width: 360px; height: 410px; background-repeat: no-repeat; background-size: 360px auto; }
+  .rl-sec .rc-row { top: 56px; }
+  .proto-tip { font-size: 13px; color: var(--ink-50); text-align: center; }
+  .hsp-lens.on { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
+  .zoomable { cursor: zoom-in; }
+  .hsp-lens-in { max-height: 86vh; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; background: #fff; border-radius: 22px; box-shadow: 0 0 0 3px var(--lime), 0 40px 80px -20px rgba(0,0,0,.45); overflow: hidden; }
+  .hsp-lens-in .lens-c { width: 360px; zoom: var(--lz, 1.5); font-family: "Rubik", var(--sans); position: relative; }
+  .hsp-lens-in .lens-img { width: 360px; background-repeat: no-repeat; background-size: 360px auto; }
+  .hsp-lens-in .hn, .hsp-lens-in .mc-row-wrap { position: relative; left: 0; right: 0; top: 0; animation: none; box-shadow: none; border-radius: 0; }
+  .hsp-lens-in .hl-tag { display: none; }
+  @media (max-width: 900px) { .hsp { grid-template-columns: 1fr; gap: 28px; } .hsp-tip { display: none; } }
 </style>
 </head>
 <body>
 
 <div class="progress" id="progress" aria-hidden="true"></div>
+<nav class="chap" aria-label="Chapters"><button class="chap-btn" type="button" aria-expanded="false"><span class="chap-now">Overview</span><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><ol><li><a href="#why"><i></i><span>Overview</span></a></li><li><a href="#landscape"><i></i><span>The journey</span></a></li><li><a href="#t1"><i></i><span>#1 Renters</span></a></li><li><a href="#t2"><i></i><span>#2 Hotspots</span></a></li><li><a href="#t3"><i></i><span>#3 Trust</span></a></li><li><a href="#t4"><i></i><span>#4 Lived experience</span></a></li><li><a href="#t5"><i></i><span>#5 Buyers loop</span></a></li><li><a href="#t6"><i></i><span>#6 Lead quality</span></a></li><li><a href="#t7"><i></i><span>#7 Investors</span></a></li><li><a href="#results"><i></i><span>Results</span></a></li><li><a href="#reflect"><i></i><span>Reflection</span></a></li></ol></nav>
 <nav class="pill" aria-label="Main">
   <a href="../index.html#home">Home</a>
   <a href="../index.html#work">Work</a>
@@ -565,17 +997,18 @@
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <a class="back" href="../index.html#work">← Back to work</a>
-      <div class="hello reveal"><span class="tag">Moderated Research</span><span class="tag">Design Direction</span></div>
-      <h1 class="reveal">Home buying<span class="g">: themes, gaps and opportunities in the journey</span></h1>
-      <p class="intro reveal">On Housing.com, home buying is still <b style="color:#fff">discovery-led and listing-centric</b>, with little help to compare, evaluate or decide. This research moved us from assumptions to evidence about <b style="color:#fff">what the platform should intentionally solve</b>.</p>
+      <div class="hello reveal"><span class="tag">Moderated research</span><span class="tag">Prioritisation</span><span class="tag">Shipped design</span></div>
+      <h1 class="reveal">Home buying<span class="g">: finding Housing&#8217;s right to win</span></h1>
+      <p class="intro reveal">Buyers could find homes on Housing.com, but got <b style="color:#fff">little help to compare, evaluate or decide</b>. Research with buyers, brokers and developers surfaced seven gaps across the journey. We prioritised them by <b style="color:#fff">impact vs effort</b> and shipped the quick wins first.</p>
       <div class="stats reveal">
-        <div><b>7</b><small>Themes from the research</small></div>
-        <div><b>+2%</b><small>Leads from the renter cross-sell</small></div>
+                <div><b>+2%</b><small>Leads from the renter cross-sell</small></div>
+        <div><b>+1%</b><small>Leads per user via hotspots</small></div>
+        <div><b>30%</b><small>Of users verify on RERA from the listing</small></div>
       </div>
       <div class="meta meta4 reveal">
-        <div><small>Role</small><b>Principal Product Designer &amp; Researcher</b></div>
-        <div><small>Method</small><b>Research → design direction</b></div>
-        <div><small>Participants</small><b>Buyers, brokers, developers</b></div>
+        <div><small>Role</small><b>Research &amp; Design</b></div>
+        <div><small>Method</small><b>Research → impact vs effort → shipped</b></div>
+        <div><small>Participants</small><b>16: buyers, investors, brokers, developers, financing</b></div>
         <div><small>Company</small><b>Housing.com</b></div>
       </div>
     </div>
@@ -589,8 +1022,8 @@
     <ol class="tldr">
       <li class="reveal"><a href="#why"><span>S · Situation</span><b>Built to browse, not decide</b><em>Housing.com was discovery-led and listing-centric, with little help to compare or choose.</em></a></li>
       <li class="reveal"><a href="#why"><span>T · Task</span><b>Evidence over assumptions</b><em>Find which problems are real, which a platform should solve, and where Housing can win.</em></a></li>
-      <li class="reveal"><a href="#method"><span>A · Action</span><b>Research, then direction</b><em>Moderated sessions with 4 groups, 7 themes, and design moves for the strongest ones.</em></a></li>
-      <li class="reveal win"><a href="#results"><span>R · Result</span><b>+2% and +1% leads</b><em>Renter cross-sell and hotspots lifted leads; trust and card memory followed, each traced to a theme.</em></a></li>
+      <li class="reveal"><a href="#method"><span>A · Action</span><b>Research, prioritise, ship</b><em>16 moderated sessions across 5 groups, 7 themes scored on impact vs effort, and the low-hanging fruit solved first.</em></a></li>
+      <li class="reveal win"><a href="#results"><span>R · Result</span><b>+2% and +1% leads</b><em>Renter cross-sell and hotspots lifted leads; RERA trust is live, and buyers who dropped a lead now see what they missed, each traced to a theme.</em></a></li>
     </ol>
   </div>
 </section>
@@ -606,15 +1039,16 @@
         <p class="story">Separate problems that are <strong>perception-based</strong> from those that are <strong>structurally real</strong>, needs a platform solves best from those better handled offline, and areas where Housing has a <strong>defensible right to win</strong>.</p>
       </div>
       <div class="reveal">
-        <h3 style="margin-bottom:16px">Who we spoke to</h3>
+        <h3 style="margin-bottom:16px">Who we spoke to <span class="who-n">16 people</span></h3>
         <ul class="who">
-          <li><span>01</span><div>First-time buyers<small>And intenders (FTBs)</small></div></li>
-          <li><span>02</span><div>Investor buyers<small>IBs</small></div></li>
-          <li><span>03</span><div>Brokers<small>The supply-side middle</small></div></li>
-          <li><span>04</span><div>Developers<small>Project sales teams</small></div></li>
+          <li><span>5</span><div>First-time buyers (FTBs)<small>1 intender and 4 recent buyers, who bought in the last 6&ndash;8 months</small></div></li>
+          <li><span>4</span><div>Recent investor buyers (IBs)<small>Own 2+ properties, and bought another in the last 6&ndash;8 months</small></div></li>
+          <li><span>3</span><div>Brokers<small>The supply-side middle</small></div></li>
+          <li><span>3</span><div>Developer sales<small>Project sales teams</small></div></li>
+          <li><span>1</span><div>Financing expert<small>Home loans and approvals</small></div></li>
         </ul>
         <h3 style="margin:32px 0 10px">My role</h3>
-        <p class="story">I partnered with the research vendor to shape the study and the discussion guides, sat in on the moderated sessions, synthesised the findings into themes, and turned the strongest ones into <strong>design direction</strong> the product teams could act on.</p>
+        <p class="story"><strong>Research and design.</strong> I partnered with the research vendor to shape the study and the discussion guides, sat in on the moderated sessions and synthesised the findings into themes. I then <strong>designed the quick wins end to end</strong>, from the renter cross-sell and hotspots to the RERA trust signals, and took them to production with product and tech.</p>
       </div>
     </div>
   </div>
@@ -622,12 +1056,14 @@
 
 <section id="method" style="padding-top:0">
   <div class="wrap">
-    <div class="head reveal"><span class="tag">How we ran it</span><h2 class="h2">From conversations to direction</h2></div>
-    <ol class="loop-flow reveal">
-      <li><span>01</span><b>Moderated sessions</b><em>First-time buyers, investors, brokers and developers, in their own words</em></li>
+    <div class="head reveal"><span class="tag">How we ran it</span><h2 class="h2">From conversations to shipped product</h2></div>
+    <ol class="loop-flow six reveal">
+      <li><span>01</span><b>Moderated sessions</b><em>16 people: first-time buyers, investors, brokers, developer sales and a financing expert, in their own words</em></li>
       <li><span>02</span><b>Synthesis</b><em>Quotes clustered into seven themes, each with its defining factors</em></li>
-      <li><span>03</span><b>Workshop</b><em>A cross-functional session to pressure-test the themes with product, business and tech</em></li>
-      <li class="hot"><span>04</span><b>Design direction</b><em>The strongest themes turned into concrete product moves</em></li>
+      <li><span>03</span><b>Workshop</b><em>Product, business and tech pressure-tested the themes and framed each one as a bet</em></li>
+      <li><span>04</span><b>Design direction</b><em>Each bet turned into a concrete product move</em></li>
+      <li><span>05</span><b>Prioritise</b><em>Every move scored on impact vs effort, with the low-hanging fruit first</em></li>
+      <li class="hot"><span>06</span><b>Ship and measure</b><em>Quick wins designed end to end, shipped, and measured against production</em></li>
     </ol>
   </div>
   <div class="ticker reveal" style="margin-top:56px" aria-label="Photos from the cross-functional workshop"><div class="ticker-track"><img src="home-buying/ws-1.jpg?v=1" alt="The room set up for the Mapping Home Buying workshop" width="1050" height="1400"><img src="home-buying/ws-2.jpg?v=1" alt="Mapping a first-time buyer persona and journey with sticky notes" width="1400" height="1050"><img src="home-buying/ws-3.jpg?v=1" alt="Kaif presenting the workshop agenda during team review and synthesis" width="1050" height="1400"><img src="home-buying/ws-4.jpg?v=1" alt="Teams discussing their persona and journey map" width="1400" height="1050"><img src="home-buying/ws-5.jpg?v=1" alt="The sample user persona template that guided each team" width="1400" height="787"><img src="home-buying/ws-6.jpg?v=1" alt="Cross-functional teams working through the journey together" width="1400" height="1050"><img src="home-buying/ws-7.jpg?v=1" alt="Product, business and tech teams in a breakout" width="1400" height="1050"></div></div>
@@ -635,46 +1071,226 @@
   </div>
 </section>
 
-<div class="chapter dark scallop-t scallop-b" id="themes">
+<div class="chapter dark scallop-t scallop-b" id="landscape">
   <div class="wrap reveal">
     <span class="num" aria-hidden="true">01</span>
-    <span class="tag">Seven themes</span>
-    <h2 class="h2">Seven things the research made clear</h2>
+    <span class="tag">The landscape</span>
+    <h2 class="h2">Seven themes, mapped to the journey</h2>
+    <p class="sub" style="max-width:760px;margin-inline:auto">Home buying isn't one moment. We placed every theme where it shows up in the journey, prioritised them by impact vs effort, and solved the low-hanging fruit first.</p>
   </div>
 </div>
 
-
-<section class="theme-sec" id="theme-1">
+<section>
   <div class="wide">
-    <div class="theme-head reveal"><span class="tnum">#1</span><div><h2 class="h2">Trust is mis-timed, not missing</h2><p class="sub">Buyers don&#x27;t distrust Housing. They leave to assemble trust elsewhere, because the platform offers nothing at the critical evaluation moment.</p></div></div>
-    <div class="theme-body">
-      <div class="breaks reveal"><span class="k">Where it breaks</span><ol><li>Buyers can&#x27;t verify the builder&#x27;s intent.</li><li>They can&#x27;t validate their own decision, socially or financially.</li></ol></div>
-      <div class="factors reveal"><span class="k">Defining factors</span><ul><li><b>Builder credibility</b>Delivery history, past project ratings, litigation record</li><li><b>Legal &amp; RERA status</b>Live registration, approvals, litigation flags</li><li><b>Pricing fairness</b>Fair-value benchmark vs comparable transacted prices</li><li><b>Resident validation</b>Verified post-possession reviews from real buyers</li><li><b>Bank approval signal</b>Which banks have sanctioned loans for this project</li></ul></div>
-    </div>
-    <div class="said reveal"><span class="k">What participants said</span><div class="notes"><figure class="note"><blockquote>“Bank-approved… legally clear (a ‘white deal’)… gave confidence to close”</blockquote><figcaption>FTB, Gurugram</figcaption></figure><figure class="note"><blockquote>“You don’t know if the builder will deliver on time”</blockquote><figcaption>FTB intender, Gurgaon</figcaption></figure><figure class="note"><blockquote>“I checked everything, from papers to bank approval, before deciding”</blockquote><figcaption>FTB synthesis</figcaption></figure><figure class="note"><blockquote>“Customers perceive sales teams may be biased toward closing the deal”</blockquote><figcaption>Broker</figcaption></figure><figure class="note"><blockquote>“Digital creates awareness, but buyers still don’t trust easily”</blockquote><figcaption>Developer, Pune</figcaption></figure><figure class="note"><blockquote>“Buyer already comes pre-informed, but still needs reassurance”</blockquote><figcaption>Developer, Mumbai</figcaption></figure><figure class="note"><blockquote>“Need to repeatedly explain pricing, approvals and timelines”</blockquote><figcaption>Developer</figcaption></figure></div></div>
+    <ol class="journey reveal">
+      <li><a href="#s1"><span>Stage 1</span><b>Renting</b><em>Before they know they're buyers</em><i class="ok">#1 Solved</i></a></li>
+      <li><a href="#s2"><span>Stage 2</span><b>Discovering</b><em>Searching and shortlisting</em><i class="ok">#2 Solved</i></a></li>
+      <li><a href="#s3"><span>Stage 3</span><b>Evaluating</b><em>Can I trust the listing?</em><i class="ok">#3 Solved</i><i>#4 Open</i></a></li>
+      <li><a href="#s4"><span>Stage 4</span><b>Deciding</b><em>Doubt, restart, come back</em><i class="ok">#5 Solved</i></a></li>
+    </ol>
+    <div class="beyond reveal"><a href="#s5"><span>Beyond the buyer</span><b>The supply side and investors</b><i>#6 Open</i><i>#7 Open</i></a></div>
   </div>
 </section>
-<section class="theme-sec" id="theme-2">
+<section class="stage-band" id="s1"><div class="wrap reveal"><span class="stage-no">Stage 1</span><span class="stage-k">Renting</span><h2 class="h2">Before they know they're buyers</h2><p class="sub">Life events turn renters into buyers, and brokers reach them first.</p></div></section><section class="theme-sec" id="t1">
   <div class="wide">
-    <div class="theme-head reveal"><span class="tnum">#2</span><div><h2 class="h2">Curated shortlisting beats discovery breadth</h2><p class="sub">The platform surfaces 100+ listings and buyers collapse. A broker&#x27;s core value is narrowing that to 2–4 intent-matched options, and Housing has the behavioural data to do this at scale.</p></div></div>
-    <div class="theme-body">
-      <div class="breaks reveal"><span class="k">Where it breaks</span><ol><li>Discovery volume without curation creates paralysis, not confidence.</li><li>Buyers can&#x27;t structure their own comparison: everything is tracked mentally, nothing is saved.</li></ol></div>
-      <div class="factors reveal"><span class="k">Defining factors</span><ul><li><b>Intent signal capture</b>Search terms, revisit behaviour, time spent per listing</li><li><b>Budget &amp; location fit</b>Stated vs inferred affordability, plus commute constraints</li><li><b>Family preference match</b>Configuration, floor and amenity preferences across sessions</li><li><b>Comparison tracking</b>Side-by-side saved listings with explicit pros and cons</li><li><b>Saved journey memory</b>Session continuity, so no progress is lost on return visits</li></ul></div>
-    </div>
-    <div class="said reveal"><span class="k">What participants said</span><div class="notes"><figure class="note"><blockquote>“Explored ~100 properties… filtering was very effort-heavy”</blockquote><figcaption>FTB, Gurugram</figcaption></figure><figure class="note"><blockquote>“Visited too many places but did not really know what I wanted”</blockquote><figcaption>FTB, Gurugram</figcaption></figure><figure class="note"><blockquote>“Visited too many places but were not able to find anything good”</blockquote><figcaption>FTB, Ahmedabad</figcaption></figure><figure class="note"><blockquote>“Customers get overwhelmed, so we shortlist to 4–5 options”</blockquote><figcaption>Broker, Gurugram</figcaption></figure><figure class="note"><blockquote>“Broker first understands intent, then shows relevant projects”</blockquote><figcaption>Broker</figcaption></figure></div></div>
-  </div>
-</section>
-<section class="theme-sec" id="theme-3">
-  <div class="wide">
-    <div class="theme-head reveal"><span class="tnum">#3</span><div><h2 class="h2">Engage renters before they are buyers</h2><p class="sub">The Renter → FTB → IB evolution is the most structurally important insight in this research. Brokers exploit it from the rental stage, and Housing&#x27;s rental inventory is an entry point other platforms don&#x27;t have.</p></div></div>
+    <div class="theme-head reveal"><span class="tnum">#1</span><div><h2 class="h2">Engage renters before they are buyers</h2><p class="sub">The Renter → FTB → IB evolution is the most structurally important insight in this research. Brokers exploit it from the rental stage, and Housing&#x27;s rental inventory is an entry point other platforms don&#x27;t have.</p></div></div>
     <div class="theme-body">
       <div class="breaks reveal"><span class="k">Where it breaks</span><ol><li>Buyers enter the journey before they know they&#x27;re buyers, triggered by life events like marriage, kids or income growth.</li><li>Brokers capture this transition early; platforms are absent until the buyer declares intent.</li></ol></div>
       <div class="factors reveal"><span class="k">Defining factors</span><ul><li><b>Rent-vs-buy decision tool</b>EMI vs rent comparison with area-specific inputs</li><li><b>Area appreciation signals</b>‘This area is growing; now is a good time to enter’</li><li><b>Readiness nudges</b>Triggered when renter behaviour suggests buying intent</li><li><b>Early relationship CRM</b>Long-term engagement before purchase intent crystallises</li><li><b>Life-stage triggers</b>Marriage, a child, a job change: signals that move renters</li></ul></div>
     </div>
     <div class="said reveal"><span class="k">What participants said</span><div class="notes"><figure class="note"><blockquote>“We build relationships with renters in societies”</blockquote><figcaption>Broker</figcaption></figure><figure class="note"><blockquote>“Many renters later convert into buyers and investors”</blockquote><figcaption>Broker</figcaption></figure><figure class="note"><blockquote>“After marriage… it became difficult… we seriously thought of buying a house”</blockquote><figcaption>FTB, Kolkata</figcaption></figure><figure class="note"><blockquote>“Yeh area grow karega”</blockquote><figcaption>Broker framing to renters</figcaption></figure><figure class="note"><blockquote>“Abhi entry le lo”</blockquote><figcaption>Broker framing to renters, Kolkata</figcaption></figure></div></div>
   </div>
-</section>
-<section class="theme-sec" id="theme-4">
+</section><section class="sol-sec">
+  <div class="wide">
+    <div class="head reveal" style="margin-bottom:40px"><span class="tag solved-tag">How we solved #1 · Renter cross-sell</span><h2 class="h2">Priming renters before they become buyers</h2><p class="sub">Engage renters before they are buyers. We started showing the right renters new projects, inside the rental journey they were already in.</p></div>
+    <div class="star-mini reveal"><div><span>Insight</span>Renters become buyers, and brokers reach them first</div><div><span>Design move</span>A city-aware cross-sell for renters paying ₹40k+ a month</div><div class="r"><span>Result</span>Live for 20% of renters: +2% leads and a healthy CTR</div></div>
+    <div class="trust">
+      <div>
+        <ol class="trust-steps">
+          <li class="reveal"><span>01</span><div><b>Spot the likely buyer</b><p>Renters paying <strong>more than ₹40k a month</strong>, a signal that buying is within reach.</p></div></li>
+          <li class="reveal"><span>02</span><div><b>Keep it local</b><p>Thresholds and recommendations are set <strong>by city</strong>, so the nudge fits the market they live in.</p></div></li>
+          <li class="reveal"><span>03</span><div><b>Cross-sell, gently</b><p>A "Renters like you are also interested in" section surfaces RERA-registered new projects, with price, possession date and a one-tap call.</p></div></li>
+        </ol>
+        
+      </div>
+      <figure class="proto reveal">
+        <div class="proto-head"><span class="proto-k">Prototype</span><h4>For a renter paying more than <mark>₹40k a month</mark></h4><p>The <b>buying cross-sell</b> appears on their rental page, highlighted below.</p></div>
+        <div class="proto-phone"><div class="proto-screen">
+          <div class="proto-scroll" tabindex="0" aria-label="Scrollable prototype of a rent property page">
+            <div class="proto-content">
+              <div class="proto-pad" aria-hidden="true"></div>
+              <img class="proto-page" src="home-buying/fig-page.jpg?v=1" alt="A rent property page for a ₹43,000/month 2 BHK in Pune, with a Renters like you are also interested in section of new projects" width="360" height="2114">
+              <div class="rc-row" aria-label="Swipe the cards"><div class="rc-card"><div class="rc-img" style="background-image:url(home-buying/rc/p1.jpg?v=1)"><span class="rc-rera"><img src="home-buying/rc/shield.svg" alt="">RERA</span><svg class="rc-heart" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg></div><div class="rc-meta">Ready to Move <i></i> <img src="home-buying/rc/star.svg" alt=""> 3.7</div><b class="rc-price">₹1.2 Cr</b><span class="rc-sub">3 BHK Apartment</span><b class="rc-name">DLF The Belaire</b><span class="rc-sub">Sadhu Vaswani Road, East Kharadi, Pune</span><div class="rc-meta2"><span>1438 - 1500 sq.ft.</span><i></i><span>₹29.29K/ sq.ft.</span></div><div class="rc-cta"><span class="rc-wa"><img src="home-buying/rc/wa.png" alt=""></span><span class="rc-vp">View Phone</span></div></div><div class="rc-card"><div class="rc-img" style="background-image:url(home-buying/rc/p2.jpg?v=1)"><span class="rc-rera"><img src="home-buying/rc/shield.svg" alt="">RERA</span><svg class="rc-heart" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg></div><div class="rc-meta">Possession Dec 2027 <i></i> <img src="home-buying/rc/star.svg" alt=""> 3.7</div><b class="rc-price">₹1.2 Cr</b><span class="rc-sub">3 BHK Apartment</span><b class="rc-name">DLF The Belaire</b><span class="rc-sub">Sadhu Vaswani Road, East Kharadi, Pune</span><div class="rc-meta2"><span>1438 - 1500 sq.ft.</span><i></i><span>₹29.29K/ sq.ft.</span></div><div class="rc-cta"><span class="rc-wa"><img src="home-buying/rc/wa.png" alt=""></span><span class="rc-vp">View Phone</span></div></div><div class="rc-card"><div class="rc-img" style="background-image:url(home-buying/rc/p2.jpg?v=1)"><span class="rc-rera"><img src="home-buying/rc/shield.svg" alt="">RERA</span><svg class="rc-heart" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg></div><div class="rc-meta">Possession Mar 2028 <i></i> <img src="home-buying/rc/star.svg" alt=""> 3.7</div><b class="rc-price">₹1.2 Cr</b><span class="rc-sub">3 BHK Apartment</span><b class="rc-name">DLF The Belaire</b><span class="rc-sub">Sadhu Vaswani Road, East Kharadi, Pune</span><div class="rc-meta2"><span>1438 - 1500 sq.ft.</span><i></i><span>₹29.29K/ sq.ft.</span></div><div class="rc-cta"><span class="rc-wa"><img src="home-buying/rc/wa.png" alt=""></span><span class="rc-vp">View Phone</span></div></div></div>
+              <span class="proto-hl" aria-hidden="true"><span class="proto-tag">Buying cross-sell</span></span>
+            </div>
+          </div>
+          <div class="proto-sb" aria-hidden="true"><b>9:41</b><i></i></div>
+          <img class="proto-bar" src="home-buying/fig-bar.png?v=1" alt="" width="360" height="66">
+          <span class="proto-hint" aria-hidden="true">Scroll to explore ↕</span>
+        </div></div>
+        <div class="hsp-lens proto-lens" aria-hidden="true"><button class="lens-x" type="button" aria-label="Close zoom">&times;</button><div class="hsp-lens-in"></div></div>
+        <p class="proto-tip">Double-click the highlighted section to zoom in. Swipe the cards while zoomed.</p>
+        <figcaption>A renter paying ₹43,000/month scrolls their rental's page and meets new projects picked for renters like them.</figcaption>
+      </figure>
+    </div>
+    <p class="live-res-k reveal">After launch &middot; vs production</p>
+    <div class="live-res reveal">
+      <div><b>20%</b><span>Of renters see the cross-sell in a live test, not yet rolled out to 100%</span></div>
+      <div class="win"><b>+2%</b><span>Increase in leads from those renters</span></div>
+      <div><b>Healthy CTR</b><span>On the cross-sell section</span></div>
+    </div>
+    <div class="bet reveal"><span class="k">The bet</span><p class="bet-q">Renters paying &#8377;40k+ a month are buyers in waiting, and the rental page they already use is the right moment to show them new projects.</p><div class="bet-rows"><div class="bet-r"><div><small>Trade-off</small><b>Precision over reach.</b> A high rent threshold leaves out many future buyers.</div><div><small>How we handled it</small>Thresholds are set by city, so &ldquo;high rent&rdquo; means the same thing in Pune as in Mumbai.</div></div><div class="bet-r"><div><small>Trade-off</small><b>Distraction from the rental.</b> Buying projects on a rental page could pull attention from the home they came to rent.</div><div><small>How we handled it</small>The cross-sell sits below the rental details, and runs as a 20% test against production before any wider rollout.</div></div></div></div>
+    <div class="maps-to reveal"><span class="k">Maps to the research</span><div><b>Readiness nudges</b><b>Area appreciation signals</b><b>Rent-vs-buy decision</b></div></div>
+  </div>
+</section><section class="stage-band" id="s2"><div class="wrap reveal"><span class="stage-no">Stage 2</span><span class="stage-k">Discovering</span><h2 class="h2">Searching and shortlisting</h2><p class="sub">100+ listings and no help narrowing them down.</p></div></section><section class="theme-sec" id="t2">
+  <div class="wide">
+    <div class="theme-head reveal"><span class="tnum">#2</span><div><h2 class="h2">Curated shortlisting beats discovery breadth</h2><p class="sub">The platform surfaces 100+ listings and buyers collapse. A broker&#x27;s core value is narrowing that to 2–4 intent-matched options, and Housing has the behavioural data to do this at scale.</p></div></div>
+    <div class="derived reveal">
+      <div class="dv-copy"><span class="k">What we derived</span><h3>Discovery without intent-curation creates paralysis</h3><p>Buyers aren't loyal to a locality, they're loyal to a <strong>budget</strong>. Given the choice, most would rather explore nearby and emerging areas at the same price than stretch for the exact neighbourhood.</p>
+        <div class="dv-stat"><b>68%</b><div><span class="k" style="margin:0">Quant survey &middot; 140 respondents</span><p>of buyers across tier 1 and metro cities said they're <strong>more flexible on area than on budget</strong>.</p></div></div></div>
+      <div class="dv-eg">
+        <div class="dv-ask"><span>The buyer</span><b>"A home in Saket, around ₹2 Cr"</b></div>
+        <div class="dv-opt yes"><i>✓</i><div><b>Saket+, at ₹2 Cr</b>Nearby areas and emerging hotspots around Saket, in the same budget</div></div>
+        <div class="dv-opt no"><i>✕</i><div><b>Saket, at ₹3 Cr</b>Stretching the budget by 50% just to stay in one locality</div></div>
+        <p class="dv-note">This became the idea behind <b>hotspots</b>: curate the areas around what they asked for, within what they can spend.</p>
+      </div>
+    </div>
+    <div class="theme-body">
+      <div class="breaks reveal"><span class="k">Where it breaks</span><ol><li>Discovery volume without curation creates paralysis, not confidence.</li><li>Buyers can&#x27;t structure their own comparison: everything is tracked mentally, nothing is saved.</li></ol></div>
+      <div class="factors reveal"><span class="k">Defining factors</span><ul><li><b>Intent signal capture</b>Search terms, revisit behaviour, time spent per listing</li><li><b>Budget &amp; location fit</b>Stated vs inferred affordability, plus commute constraints</li><li><b>Family preference match</b>Configuration, floor and amenity preferences across sessions</li><li><b>Comparison tracking</b>Side-by-side saved listings with explicit pros and cons</li><li><b>Saved journey memory</b>Session continuity, so no progress is lost on return visits</li></ul></div>
+    </div>
+    <div class="said reveal"><span class="k">What participants said</span><div class="notes"><figure class="note"><blockquote>“Explored ~100 properties… filtering was very effort-heavy”</blockquote><figcaption>FTB, Gurugram</figcaption></figure><figure class="note"><blockquote>“Visited too many places but did not really know what I wanted”</blockquote><figcaption>FTB, Gurugram</figcaption></figure><figure class="note"><blockquote>“Visited too many places but were not able to find anything good”</blockquote><figcaption>FTB, Ahmedabad</figcaption></figure><figure class="note"><blockquote>“Customers get overwhelmed, so we shortlist to 4–5 options”</blockquote><figcaption>Broker, Gurugram</figcaption></figure><figure class="note"><blockquote>“Broker first understands intent, then shows relevant projects”</blockquote><figcaption>Broker</figcaption></figure></div></div>
+  </div>
+</section><section class="sol-sec">
+  <div class="wide">
+    <div class="head reveal" style="margin-bottom:40px"><span class="tag solved-tag">How we solved #2 · Hotspot discovery</span><h2 class="h2">A curated layer between "everything" and "nothing"</h2><p class="sub">Curated shortlisting beats discovery breadth. So we introduced <strong>hotspots</strong>: a strata of relevant areas that gives buyers meaningful options while they're still discovering, instead of 100+ listings at once.</p></div>
+    <div class="star-mini reveal"><div><span>Insight</span>100+ listings cause paralysis</div><div><span>Design move</span>Hotspots: a curated layer of relevant areas across home, search, results and map</div><div class="r"><span>Result</span>+1% leads per user, and the leads are high-intent</div></div>
+    <div class="hsp reveal">
+      <div class="hsp-copy">
+        <span class="k">How it works</span>
+        <h3>Two buyers, two moments</h3>
+        <div class="hsp-who" role="tablist" aria-label="Choose a buyer">
+          <button class="hb-who on" data-p="a" type="button"><span>01</span><div><b>The returned user</b>They&#8217;ve searched on Housing.com before, so we know their last search and budget. Hotspots wait on the home screen before they type anything.</div></button>
+          <button class="hb-who" data-p="b" type="button"><span>02</span><div><b>The buyer with intent</b>They search &ldquo;Saket, &#8377;2 Cr&rdquo;. Right after the relevant Saket listings, hotspots around Saket in the same budget appear.</div></button>
+        </div>
+        <p class="hsp-umb">Either way, a hotspot is an umbrella of better-curated projects in and around the area they asked for.</p>
+        <div class="hsp-now"><span class="k" style="margin:0">On screen</span><b id="hspTitle">Returned user · Home</b><p id="hspDesc">Hotspots from their last search and budget, with ROI and price, before they type. Tap a card or Map view.</p></div>
+        <p class="hsp-tip">Double-click a highlighted section to zoom in. Click outside or press Esc to close.</p>
+      </div>
+      <div class="hsp-demo">
+        <div class="hsp-tabs" role="tablist">
+          <div class="hsp-grp on" data-p="a"><span>01 · Returned user</span><div><button class="hsp-tab on" data-i="0" data-p="a" type="button">Home</button><button class="hsp-tab" data-i="1" data-p="a" type="button">Search</button><button class="hsp-tab" data-i="2" data-p="a" type="button">Map view</button></div></div>
+          <div class="hsp-grp" data-p="b"><span>02 · Buyer with intent</span><div><button class="hsp-tab" data-i="3" data-p="b" type="button">Results · Saket, &#8377;2 Cr</button></div></div>
+        </div>
+        <div class="proto-phone hsp-phone"><div class="hsp-screen">
+          <div class="hsp-pane on" data-i="0" data-title="Returned user · Home" data-desc="Hotspots from their last search and budget, with ROI and price, before they type. Tap a card or Map view.">
+            <div class="hsp-scroll" tabindex="0"><div class="hsp-c">
+              <img src="home-buying/hsp/home.jpg?v=1" alt="Housing.com home screen" width="360" height="800">
+              <div class="hn zoomable" data-zoom="html">
+                <div class="hn-head"><div><b>Hotspots nearby</b><span>New projects. Trusted builders. All in one place.</span></div><button class="hn-map" type="button">Map view</button></div>
+                <div class="hn-row"><button class="hc" data-spot="0" type="button"><b>S. Peripheral Road</b><span class="hc-sub">36 projects</span><span class="hc-row"><span>₹85 L – ₹1.4 Cr</span><span class="hc-roi">▲ 26.7% <em>(3yrs)</em></span></span></button><button class="hc" data-spot="1" type="button"><b>New Gurgaon</b><span class="hc-sub">42 projects</span><span class="hc-row"><span>₹70 L – ₹1.2 Cr</span><span class="hc-roi">▲ 22.4% <em>(3yrs)</em></span></span></button><button class="hc" data-spot="2" type="button"><b>Sohna Road</b><span class="hc-sub">28 projects</span><span class="hc-row"><span>₹60 L – ₹1.1 Cr</span><span class="hc-roi">▲ 18.9% <em>(3yrs)</em></span></span></button><button class="hc" data-spot="3" type="button"><b>Golf Course Ext. Road</b><span class="hc-sub">31 projects</span><span class="hc-row"><span>₹1.2 – ₹2.4 Cr</span><span class="hc-roi">▲ 24.1% <em>(3yrs)</em></span></span></button></div>
+                <span class="hl-tag">New · Hotspots</span>
+              </div>
+            </div></div>
+          </div>
+          <div class="hsp-pane" data-i="1" data-title="Returned user · Search" data-desc="The same hotspots show up in search suggestions, with growth signals, before a single keyword is typed.">
+            <div class="hsp-scroll" tabindex="0"><div class="hsp-c">
+              <img src="home-buying/hsp/search.jpg?v=1" alt="Search suggestions screen" width="360" height="800">
+              <div class="hl-box zoomable" data-zoom="img" data-src="home-buying/hsp/search.jpg?v=1" data-y="288" data-h="152" style="top:288px;height:152px"><span class="hl-tag">New · Hotspots</span></div>
+            </div></div>
+          </div>
+          <div class="hsp-pane" data-i="2" data-title="Returned user · Map view" data-desc="Swipe the hotspot cards: the map redraws each hotspot's boundary, with its price. Tap back to return home.">
+            <div class="hsp-scroll" tabindex="0"><div class="hsp-c">
+              <button class="map-back" type="button" aria-label="Back to home"></button><div class="map-stack"><img class="map-img on" data-spot="0" src="home-buying/hsp/map-1.jpg?v=1" alt="Hotspot boundary for S. Peripheral Road on the map" width="360" height="800"><img class="map-img" data-spot="1" src="home-buying/hsp/map-2.jpg?v=1" alt="Hotspot boundary for New Gurgaon on the map" width="360" height="800"><img class="map-img" data-spot="2" src="home-buying/hsp/map-3.jpg?v=1" alt="Hotspot boundary for Sohna Road on the map" width="360" height="800"><img class="map-img" data-spot="3" src="home-buying/hsp/map-4.jpg?v=1" alt="Hotspot boundary for Golf Course Ext. Road on the map" width="360" height="800"></div>
+              <div class="mc-band"></div>
+              <div class="mc-row-wrap zoomable" data-zoom="html"><div class="mc-row"><div class="mc" data-spot="0"><b>S. Peripheral Road</b><span class="mc-line"><span>₹85 L – ₹1.4 Cr</span><a>View properties</a></span></div><div class="mc" data-spot="1"><b>New Gurgaon</b><span class="mc-line"><span>₹70 L – ₹1.2 Cr</span><a>View properties</a></span></div><div class="mc" data-spot="2"><b>Sohna Road</b><span class="mc-line"><span>₹60 L – ₹1.1 Cr</span><a>View properties</a></span></div><div class="mc" data-spot="3"><b>Golf Course Ext. Road</b><span class="mc-line"><span>₹1.2 – ₹2.4 Cr</span><a>View properties</a></span></div></div><span class="hl-tag">Swipe the hotspots</span></div>
+            </div></div>
+          </div>
+          <div class="hsp-pane" data-i="3" data-title="Buyer with intent · Results" data-desc="Searched Saket under &#8377;2 Cr. The relevant Saket listings come first. Right after them, hotspots around Saket in the same budget appear, instead of a dead end.">
+            <div class="hsp-scroll" tabindex="0"><div class="hsp-c srp">
+              <div class="srp-head"><img src="home-buying/srp/head.jpg?v=1" alt="City search results page" width="360" height="236"><span class="srp-q">Saket &middot; Under &#8377;2 Cr</span></div>
+              <p class="srp-count">2 properties in Saket under &#8377;2 Cr</p>
+              <article class="lc"><img src="home-buying/srp/c1-top.jpg?v=1" alt="" width="360" height="126"><div class="lc-t"><p class="lc-meta"><b>Ready to Move</b> &bull; Avg. Price/ sq.ft. &#8377;21.6k</p><p class="lc-h">3 BHK Builder Floor</p><p class="lc-p">&#8377;1.95 Cr</p><p class="lc-n">Saket Residency, J Block</p><p class="lc-l">Saket &bull; 0.6 km from Select Citywalk</p></div><img src="home-buying/srp/c1-own.jpg?v=1" alt="" width="360" height="56"></article><article class="lc"><img src="home-buying/srp/c2-top.jpg?v=1" alt="" width="360" height="126"><div class="lc-t"><p class="lc-meta"><b>Ready to Move</b> &bull; Avg. Price/ sq.ft. &#8377;19.8k</p><p class="lc-h">2 BHK Apartment</p><p class="lc-p">&#8377;1.80 Cr</p><p class="lc-n">Press Enclave Apartments</p><p class="lc-l">Saket &bull; 1.2 km from Saket Metro</p></div><img src="home-buying/srp/c2-own.jpg?v=1" alt="" width="360" height="56"></article>
+              <div class="srp-end zoomable" data-zoom="html">
+                <div class="hs2-head"><div><b>Hotspots nearby</b><span>More new projects and trusted builders</span></div><span class="hs2-map">Map view</span></div>
+                <div class="hn-row hs2-row"><div class="hs2-c"><b>Malviya Nagar</b><span>24 properties</span><p><span>&#8377;1.4 – &#8377;2 Cr</span><i></i><em><u>&#9650;</u> 14.2% <small>(3yrs)</small></em></p></div><div class="hs2-c"><b>Chhattarpur</b><span>38 properties</span><p><span>&#8377;90 L – &#8377;1.9 Cr</span><i></i><em><u>&#9650;</u> 21.6% <small>(3yrs)</small></em></p></div><div class="hs2-c"><b>Sheikh Sarai</b><span>19 properties</span><p><span>&#8377;1.2 – &#8377;2 Cr</span><i></i><em><u>&#9650;</u> 12.8% <small>(3yrs)</small></em></p></div><div class="hs2-c"><b>Mehrauli</b><span>22 properties</span><p><span>&#8377;1 – &#8377;1.8 Cr</span><i></i><em><u>&#9650;</u> 17.5% <small>(3yrs)</small></em></p></div></div>
+                <span class="hl-tag">After the relevant listings</span>
+              </div>
+              <div class="srp-pad"></div>
+            </div></div>
+            <img class="srp-nav" src="home-buying/srp/nav.jpg?v=1" alt="" width="360" height="62">
+          </div>
+          <span class="hsp-hint">Scroll ↕</span>
+        </div></div>
+        <div class="hsp-lens" aria-hidden="true"><button class="lens-x" type="button" aria-label="Close zoom">&times;</button><div class="hsp-lens-in"></div></div>
+      </div>
+    </div>
+    <p class="live-res-k reveal">After launch &middot; vs production</p>
+    <div class="live-res two reveal">
+      <div class="win"><b>+1%</b><span>Leads generated per user via hotspots</span></div>
+      <div><b>High intent</b><span>Hotspot leads arrive as intentional leads, not casual enquiries</span></div>
+    </div>
+    <div class="ss reveal">
+      <div class="ss-col rfe"><div class="ss-head"><span class="ss-tag yes">Shipped</span><em>The full hotspot RFE that went to production, across Android, mobile web and desktop. Long pages scroll inside their frame.</em></div><p class="rfe-k">Android / mWeb · Buy</p><ol class="hs-row rfe-row"><li><div class="rfe-f ph"><img src="home-buying/rfe/m-home.jpg?v=1" alt="Home · Android: Hotspots nearby with ROI and price" loading="lazy"></div><b>Home · Android</b><small>Hotspots nearby with ROI and price</small></li><li><div class="rfe-f ph"><img src="home-buying/rfe/m-home2.jpg?v=1" alt="Home · mWeb: Same module on the mobile web homepage" loading="lazy"></div><b>Home · mWeb</b><small>Same module on the mobile web homepage</small></li><li><div class="rfe-f ph"><img src="home-buying/rfe/m-search.jpg?v=1" alt="Search suggestions: Hotspots surface before the user types" loading="lazy"></div><b>Search suggestions</b><small>Hotspots surface before the user types</small></li><li><div class="rfe-f ph"><img src="home-buying/rfe/m-typing.jpg?v=1" alt="Search while typing: Matching hotspots inside suggestions" loading="lazy"></div><b>Search while typing</b><small>Matching hotspots inside suggestions</small></li><li><div class="rfe-f ph"><img src="home-buying/rfe/m-srp.jpg?v=1" alt="City SRP · Android: Hotspots right after the relevant listings" loading="lazy"></div><b>City SRP · Android</b><small>Hotspots right after the relevant listings</small></li><li><div class="rfe-f ph"><img src="home-buying/rfe/m-srp2.jpg?v=1" alt="City SRP · mWeb: Same strip on mobile web results" loading="lazy"></div><b>City SRP · mWeb</b><small>Same strip on mobile web results</small></li><li><div class="rfe-f ph"><img src="home-buying/rfe/m-map.jpg?v=1" alt="Map view: Hotspot boundary with its card" loading="lazy"></div><b>Map view</b><small>Hotspot boundary with its card</small></li><li><div class="rfe-f ph"><img src="home-buying/rfe/m-map2.jpg?v=1" alt="Map · swipe 2: Swiping cards moves the boundary" loading="lazy"></div><b>Map · swipe 2</b><small>Swiping cards moves the boundary</small></li><li><div class="rfe-f ph"><img src="home-buying/rfe/m-map3.jpg?v=1" alt="Map · swipe 3: Each card maps to one hotspot" loading="lazy"></div><b>Map · swipe 3</b><small>Each card maps to one hotspot</small></li><li><div class="rfe-f ph"><img src="home-buying/rfe/m-map4.jpg?v=1" alt="Map · swipe 4: Last hotspot in the budget" loading="lazy"></div><b>Map · swipe 4</b><small>Last hotspot in the budget</small></li><li><div class="rfe-f ph"><img src="home-buying/rfe/m-maploading.jpg?v=1" alt="Map loading: Card placeholders while boundaries load" loading="lazy"></div><b>Map loading</b><small>Card placeholders while boundaries load</small></li></ol><p class="rfe-k">Desktop · Buy</p><ol class="hs-row rfe-row"><li><div class="rfe-f dk"><img src="home-buying/rfe/d-home.jpg?v=1" alt="Homepage: Hotspots module on desktop home" loading="lazy"></div><b>Homepage</b><small>Hotspots module on desktop home</small></li><li><div class="rfe-f dk"><img src="home-buying/rfe/d-search.jpg?v=1" alt="Search suggestions: Hotspots in the search dropdown" loading="lazy"></div><b>Search suggestions</b><small>Hotspots in the search dropdown</small></li><li><div class="rfe-f dk"><img src="home-buying/rfe/d-srp.jpg?v=1" alt="City SRP: Hotspots right after the relevant listings" loading="lazy"></div><b>City SRP</b><small>Hotspots right after the relevant listings</small></li><li><div class="rfe-f dk"><img src="home-buying/rfe/d-map1.jpg?v=1" alt="Map view · 1280: Boundary and card side by side" loading="lazy"></div><b>Map view · 1280</b><small>Boundary and card side by side</small></li><li><div class="rfe-f dk"><img src="home-buying/rfe/d-map2.jpg?v=1" alt="Map · hotspot 2: Selecting a card redraws the map" loading="lazy"></div><b>Map · hotspot 2</b><small>Selecting a card redraws the map</small></li><li><div class="rfe-f dk"><img src="home-buying/rfe/d-map3.jpg?v=1" alt="Map · hotspot 3: Boundary follows the active card" loading="lazy"></div><b>Map · hotspot 3</b><small>Boundary follows the active card</small></li><li><div class="rfe-f dk"><img src="home-buying/rfe/d-map4.jpg?v=1" alt="Map · hotspot 4: Last hotspot in the budget" loading="lazy"></div><b>Map · hotspot 4</b><small>Last hotspot in the budget</small></li><li><div class="rfe-f dk"><img src="home-buying/rfe/d-map5.jpg?v=1" alt="Map loading: Skeleton while boundaries load" loading="lazy"></div><b>Map loading</b><small>Skeleton while boundaries load</small></li><li><div class="rfe-f dk"><img src="home-buying/rfe/d-map1440.jpg?v=1" alt="Map view · 1440: Wide breakpoint" loading="lazy"></div><b>Map view · 1440</b><small>Wide breakpoint</small></li><li><div class="rfe-f dk"><img src="home-buying/rfe/d-map1024.jpg?v=1" alt="Map view · 1024: Narrow breakpoint" loading="lazy"></div><b>Map view · 1024</b><small>Narrow breakpoint</small></li></ol></div>
+      <div class="ss-col"><div class="ss-head"><span class="ss-tag no">Scrapped</span><em>The iterations that shaped what shipped, and one idea that didn&#8217;t make it.</em></div><p class="sc-key"><i></i>Dashed pink marks what each explored screen changed. Lime marks what shipped.</p><div class="sc-b"><h4><span>01</span>Priming the word &ldquo;Hotspot&rdquo;</h4><p>Marketing was running a campaign around &ldquo;Hotspots&rdquo;, so the word already carried recall. I explored how hard the results page should lean on it: naming the city, previewing the map, or softening it into help for undecided buyers.</p><ol class="hs-row rfe-row"><li><div class="rfe-f ph" data-focus="0.505"><div class="sc-in"><img src="home-buying/scrap/s1.jpg?v=1" alt="Hotspots in Gurgaon: The word in brand pink, introduced like a launch" loading="lazy"><span class="sc-hl" style="top:51.7%;height:21.8%"><span class="sc-tag">The word, in brand pink</span></span></div></div><b>Hotspots in Gurgaon</b><small>The word in brand pink, introduced like a launch</small></li><li><div class="rfe-f ph" data-focus="0.462"><div class="sc-in"><img src="home-buying/scrap/s2.jpg?v=1" alt="Same budget, more choices: A map preview to make the idea of an area tangible" loading="lazy"><span class="sc-hl" style="top:47.4%;height:26.5%"><span class="sc-tag">A map preview</span></span></div></div><b>Same budget, more choices</b><small>A map preview to make the idea of an area tangible</small></li><li><div class="rfe-f ph" data-focus="0.462"><div class="sc-in"><img src="home-buying/scrap/s3.jpg?v=1" alt="Explore Hotspots: Illustrated header: areas with the most new projects" loading="lazy"><span class="sc-hl" style="top:47.5%;height:19.2%"><span class="sc-tag">An illustrated header</span></span></div></div><b>Explore Hotspots</b><small>Illustrated header: areas with the most new projects</small></li><li><div class="rfe-f ph" data-focus="0.462"><div class="sc-in"><img src="home-buying/scrap/s4.jpg?v=1" alt="Unsure where to buy?: Framed as help for undecided buyers, growth first" loading="lazy"><span class="sc-hl" style="top:47.5%;height:19.0%"><span class="sc-tag">A question, growth first</span></span></div></div><b>Unsure where to buy?</b><small>Framed as help for undecided buyers, growth first</small></li></ol></div><div class="sc-b"><h4><span>02</span>Copy that grows with familiarity</h4><p>On day 0 the module introduces the word. After two visits the word is familiar, so the module leads with the benefit instead.</p><ol class="hs-row rfe-row"><li><div class="rfe-f ph" data-focus="0.36"><div class="sc-in"><img src="home-buying/scrap/d0.jpg?v=1" alt="Day 0: &ldquo;Introducing &middot; Hotspots nearby&rdquo;: the word does the priming" loading="lazy"><span class="sc-hl" style="top:37.4%;height:24.6%"><span class="sc-tag">Primes the word</span></span></div></div><b>Day 0</b><small>&ldquo;Introducing &middot; Hotspots nearby&rdquo;: the word does the priming</small></li><li><div class="rfe-f ph" data-focus="0.36"><div class="sc-in"><img src="home-buying/scrap/d2.jpg?v=1" alt="After 2 visits: &ldquo;Same budget range, more choices&rdquo;: the benefit leads" loading="lazy"><span class="sc-hl" style="top:37.4%;height:23.0%"><span class="sc-tag">Benefit first</span></span></div></div><b>After 2 visits</b><small>&ldquo;Same budget range, more choices&rdquo;: the benefit leads</small></li></ol></div><div class="sc-b sc-cmp"><div><h4><span>03</span>Comparing hotspots <i>Didn&#8217;t ship</i></h4><p>Hotspots brought in leads and interest. But as a buyer, how do I tell which hotspot is right for me? I designed a side-by-side comparison of properties, &#8377;/sq.ft, YoY growth and search demand, so buyers could choose with evidence instead of guesswork.</p><p class="sc-why"><b>Why it didn&#8217;t ship:</b> a fair comparison needed real-time hotspot data based on each user&#8217;s history, which wasn&#8217;t possible from the data side.</p></div><img src="home-buying/scrap/compare.png?v=1" alt="Popular nearby hotspots compared on properties, price per sq.ft, YoY growth and search demand" width="770" height="654" loading="lazy"></div></div>
+    </div>
+    <div class="bet reveal"><span class="k">The bet</span><p class="bet-q">Buyers are loyal to a budget, not a locality. Curated areas around what they searched beat more listings inside it.</p><div class="bet-rows"><div class="bet-r"><div><small>Trade-off</small><b>Going beyond the stated locality</b> could feel like we&#8217;re not listening.</div><div><small>How we handled it</small>Relevant listings always come first; hotspots appear only after them.</div></div><div class="bet-r"><div><small>Trade-off</small><b>Borrowing marketing&#8217;s word &ldquo;Hotspot&rdquo;</b> buys recall from the campaign, but means little to someone who missed it.</div><div><small>How we handled it</small>The module introduces the word on day 0, then leads with the benefit once it&#8217;s familiar.</div></div><div class="bet-r"><div><small>Trade-off</small><b>Showing ROI to home buyers</b> adds a credibility risk: past growth isn&#8217;t a promise.</div><div><small>How we handled it</small>ROI is framed as three-year history, next to price, not as a forecast.</div></div></div></div>
+    <div class="maps-to reveal"><span class="k">Maps to the research</span><div><b>Intent signal capture</b><b>Budget &amp; location fit</b><b>Comparison tracking</b></div></div>
+  </div>
+</section><section class="stage-band" id="s3"><div class="wrap reveal"><span class="stage-no">Stage 3</span><span class="stage-k">Evaluating</span><h2 class="h2">Can I trust the listing?</h2><p class="sub">The moment buyers leave the platform to verify a project on RERA.</p></div></section><section class="theme-sec" id="t3">
+  <div class="wide">
+    <div class="theme-head reveal"><span class="tnum">#3</span><div><h2 class="h2">Trust is mis-timed, not missing</h2><p class="sub">Buyers don&#x27;t distrust Housing. They leave to assemble trust elsewhere, because the platform offers nothing at the critical evaluation moment.</p></div></div>
+    <div class="theme-body">
+      <div class="breaks reveal"><span class="k">Where it breaks</span><ol><li>Buyers can&#x27;t verify the builder&#x27;s intent.</li><li>They can&#x27;t validate their own decision, socially or financially.</li></ol></div>
+      <div class="factors reveal"><span class="k">Defining factors</span><ul><li><b>Builder credibility</b>Delivery history, past project ratings, litigation record</li><li><b>Legal &amp; RERA status</b>Live registration, approvals, litigation flags</li><li><b>Pricing fairness</b>Fair-value benchmark vs comparable transacted prices</li><li><b>Resident validation</b>Verified post-possession reviews from real buyers</li><li><b>Bank approval signal</b>Which banks have sanctioned loans for this project</li></ul></div>
+    </div>
+    <div class="said reveal"><span class="k">What participants said</span><div class="notes"><figure class="note"><blockquote>“Bank-approved… legally clear (a ‘white deal’)… gave confidence to close”</blockquote><figcaption>FTB, Gurugram</figcaption></figure><figure class="note"><blockquote>“You don’t know if the builder will deliver on time”</blockquote><figcaption>FTB intender, Gurgaon</figcaption></figure><figure class="note"><blockquote>“I checked everything, from papers to bank approval, before deciding”</blockquote><figcaption>FTB synthesis</figcaption></figure><figure class="note"><blockquote>“Customers perceive sales teams may be biased toward closing the deal”</blockquote><figcaption>Broker</figcaption></figure><figure class="note"><blockquote>“Digital creates awareness, but buyers still don’t trust easily”</blockquote><figcaption>Developer, Pune</figcaption></figure><figure class="note"><blockquote>“Buyer already comes pre-informed, but still needs reassurance”</blockquote><figcaption>Developer, Mumbai</figcaption></figure><figure class="note"><blockquote>“Need to repeatedly explain pricing, approvals and timelines”</blockquote><figcaption>Developer</figcaption></figure></div></div>
+  </div>
+</section><section class="sol-sec">
+  <div class="wide">
+    <div class="head reveal" style="margin-bottom:40px"><span class="tag solved-tag">How we solved #3 · Trust</span><h2 class="h2">Bringing RERA, the trust factor, onto the listing</h2><p class="sub">Buyers were leaving Housing to verify projects on the RERA website. We wanted that trust to sit right beside the listing, so RERA became its anchor.</p></div>
+    <div class="star-mini reveal"><div><span>Insight</span>Buyers leave the platform to verify listings on RERA</div><div><span>Design move</span>A RERA tag that links to the RERA website, status sourced from RERA, and developer ratings</div><div class="r"><span>Result</span>30% of users verify on RERA, with only 10% of them dropping the session</div></div>
+    <div class="trust solo">
+      <ol class="trust-steps">
+        <li class="reveal"><span>01</span><div><b>RERA is why buyers leave</b><p>Before committing, buyers left Housing to check the project on the RERA website. RERA is the factor they trust, so that is what we brought to the listing.</p></div></li>
+        <li class="reveal"><span>02</span><div><b>More than a tag: a way to verify</b><p>Instead of a static RERA badge, the tag <strong>opens that property&#8217;s page on the RERA website in a new tab</strong>, so buyers can verify it in one tap without hunting for it, or leaving Housing.</p></div></li>
+        <li class="reveal"><span>03</span><div><b>Status, straight from RERA</b><p>Every project status now <strong>comes directly from RERA</strong>, instead of the CRM team updating it by hand, so "ready to move" is verified, not just claimed.</p></div></li>
+        <li class="reveal"><span>04</span><div><b>A rating for the developer</b><p>Who's building it, with a star rating built from their track record: how many buyers they&#8217;ve delivered to, completion time against commitment, and their social score. It answers &ldquo;will this builder deliver?&rdquo; on the page itself.</p></div></li>
+        <li class="reveal stopgap"><span>05</span><div><b>The quick fix, while the API was built</b><p>Until RERA status was live, we showed <strong>when the property details were last updated</strong>, so buyers could judge freshness for themselves.</p><span class="upd"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5V8l2.4 1.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Updated 2 days ago</span></div></li>
+      </ol>
+    </div>
+    <figure class="pdp-proto reveal">
+      <div class="pdp-head">
+        <span class="proto-k">Prototype &middot; New project page</span>
+        <h4>Before the RERA API, and after it</h4>
+        <div class="pdp-seg" role="tablist" aria-label="Compare versions"><button type="button" data-v="on" class="on">Without API &middot; Quick fix</button><button type="button" data-v="off">With RERA API</button></div>
+        <p class="pdp-note" data-off="With the API live, status comes straight from RERA instead of the CRM team, and the RERA tag links out to verify. The date stamp is no longer needed." data-on="While the API was being built, one line beside the developer told buyers when the details were last updated, so they could judge freshness themselves.">While the API was being built, one line beside the developer told buyers when the details were last updated, so they could judge freshness themselves.</p>
+      </div>
+      <div class="pdp-win">
+        <div class="pdp-bar" aria-hidden="true"><i></i><i></i><i></i><span>housing.com/in/buy/projects/page/emaar-mgf-the-palm-drive</span></div>
+        <div class="pdp-scroll" tabindex="0" aria-label="Scrollable prototype of a new project page">
+          <div class="pdp-c">
+            <img src="home-buying/pdp-full.jpg?v=1" alt="Full Housing.com new project page for Emaar MGF The Palm Drive in Sector 66, Gurgaon" width="1280" height="15771">
+            <span class="pdp-mask" aria-hidden="true"></span><span class="pdp-upd" aria-hidden="true">Updated 2 days ago</span>
+            <span class="pdp-hl" aria-hidden="true"><span class="hl-tag">Quick fix &middot; Updated 2 days ago</span></span>
+            <span class="pdp-api pdp-api-tag" aria-hidden="true"><span class="hl-tag">Links to RERA</span></span>
+            <span class="pdp-api pdp-api-st" aria-hidden="true"><span class="hl-tag">Live from RERA</span></span>
+          </div>
+        </div>
+        <span class="pdp-hint" aria-hidden="true">Scroll the full page &#8597;</span>
+      </div>
+      <figcaption>Full project page from Figma. Switch between the quick fix and the API version, and scroll to see everything a buyer evaluates.</figcaption>
+    </figure>
+    <p class="live-res-k reveal">After launch</p>
+    <div class="live-res reveal">
+      <div class="win"><b>30%</b><span>Of users click through to verify the property on RERA</span></div>
+      <div><b>10%</b><span>Of those who click through drop the session: the trade-off we accepted for trust</span></div>
+      <div><b>Live</b><span>Project status now comes straight from RERA, not the CRM team</span></div>
+    </div>
+    <div class="bet reveal"><span class="k">The bet</span><p class="bet-q">Sending buyers to RERA builds more trust than keeping them on the page.</p><div class="bet-rows"><div class="bet-r"><div><small>Trade-off</small><b>Losing the session.</b> Linking out to a government site risks buyers not coming back.</div><div><small>How we handled it</small>The link opens that specific property&#8217;s RERA page in a new tab, so the Housing session stays open. The catch: a second tab still raises the chance that buyers abandon the session. In practice, 10% of those who clicked through dropped it, a cost we accepted for trust.</div></div><div class="bet-r"><div><small>Trade-off</small><b>Owning accuracy vs depending on RERA.</b> Moving status off the CRM team removes manual errors, but ties it to RERA&#8217;s data.</div><div><small>How we handled it</small>RERA is the source buyers already trust, so its data is the right dependency to take on.</div></div><div class="bet-r"><div><small>Trade-off</small><b>Rating developers who are also paying clients</b> creates supply-side tension.</div><div><small>How we handled it</small>The rating is built from delivery track record, not opinion, which makes it defensible to developers and buyers alike.</div></div></div></div>
+    <div class="maps-to reveal"><span class="k">Maps to the research</span><div><b>Legal &amp; RERA status</b><b>Builder credibility</b><b>Resident validation</b><b>Pricing fairness</b></div></div>
+  </div>
+</section><section class="stage-band stage-sub" id="s3b"><div class="wrap reveal"><span class="stage-no">A different theme</span><span class="stage-k">Also while evaluating</span><h2 class="h2">Can I picture living there?</h2><p class="sub">Separate from trust: buyers can&#8217;t feel a space from a spec sheet.</p></div></section><section class="theme-sec" id="t4">
   <div class="wide">
     <div class="theme-head reveal"><span class="tnum">#4</span><div><h2 class="h2">Listings fail at conveying lived experience</h2><p class="sub">Buyers make emotional decisions about spaces they can&#x27;t yet inhabit, but listings are spec sheets. What buyers need takes developer cooperation or serious content investment to deliver authentically.</p></div></div>
     <div class="theme-body">
@@ -683,18 +1299,87 @@
     </div>
     <div class="said reveal"><span class="k">What participants said</span><div class="notes"><figure class="note"><blockquote>“Photos look good but reality is different… surroundings matter”</blockquote><figcaption>FTB, Gurgaon</figcaption></figure><figure class="note"><blockquote>“Platforms show 70–80% info… the rest needs a visit”</blockquote><figcaption>FTB, Gurgaon</figcaption></figure><figure class="note"><blockquote>“Inability to visualise the final product (under construction)”</blockquote><figcaption>FTB, Gurgaon</figcaption></figure><figure class="note"><blockquote>“Site visit ke baad hi samajh aata hai kya chahiye”</blockquote><figcaption>FTB</figcaption></figure><figure class="note"><blockquote>“Comparatively bigger house… interior space matters”</blockquote><figcaption>IB, Ahmedabad</figcaption></figure><figure class="note"><blockquote>“Site visits and walkthroughs help buyers emotionally connect”</blockquote><figcaption>Developer</figcaption></figure></div></div>
   </div>
-</section>
-<section class="theme-sec" id="theme-5">
+</section><section class="sol-sec"><div class="wide"><div class="dir reveal"><span class="tag">Not solved yet · #4</span><div><span class="dir-k">Potential area to rethink</span><h3>Filters, and how listings are shown</h3><p>Every buyer is looking for something very different: morning sunlight, a quiet street, a short commute, a park for the kids. Search and discovery is one of the defining pillars of Housing, and lived experience could show up in two places in it.</p><p class="dir-why"><b>Why we parked it</b>High effort: it needs unit-level data on orientation, noise and commute, plus content partnerships with developers. Quick wins came first.</p><div class="c4"><div class="dir-two c4-pick" role="tablist"><button type="button" class="on" data-c="0"><b>In filters</b><span>Let buyers filter by how they want to live, not only BHK, budget and carpet area: sunlight and orientation, noise, peak-hour commute.</span><em>See the filters &rarr;</em></button><button type="button" data-c="1"><b>In the listing</b><span>Rethink how a listing&#8217;s specs are shown, leading with what a space feels like, with realistic under-construction views built with developer content partnerships.</span><em>See the listing &rarr;</em></button><p class="c4-note">A concept, not shipped. Tap the filter chips to watch results narrow, or scroll the listing.</p></div><div class="proto-phone c4-phone"><div class="c4-screen"><div class="c4-pane on" data-c="0"><div class="c4-scroll"><div class="c4-c">
+  <div class="lf-top"><span>9:30</span></div>
+  <div class="lf-hd"><span class="lf-back">&larr;</span><b>Filters</b><span class="lf-clear">Clear all</span></div>
+  <div class="lf-g"><p class="lf-t">Budget</p><div class="lf-chips"><span class="lf-chip on">&#8377;1 &ndash; 2 Cr</span></div></div>
+  <div class="lf-g"><p class="lf-t">BHK type</p><div class="lf-chips"><span class="lf-chip">2 BHK</span><span class="lf-chip on">3 BHK</span><span class="lf-chip">4 BHK</span></div></div>
+  <div class="lf-new"><span class="hl-tag">Concept &middot; lived-experience filters</span><p class="lf-nh">How you want to live</p><div class="lf-g"><p class="lf-t"><svg viewBox="0 0 20 20" width="18" height="18"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 1.8v2.4M10 15.8v2.4M1.8 10h2.4M15.8 10h2.4M4.2 4.2l1.7 1.7M14.1 14.1l1.7 1.7M4.2 15.8l1.7-1.7M14.1 5.9l1.7-1.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Sunlight</p><div class="lf-chips"><button type="button" class="lf-chip on" data-w="0.62">Morning sun (east)</button><button type="button" class="lf-chip" data-w="0.7">Evening sun (west)</button><button type="button" class="lf-chip" data-w="0.55">Bright all day</button></div></div><div class="lf-g"><p class="lf-t"><svg viewBox="0 0 20 20" width="18" height="18"><path d="M3 8v4h3l4 3.5V4.5L6 8H3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M13.5 7.5a3.5 3.5 0 0 1 0 5M15.8 5.2a6.8 6.8 0 0 1 0 9.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Noise</p><div class="lf-chips"><button type="button" class="lf-chip" data-w="0.6">Quiet street</button><button type="button" class="lf-chip" data-w="0.72">Away from highway</button><button type="button" class="lf-chip" data-w="0.8">Off the flight path</button></div></div><div class="lf-g"><p class="lf-t"><svg viewBox="0 0 20 20" width="18" height="18"><circle cx="10" cy="10" r="7.4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 5.8V10l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Commute at 9 am to Cyber City</p><div class="lf-chips"><button type="button" class="lf-chip" data-w="0.4">Under 20 min</button><button type="button" class="lf-chip" data-w="0.66">Under 30 min</button><button type="button" class="lf-chip" data-w="0.88">Under 45 min</button></div></div><div class="lf-g"><p class="lf-t"><svg viewBox="0 0 20 20" width="18" height="18"><path d="M10 2.5c-3 0-5 2.4-5 5.1 0 2.6 2 4.6 5 4.6s5-2 5-4.6c0-2.7-2-5.1-5-5.1zM10 12.2V18M7.4 18h5.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Around you</p><div class="lf-chips"><button type="button" class="lf-chip" data-w="0.68">Park in 5 min walk</button><button type="button" class="lf-chip" data-w="0.75">School nearby</button><button type="button" class="lf-chip" data-w="0.82">Daily market</button></div></div></div><div class="lf-pad"></div></div></div>
+  <div class="lf-cta"><button type="button" class="lf-show">Show <b id="lfN">412</b> homes</button></div></div><div class="c4-pane" data-c="1"><div class="c4-scroll"><div class="c4-c">
+  <div class="lf-top"><span>9:30</span></div>
+  <div class="lx-img" style="background-image:url(home-buying/rc/p1.jpg?v=1)"><span class="lx-back">&larr;</span><span class="lx-cnt">1/18</span></div>
+  <div class="lx-body"><p class="lx-p">&#8377;1.85 Cr</p><p class="lx-n">3 BHK Apartment &middot; 7th floor</p><p class="lx-l">Sector 66, Gurgaon</p>
+  <div class="lx-specs"><span>1,450 sq.ft</span><span>Ready to move</span><span>Semi-furnished</span></div>
+  <div class="lx-feel"><span class="hl-tag">Concept &middot; lead with the feel</span><p class="lx-fh">What it feels like to live here</p><div class="lx-r"><span class="lx-i"><svg viewBox="0 0 20 20" width="18" height="18"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 1.8v2.4M10 15.8v2.4M1.8 10h2.4M15.8 10h2.4M4.2 4.2l1.7 1.7M14.1 14.1l1.7 1.7M4.2 15.8l1.7-1.7M14.1 5.9l1.7-1.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><div><small>Sunlight</small><b>East-facing &middot; living room gets sun 6&ndash;10 am</b></div></div><div class="lx-r"><span class="lx-i"><svg viewBox="0 0 20 20" width="18" height="18"><path d="M3 8v4h3l4 3.5V4.5L6 8H3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M13.5 7.5a3.5 3.5 0 0 1 0 5M15.8 5.2a6.8 6.8 0 0 1 0 9.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><div><small>Noise</small><b>Quiet &middot; inner road, 400 m from the highway</b></div></div><div class="lx-r"><span class="lx-i"><svg viewBox="0 0 20 20" width="18" height="18"><circle cx="10" cy="10" r="7.4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 5.8V10l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><div><small>Commute</small><b>28 min to Cyber City at 9 am</b></div></div><div class="lx-r"><span class="lx-i"><svg viewBox="0 0 20 20" width="18" height="18"><path d="M10 2.5c-3 0-5 2.4-5 5.1 0 2.6 2 4.6 5 4.6s5-2 5-4.6c0-2.7-2-5.1-5-5.1zM10 12.2V18M7.4 18h5.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><small>Around you</small><b>Park 3 min walk &middot; school 800 m</b></div></div></div>
+  <div class="lx-view"><div class="lx-vimg" style="background-image:url(home-buying/rc/p2.jpg?v=1)"><span>View from the 7th floor</span></div><p>Realistic under-construction view, made with the developer</p></div>
+  </div><div class="lf-pad"></div></div></div>
+  <div class="lf-cta"><button type="button" class="lf-show">Contact seller</button></div></div></div></div></div></div></div></section><section class="stage-band" id="s4"><div class="wrap reveal"><span class="stage-no">Stage 4</span><span class="stage-k">Deciding</span><h2 class="h2">Doubt, restart, come back</h2><p class="sub">A journey that loops for months, and used to forget everything each time.</p></div></section><section class="theme-sec" id="t5">
   <div class="wide">
-    <div class="theme-head reveal"><span class="tnum">#5</span><div><h2 class="h2">Investor buyers are unreached, broker-only right now</h2><p class="sub">Investor buyers never use open platforms. They access deals through trusted broker networks, NRI databases and past-client relationships, which needs a fundamentally different product mode.</p></div></div>
+    <div class="theme-head reveal"><span class="tnum">#5</span><div><h2 class="h2">Buyers loop, not funnel: progress resets</h2><p class="sub">First-time buyers cycle through search → shortlist → doubt → restart for months. Each restart erases prior progress, and the platform has no memory to help them pick up where they left off.</p></div></div>
     <div class="theme-body">
-      <div class="breaks reveal"><span class="k">Where it breaks</span><ol><li>Open platforms aren&#x27;t part of the IB journey: discovery, shortlisting and closure all happen through broker networks.</li><li>Their criteria are different: ROI, appreciation and resale, not livability.</li></ol></div>
-      <div class="factors reveal"><span class="k">Defining factors</span><ul><li><b>ROI &amp; yield calculator</b>Gross yield, appreciation potential, rental cover of EMI</li><li><b>Micro-market appreciation</b>Locality-level price trend and infrastructure pipeline</li><li><b>Exclusive inventory access</b>Pre-launch and broker-curated, not on the open platform</li><li><b>Resale potential signals</b>Historical price movement for the project or micro-market</li><li><b>Network &amp; NRI access</b>Referral-based onboarding and a trusted community layer</li></ul></div>
+      <div class="breaks reveal"><span class="k">Where it breaks</span><ol><li>The journey is non-linear and long: buyers revisit projects, change preferences and restart.</li><li>With no saved state, every session starts from zero and the buyer drifts to competitors or brokers.</li></ol></div>
+      <div class="factors reveal"><span class="k">Defining factors</span><ul><li><b>Saved shortlist with history</b>A persistent shortlist across sessions, not wiped on logout</li><li><b>‘You viewed this before’ nudges</b>Reconnect returning buyers to prior shortlists and searches</li><li><b>Decision progress tracker</b>Shows where the buyer is in their journey</li><li><b>Preference drift detection</b>Surfaces when stated preferences change across sessions</li><li><b>Re-engagement triggers</b>Price drops, new inventory in saved areas, RERA updates</li></ul></div>
     </div>
-    <div class="said reveal"><span class="k">What participants said</span><div class="notes"><figure class="note"><blockquote>“Broker already knew which project would appreciate more”</blockquote><figcaption>IB</figcaption></figure><figure class="note"><blockquote>“If location, pricing and future growth align, the decision happens quickly”</blockquote><figcaption>IB, Kolkata</figcaption></figure><figure class="note"><blockquote>“Trusted family broker handled everything”</blockquote><figcaption>IB, Kolkata</figcaption></figure><figure class="note"><blockquote>“Location, future metro and appreciation matter most”</blockquote><figcaption>IB, Bangalore</figcaption></figure><figure class="note"><blockquote>“There is a whole market beyond apps… brokers are more connected”</blockquote><figcaption>IB, Gurgaon</figcaption></figure><figure class="note"><blockquote>“People usually come through references… not directly from platforms”</blockquote><figcaption>Broker, Bangalore</figcaption></figure></div></div>
+    <div class="said reveal"><span class="k">What participants said</span><div class="notes"><figure class="note"><blockquote>“It is an ongoing journey which never ends”</blockquote><figcaption>FTB intender, Gurugram</figcaption></figure><figure class="note"><blockquote>“We kept revisiting the same projects again and again”</blockquote><figcaption>FTB, Kolkata</figcaption></figure><figure class="note"><blockquote>“We compared everything in our mind… no formal tracking”</blockquote><figcaption>FTB, Kolkata</figcaption></figure><figure class="note"><blockquote>“Shortlist banate hain, phir dubara dekhte hain”</blockquote><figcaption>FTB</figcaption></figure><figure class="note"><blockquote>“Pehle kuch aur chahiye tha, baad mein preference change ho gaya”</blockquote><figcaption>FTB, Mumbai</figcaption></figure><figure class="note"><blockquote>“Buyers know enough to question, but not enough to decide”</blockquote><figcaption>Broker</figcaption></figure></div></div>
   </div>
-</section>
-<section class="theme-sec" id="theme-6">
+</section><section class="sol-sec">
+  <div class="wide">
+    <div class="head reveal" style="margin-bottom:40px"><span class="tag solved-tag">How we solved #5 · Picking up where they left off</span><h2 class="h2">Remembering the properties buyers come back to</h2><p class="sub">Buyers loop, not funnel, and every restart erases their progress. Now every buyer who dropped a lead sees a <strong>Contacted tag</strong> on that property when they return. Those back a year or more later also see <strong>how far its price has moved since they enquired</strong>.</p></div>
+    <div class="star-mini reveal"><div><span>Insight</span>Every restart erases progress</div><div><span>Design move</span>A Contacted tag for every returned user, plus the price increment for those back after a year or more</div><div class="r"><span>Result</span>Recently shipped: repeat leads are measured as users return after a year</div></div>
+    <ol class="loop-flow reveal">
+      <li><span>01</span><b>They return</b><em>A buyer who dropped a lead or contacted the seller comes back to the property</em></li>
+      <li><span>02</span><b>We tag it</b><em>The property is matched to their lead and marked Contacted, for every returned user</em></li>
+      <li><span>03</span><b>We check the gap</b><em>If it has been a year or more, today&#8217;s price is compared with the price when they enquired</em></li>
+      <li class="hot"><span>04</span><b>We show the change</b><em>The increment tag, only for buyers back after a year or more, so the decision moves forward instead of restarting</em></li>
+    </ol>
+    <figure class="pdp-proto pdp-ret pdp-ret1 reveal">
+      <div class="pdp-head">
+        <span class="proto-k">Prototype 1 &middot; Every returned user</span>
+        <h4>Back on a property they <mark>contacted</mark></h4>
+        <div class="pdp-seg" role="tablist" aria-label="Compare versions"><button type="button" data-v="off">First visit</button><button type="button" data-v="on" class="on">Returned user</button></div>
+        <p class="pdp-note" data-off="A first-time visitor sees the project page with no history." data-on="Any buyer who dropped a lead or contacted the seller sees a Contacted tag when they come back, however long it has been.">Any buyer who dropped a lead or contacted the seller sees a Contacted tag when they come back, however long it has been.</p>
+      </div>
+      <div class="pdp-win">
+        <div class="pdp-bar" aria-hidden="true"><i></i><i></i><i></i><span>housing.com/in/buy/projects/page/emaar-mgf-the-palm-drive</span></div>
+        <div class="pdp-scroll" tabindex="0" aria-label="Scrollable prototype of a project page for a returned user">
+          <div class="pdp-c">
+            <img src="home-buying/pdp-full.jpg?v=1" alt="Housing.com project page for Emaar MGF The Palm Drive, for a buyer returning a year after enquiring" width="1280" height="15771" loading="lazy">
+            <span class="pdp-mask rt-mask" aria-hidden="true"></span><span class="rt-chip" aria-hidden="true"><svg viewBox="0 0 16 16" width="14" height="14"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Contacted</span>
+                      </div>
+        </div>
+        <span class="pdp-hint" aria-hidden="true">Scroll the full page &#8597;</span>
+      </div>
+      <figcaption>The project page from theme #3, for a buyer who contacted the seller less than a year ago: only the Contacted tag.</figcaption>
+    </figure>
+    <figure class="pdp-proto pdp-ret reveal">
+      <div class="pdp-head">
+        <span class="proto-k">Prototype 2 &middot; Returned after a year or more</span>
+        <h4>Coming back to a property they <mark>enquired about</mark></h4>
+        <div class="pdp-seg" role="tablist" aria-label="Compare versions"><button type="button" data-v="off">First visit</button><button type="button" data-v="on" class="on">Returning, a year after enquiring</button></div>
+        <p class="pdp-note" data-off="A first-time visitor sees today&#8217;s price, with nothing to compare it against." data-on="A buyer who dropped a lead a year ago sees what the project cost then, and how far it has moved since. The tag only appears for buyers returning a year or more after enquiring. Waiting has a visible price.">A buyer who dropped a lead a year ago sees what the project cost then, and how far it has moved since. The tag only appears for buyers returning a year or more after enquiring. Waiting has a visible price.</p>
+      </div>
+      <div class="pdp-win">
+        <div class="pdp-bar" aria-hidden="true"><i></i><i></i><i></i><span>housing.com/in/buy/projects/page/emaar-mgf-the-palm-drive</span></div>
+        <div class="pdp-scroll" tabindex="0" aria-label="Scrollable prototype of a project page for a buyer who dropped a lead">
+          <div class="pdp-c">
+            <img src="home-buying/pdp-full.jpg?v=1" alt="Housing.com project page for Emaar MGF The Palm Drive, for a buyer returning a year after enquiring" width="1280" height="15771" loading="lazy">
+            <span class="pdp-mask rt-mask" aria-hidden="true"></span><span class="rt-chip" aria-hidden="true"><svg viewBox="0 0 16 16" width="14" height="14"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Contacted</span>
+            <div class="rt-price" aria-hidden="true">
+              <p class="rt-k">Price</p>
+              <p class="rt-now">&#8377;1.4 Cr - &#8377;2.5 Cr <span class="rt-up">&#9650; 16% since you enquired</span></p>
+              <p class="rt-then"><svg viewBox="0 0 16 16" width="14" height="14"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5V8l2.4 1.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>When you enquired in Oct 2025: <b>&#8377;1.2 Cr - &#8377;2.15 Cr</b></p>
+              <span class="hl-tag">Price appreciation &middot; only after a year or more</span>
+            </div>
+          </div>
+        </div>
+        <span class="pdp-hint" aria-hidden="true">Scroll the full page &#8597;</span>
+      </div>
+      <figcaption>The same page for a buyer who dropped a lead a year or more ago: the Contacted tag, plus the price appreciation tag, which only applies after a year.</figcaption>
+    </figure>
+    <div class="bet reveal"><span class="k">The bet</span><p class="bet-q">Memory moves a decision forward: a buyer who sees what changed since their last visit restarts less often.</p><div class="bet-rows"><div class="bet-r"><div><small>Trade-off</small><b>Urgency vs pressure.</b> Showing a year-old price creates FOMO, but could feel like a sales push.</div><div><small>How we handled it</small>Only for buyers who dropped a lead and return a year or more later, and only with the real price they saw: a fact about their own journey, not a countdown.</div></div><div class="bet-r"><div><small>Trade-off</small><b>When the price drops.</b> Price since the last visit can go down as well as up, and a falling price works against the FOMO.</div><div><small>How we handled it</small>If the price has dropped, we don&#8217;t show the increment tag, but the property still carries its Contacted tag. Drops are rare in real estate, so this is the exception, not the rule.</div></div></div></div>
+    <div class="maps-to reveal"><span class="k">Maps to the research</span><div><b>Saved shortlist with history</b><b>"You viewed this before" nudges</b><b>Re-engagement triggers</b></div></div>
+  </div>
+</section><section class="stage-band" id="s5"><div class="wrap reveal"><span class="stage-no">Outside the journey</span><span class="stage-k">Beyond the buyer</span><h2 class="h2">The supply side and investors</h2><p class="sub">Problems that sit outside the buyer's journey, but shape it.</p></div></section><section class="theme-sec" id="t6">
   <div class="wide">
     <div class="theme-head reveal"><span class="tnum">#6</span><div><h2 class="h2">Lead quality is broken for the supply side</h2><p class="sub">Brokers and developers both flagged platform leads as low-intent noise. The platform is seen as a top-of-funnel lead generator, not a conversion tool, and that erodes supply-side trust.</p></div></div>
     <div class="theme-body">
@@ -703,110 +1388,19 @@
     </div>
     <div class="said reveal"><span class="k">What participants said</span><div class="notes"><figure class="note"><blockquote>“You don’t know who is serious and who is just checking”</blockquote><figcaption>Broker</figcaption></figure><figure class="note"><blockquote>“Hard to know who will actually convert”</blockquote><figcaption>Broker, Gurgaon</figcaption></figure><figure class="note"><blockquote>“Platforms give leads, but not all are serious”</blockquote><figcaption>Developer, Gurugram</figcaption></figure><figure class="note"><blockquote>“Many agents just show properties… without understanding the buyer”</blockquote><figcaption>Buyer, Gurgaon</figcaption></figure><figure class="note"><blockquote>“Too many calls… a lot of noise in the market”</blockquote><figcaption>Intender, Kolkata</figcaption></figure><figure class="note"><blockquote>“Many just keep calling without understanding seriousness”</blockquote><figcaption>Intender, Gurgaon</figcaption></figure></div></div>
   </div>
-</section>
-<section class="theme-sec" id="theme-7">
+</section><section class="sol-sec"><div class="wide"><div class="dir reveal"><span class="tag">Not solved yet · #6</span><div><h3>Leads that arrive with context</h3><p>An intent score and FTB vs IB classification, so brokers and developers can tell serious buyers from browsers.</p><p class="dir-why"><b>Why we parked it</b>It needs an intent-scoring model and supply-side buy-in on new lead tiers: a large, cross-team effort.</p></div></div></div></section><section class="theme-sec" id="t7">
   <div class="wide">
-    <div class="theme-head reveal"><span class="tnum">#7</span><div><h2 class="h2">Buyers loop, not funnel: progress resets</h2><p class="sub">First-time buyers cycle through search → shortlist → doubt → restart for months. Each restart erases prior progress, and the platform has no memory to help them pick up where they left off.</p></div></div>
+    <div class="theme-head reveal"><span class="tnum">#7</span><div><h2 class="h2">Investor buyers are unreached, broker-only right now</h2><p class="sub">Investor buyers never use open platforms. They access deals through trusted broker networks, NRI databases and past-client relationships, which needs a fundamentally different product mode.</p></div></div>
     <div class="theme-body">
-      <div class="breaks reveal"><span class="k">Where it breaks</span><ol><li>The journey is non-linear and long: buyers revisit projects, change preferences and restart.</li><li>With no saved state, every session starts from zero and the buyer drifts to competitors or brokers.</li></ol></div>
-      <div class="factors reveal"><span class="k">Defining factors</span><ul><li><b>Saved shortlist with history</b>A persistent shortlist across sessions, not wiped on logout</li><li><b>‘You viewed this before’ nudges</b>Reconnect returning buyers to prior shortlists and searches</li><li><b>Decision progress tracker</b>Shows where the buyer is in their journey</li><li><b>Preference drift detection</b>Surfaces when stated preferences change across sessions</li><li><b>Re-engagement triggers</b>Price drops, new inventory in saved areas, RERA updates</li></ul></div>
+      <div class="breaks reveal"><span class="k">Where it breaks</span><ol><li>Open platforms aren&#x27;t part of the IB journey: discovery, shortlisting and closure all happen through broker networks.</li><li>Their criteria are different: ROI, appreciation and resale, not livability.</li></ol></div>
+      <div class="factors reveal"><span class="k">Defining factors</span><ul><li><b>ROI &amp; yield calculator</b>Gross yield, appreciation potential, rental cover of EMI</li><li><b>Micro-market appreciation</b>Locality-level price trend and infrastructure pipeline</li><li><b>Exclusive inventory access</b>Pre-launch and broker-curated, not on the open platform</li><li><b>Resale potential signals</b>Historical price movement for the project or micro-market</li><li><b>Network &amp; NRI access</b>Referral-based onboarding and a trusted community layer</li></ul></div>
     </div>
-    <div class="said reveal"><span class="k">What participants said</span><div class="notes"><figure class="note"><blockquote>“It is an ongoing journey which never ends”</blockquote><figcaption>FTB intender, Gurugram</figcaption></figure><figure class="note"><blockquote>“We kept revisiting the same projects again and again”</blockquote><figcaption>FTB, Kolkata</figcaption></figure><figure class="note"><blockquote>“We compared everything in our mind… no formal tracking”</blockquote><figcaption>FTB, Kolkata</figcaption></figure><figure class="note"><blockquote>“Shortlist banate hain, phir dubara dekhte hain”</blockquote><figcaption>FTB</figcaption></figure><figure class="note"><blockquote>“Pehle kuch aur chahiye tha, baad mein preference change ho gaya”</blockquote><figcaption>FTB, Mumbai</figcaption></figure><figure class="note"><blockquote>“Buyers know enough to question, but not enough to decide”</blockquote><figcaption>Broker</figcaption></figure></div></div>
+    <div class="said reveal"><span class="k">What participants said</span><div class="notes"><figure class="note"><blockquote>“Broker already knew which project would appreciate more”</blockquote><figcaption>IB</figcaption></figure><figure class="note"><blockquote>“If location, pricing and future growth align, the decision happens quickly”</blockquote><figcaption>IB, Kolkata</figcaption></figure><figure class="note"><blockquote>“Trusted family broker handled everything”</blockquote><figcaption>IB, Kolkata</figcaption></figure><figure class="note"><blockquote>“Location, future metro and appreciation matter most”</blockquote><figcaption>IB, Bangalore</figcaption></figure><figure class="note"><blockquote>“There is a whole market beyond apps… brokers are more connected”</blockquote><figcaption>IB, Gurgaon</figcaption></figure><figure class="note"><blockquote>“People usually come through references… not directly from platforms”</blockquote><figcaption>Broker, Bangalore</figcaption></figure></div></div>
   </div>
-</section>
-
-<div class="chapter dark scallop-t scallop-b" id="acting" style="margin-top:80px">
-  <div class="wrap reveal">
-    <span class="num" aria-hidden="true">02</span>
-    <span class="tag">From insight to product</span>
-    <h2 class="h2">Turning four themes into product</h2>
-    <p class="sub" style="max-width:760px;margin-inline:auto">Trust on the new project page, hotspots for curated discovery, renters primed before they buy, and a memory for returning buyers.</p>
-  </div>
-</div>
-
-<section>
-  <div class="wide">
-    <div class="head reveal" style="margin-bottom:40px"><span class="tag">Theme #1 → Trust, designed in</span><h2 class="h2">Designing trust into the new project page</h2><p class="sub">Trust is mis-timed, not missing. So we brought the signals buyers were assembling elsewhere onto the page, at the moment of evaluation.</p></div>
-    <div class="star-mini reveal"><div><span>Insight</span>Buyers verify builders and approvals elsewhere</div><div><span>Design move</span>RERA tags, RERA-linked status and developer ratings on the project page</div><div class="r"><span>Result</span>Rolling out on new project pages</div></div>
-    <div class="trust">
-      <ol class="trust-steps">
-        <li class="reveal"><span>01</span><div><b>RERA tags, up front</b><p>A RERA badge sits right beside the project name, alongside new launch, zero brokerage and the rating, so legitimacy is the first thing a buyer sees.</p></div></li>
-        <li class="reveal"><span>02</span><div><b>Details that answer the first questions</b><p>Configuration, sizes, average price and status in one scannable block, instead of buried in the listing.</p></div></li>
-        <li class="reveal"><span>03</span><div><b>Status, straight from RERA</b><p>The project status is <strong>linked via API to the RERA sites</strong>, so "ready to move" is verified, not just claimed.</p></div></li>
-        <li class="reveal"><span>04</span><div><b>A developer profile with a rating</b><p>Who's building it, with a star rating from buyers, answering "will this builder deliver?" on the page itself.</p></div></li>
-      </ol>
-      <figure class="trust-shot reveal"><img src="home-buying/trust-pdp.jpg?v=1" alt="Housing.com new project page for Emaar MGF The Palm Drive, with RERA, new launch and rating tags, configuration, status, sizes and price, and a developer card with a star rating" width="1898" height="1716" loading="lazy"><figcaption>New project page on Housing.com: RERA tags, details, a RERA-linked status and the developer's rating, together.</figcaption></figure>
-    </div>
-    <div class="maps-to reveal"><span class="k">Maps to the research</span><div><b>Legal &amp; RERA status</b><b>Builder credibility</b><b>Resident validation</b><b>Pricing fairness</b></div></div>
-  </div>
-</section>
-
-
-<section style="padding-top:0">
-  <div class="wide">
-    <div class="head reveal" style="margin-bottom:40px"><span class="tag">Theme #2 → Hotspot discovery</span><h2 class="h2">A curated layer between "everything" and "nothing"</h2><p class="sub">Curated shortlisting beats discovery breadth. So we introduced <strong>hotspots</strong>: a strata of relevant areas that gives buyers meaningful options while they're still discovering, instead of 100+ listings at once.</p></div>
-    <div class="star-mini reveal"><div><span>Insight</span>100+ listings cause paralysis</div><div><span>Design move</span>Hotspots: a curated layer of relevant areas across home, search, results and map</div><div class="r"><span>Result</span>+1% leads per user, and the leads are high-intent</div></div>
-    <div class="hs-group reveal"><div class="hs-head"><span class="no">01</span><b>Where hotspots show up</b><em>Hotspots meet buyers at every discovery entry point.</em></div><ol class="hs-row"><li><img src="home-buying/hs-01.jpg?v=1" alt="Home: Hotspots nearby, with price and growth" width="700" height="1556" loading="lazy"><b>Home</b><small>Hotspots nearby, with price and growth</small></li><li><img src="home-buying/hs-02.jpg?v=1" alt="Search suggestions: Hotspots with YoY growth, before typing" width="700" height="1556" loading="lazy"><b>Search suggestions</b><small>Hotspots with YoY growth, before typing</small></li><li><img src="home-buying/hs-03.jpg?v=1" alt="While typing: Hotspot as a result type" width="700" height="1556" loading="lazy"><b>While typing</b><small>Hotspot as a result type</small></li><li><img src="home-buying/hs-04.jpg?v=1" alt="Search results: A hotspots strip inside results" width="700" height="1556" loading="lazy"><b>Search results</b><small>A hotspots strip inside results</small></li></ol></div><div class="hs-group reveal"><div class="hs-head"><span class="no">02</span><b>Exploring on the map</b><em>Each hotspot has a real boundary, so buyers see the area, not just a pin.</em></div><ol class="hs-row"><li><img src="home-buying/hs-map-1.jpg?v=1" alt="S. Peripheral Road: Boundary and price per sq.ft." width="700" height="1556" loading="lazy"><b>S. Peripheral Road</b><small>Boundary and price per sq.ft.</small></li><li><img src="home-buying/hs-map-2.jpg?v=1" alt="New Gurgaon: Swipe to the next hotspot" width="700" height="1556" loading="lazy"><b>New Gurgaon</b><small>Swipe to the next hotspot</small></li><li><img src="home-buying/hs-map-3.jpg?v=1" alt="Sohna Road: Long corridors drawn as they are" width="700" height="1556" loading="lazy"><b>Sohna Road</b><small>Long corridors drawn as they are</small></li><li><img src="home-buying/hs-map-4.jpg?v=1" alt="Golf Course Ext. Road: Straight into its properties" width="700" height="1556" loading="lazy"><b>Golf Course Ext. Road</b><small>Straight into its properties</small></li></ol></div><div class="hs-group reveal"><div class="hs-head"><span class="no">03</span><b>Inside a hotspot</b><em>A summary that answers "is this area right for me?" before the listings.</em></div><ol class="hs-row"><li><img src="home-buying/hs-hdr-1.jpg?v=1" alt="Hotspot header: Who it suits, in one line" width="700" height="1556" loading="lazy"><b>Hotspot header</b><small>Who it suits, in one line</small></li><li><img src="home-buying/hs-hdr-2.jpg?v=1" alt="Header expanded: Growth, price, demand, amenities, hospitals" width="700" height="1556" loading="lazy"><b>Header expanded</b><small>Growth, price, demand, amenities, hospitals</small></li><li><img src="home-buying/hs-sheet-1.jpg?v=1" alt="Hospitals nearby: Distances at a glance" width="700" height="1556" loading="lazy"><b>Hospitals nearby</b><small>Distances at a glance</small></li><li><img src="home-buying/hs-sheet-2.jpg?v=1" alt="All amenities: The full list, one tap away" width="700" height="1556" loading="lazy"><b>All amenities</b><small>The full list, one tap away</small></li></ol></div><div class="hs-group reveal"><div class="hs-head"><span class="no">04</span><b>Loading states</b><em>Skeletons that mirror the real layout, so the page never jumps.</em></div><ol class="hs-row"><li><img src="home-buying/hs-map-5.jpg?v=1" alt="Map loading: Card placeholders while boundaries load" width="700" height="1556" loading="lazy"><b>Map loading</b><small>Card placeholders while boundaries load</small></li><li><img src="home-buying/hs-sheet-3.jpg?v=1" alt="Results loading: Header skeleton above live cards" width="700" height="1556" loading="lazy"><b>Results loading</b><small>Header skeleton above live cards</small></li><li><img src="home-buying/hs-sheet-4.jpg?v=1" alt="Expanded loading: Full skeleton for the expanded header" width="700" height="1556" loading="lazy"><b>Expanded loading</b><small>Full skeleton for the expanded header</small></li></ol></div>
-    <div class="rent-wins reveal" style="max-width:560px;margin:8px 0 24px">
-      <div><b>+1%</b><span>Leads generated per user via hotspots</span></div>
-      <div><b>High intent</b><span>Hotspot leads arrive as intentional leads</span></div>
-    </div>
-    <div class="maps-to reveal"><span class="k">Maps to the research</span><div><b>Intent signal capture</b><b>Budget &amp; location fit</b><b>Comparison tracking</b></div></div>
-  </div>
-</section>
-
-
-<section style="padding-top:0">
-  <div class="wide">
-    <div class="head reveal" style="margin-bottom:40px"><span class="tag">Theme #3 → Renter cross-sell</span><h2 class="h2">Priming renters before they become buyers</h2><p class="sub">Engage renters before they are buyers. We started showing the right renters new projects, inside the rental journey they were already in.</p></div>
-    <div class="star-mini reveal"><div><span>Insight</span>Renters become buyers, and brokers reach them first</div><div><span>Design move</span>A city-aware cross-sell for renters paying ₹40k+ a month</div><div class="r"><span>Result</span>Live: +2% leads and a healthy CTR</div></div>
-    <div class="trust">
-      <div>
-        <ol class="trust-steps">
-          <li class="reveal"><span>01</span><div><b>Spot the likely buyer</b><p>Renters paying <strong>more than ₹40k a month</strong>, a signal that buying is within reach.</p></div></li>
-          <li class="reveal"><span>02</span><div><b>Keep it local</b><p>Thresholds and recommendations are set <strong>by city</strong>, so the nudge fits the market they live in.</p></div></li>
-          <li class="reveal"><span>03</span><div><b>Cross-sell, gently</b><p>A "Renters like you also liked" section surfaces RERA-registered new projects, with price, possession date and a one-tap call.</p></div></li>
-        </ol>
-        <div class="rent-wins reveal">
-          <div><b>+2%</b><span>Increase in leads</span></div>
-          <div><b>Healthy CTR</b><span>On the cross-sell section</span></div>
-        </div>
-      </div>
-      <figure class="trust-shot reveal"><img src="home-buying/renters.png?v=1" alt="A Renters like you also liked section with two RERA-registered new projects in Pune: Shapoorji Joyville and Godrej River Greens" width="1210" height="983" loading="lazy" style="border:0;box-shadow:none"><figcaption>The cross-sell section shown to qualifying renters.</figcaption></figure>
-    </div>
-    <div class="maps-to reveal"><span class="k">Maps to the research</span><div><b>Readiness nudges</b><b>Area appreciation signals</b><b>Rent-vs-buy decision</b></div></div>
-  </div>
-</section>
-
-
-<section style="padding-top:0">
-  <div class="wide">
-    <div class="head reveal" style="margin-bottom:40px"><span class="tag">Theme #7 → Picking up where they left off</span><h2 class="h2">Remembering the properties buyers come back to</h2><p class="sub">Buyers loop, not funnel, and every restart used to erase their progress. Now a returning buyer sees their <strong>history with a property</strong>, and <strong>how its value has moved since they last saw it</strong>.</p></div>
-    <div class="star-mini reveal"><div><span>Insight</span>Every restart erases progress</div><div><span>Design move</span>Viewing history, price/ROI since the last visit, and Seen / Contacted cards</div><div class="r"><span>Result</span>In development</div></div>
-    <ol class="loop-flow reveal">
-      <li><span>01</span><b>They return</b><em>A buyer comes back to the app after days or weeks away</em></li>
-      <li><span>02</span><b>We recognise it</b><em>The property, or one just like it, is matched to their viewing history</em></li>
-      <li><span>03</span><b>We compare</b><em>Price movement and ROI are calculated against their last visit</em></li>
-      <li class="hot"><span>04</span><b>We show the change</b><em>"Viewed before" with its ROI since then, so the decision moves forward instead of restarting</em></li>
-    </ol>
-    <div class="memory reveal">
-      <div class="mem-copy">
-        <span class="k">Card memory</span>
-        <h3>Listings remember what you've done</h3>
-        <p>For buyers who loop, every property card now carries their history, so a returning visit starts from where they left off, not from zero.</p>
-      </div>
-      <div class="mem-cards">
-        <figure><img src="home-buying/card-seen.png?v=1" alt="Property card with a Seen tag" width="680" height="1122" loading="lazy"><figcaption><b>Seen</b>Shown once they've opened the property page from the card</figcaption></figure>
-        <figure><img src="home-buying/card-contacted.png?v=1" alt="Property card with a Contacted tag" width="680" height="1122" loading="lazy"><figcaption><b>Contacted</b>Shown once they've reached out about the property</figcaption></figure>
-      </div>
-    </div>
-    <div class="maps-to reveal"><span class="k">Maps to the research</span><div><b>Saved shortlist with history</b><b>"You viewed this before" nudges</b><b>Re-engagement triggers</b></div></div>
-  </div>
-</section>
-
+</section><section class="sol-sec"><div class="wide"><div class="dir reveal"><span class="tag">Not solved yet · #7</span><div><h3>A distinct mode for investors</h3><p>ROI and yield tools, micro-market trends and curated, broker-led inventory for buyers who never use open platforms.</p><p class="dir-why"><b>Why we parked it</b>Investors need a different product mode, not a feature. It sits outside the buyer-first focus of this work.</p></div></div></div></section>
 <div class="chapter dark scallop-t scallop-b" id="results" style="margin-top:80px">
   <div class="wrap reveal">
-    <span class="num" aria-hidden="true">03</span>
+    <span class="num" aria-hidden="true">02</span>
     <span class="tag">Results</span>
     <h2 class="h2">What the research changed</h2>
   </div>
@@ -815,19 +1409,47 @@
 <section>
   <div class="wrap">
     <div class="res4">
-      <div class="r4 reveal"><span>Theme #3</span><b>+2%</b><p>More leads from the renter cross-sell, with a healthy click-through rate.</p></div>
-      <div class="r4 reveal"><span>Theme #1</span><b>Verified</b><p>RERA status pulled live from RERA sites, next to developer ratings.</p></div>
-      <div class="r4 reveal"><span>Theme #2</span><b>+1%</b><p>Leads per user via hotspots, and they arrive as intentional, high-intent leads.</p></div>
-      <div class="r4 reveal"><span>Theme #7</span><b>Remembered</b><p>Returning buyers pick up where they left off, with history on every card.</p></div>
+      <div class="r4 reveal"><span>#1 Renting</span><b>+2%</b><p>More leads from the renter cross-sell, tested on 20% of renters, with a healthy click-through rate.</p></div>
+      <div class="r4 reveal"><span>#2 Discovering</span><b>+1%</b><p>Leads per user via hotspots, and they arrive as intentional, high-intent leads.</p></div>
+      <div class="r4 reveal"><span>#3 Evaluating</span><b>30%</b><p>Of users verify the property on RERA, and only 10% of them drop the session. Status now comes live from RERA.</p></div>
+      <div class="r4 reveal"><span>#5 Deciding</span><b>Shipped</b><p>Every returned user who dropped a lead sees a Contacted tag; those back after a year or more also see how far the price has moved. Recently shipped, so repeat leads are still being measured.</p></div>
     </div>
-    <div class="open reveal">
-      <div><span class="tag">What's next</span><h3>Three themes still open</h3><p>The research also points to where the roadmap goes next.</p></div>
-      <ul>
-        <li><b>#4 Lived experience</b>Sunlight, noise, commute and realistic under-construction views, with developer content partnerships</li>
-        <li><b>#5 Investor buyers</b>A distinct mode with ROI tools, micro-market trends and curated inventory</li>
-        <li><b>#6 Lead quality</b>Intent scoring and FTB vs IB classification, so leads arrive with context</li>
-      </ul>
+    <p class="thread reveal" style="margin-top:40px">Themes #4, #6 and #7 stay open, with their direction set out in the journey above.</p>
+    <p class="res-fn reveal">All lifts are relative to the experience live in production.</p>
+    <div class="role reveal">
+      <span class="k">What we learned about the platform&#8217;s role</span>
+      <h3>Answering the objective, theme by theme</h3>
+      <div class="role-wrap"><table class="role-t"><thead><tr><th>Theme</th><th>Perception or structural?</th><th>Platform or offline?</th><th>Right to win</th></tr></thead><tbody><tr><th><b>#1</b> Engage renters early</th><td>Structural</td><td>Platform: rental inventory reaches future buyers first</td><td><span class="rw y">Yes</span></td></tr><tr><th><b>#2</b> Curated shortlisting</th><td>Structural</td><td>Platform: behavioural data curates at scale, as brokers do by hand</td><td><span class="rw y">Yes</span></td></tr><tr><th><b>#3</b> Trust, mis-timed</th><td>Perception: buyers trust Housing, they just verify elsewhere</td><td>Platform: bring verification to the listing</td><td><span class="rw y">Yes</span></td></tr><tr><th><b>#4</b> Lived experience</th><td>Structural</td><td>Shared: site visits stay offline, data and content can narrow them</td><td><span class="rw p">Partial</span></td></tr><tr><th><b>#5</b> Buyers loop</th><td>Structural</td><td>Platform: memory of leads and prices</td><td><span class="rw y">Yes</span></td></tr><tr><th><b>#6</b> Lead quality</th><td>Structural, felt as noise</td><td>Platform, with supply-side buy-in on intent scoring</td><td><span class="rw p">Partial</span></td></tr><tr><th><b>#7</b> Investor buyers</th><td>Structural</td><td>Offline today: broker networks and referrals serve them better</td><td><span class="rw n">Not yet</span></td></tr></tbody></table></div>
     </div>
+    <div class="prio reveal">
+      <div class="prio-copy">
+        <span class="k">How we prioritised</span>
+        <h3>Impact vs effort: the low-hanging fruit first</h3>
+        <p>Every theme went into the cross-functional workshop as a bet, scored on its impact for buyers and the platform against the effort to build it. We solved the low-hanging fruit first, and set a clear direction for the bigger bets.</p>
+        <ul class="prio-list">
+          <li><b>#1 Rental inventory</b>An entry point to future buyers that other platforms don&#8217;t have</li>
+          <li><b>#2 Behavioural data</b>Search and budget history to curate options at scale, like a broker would</li>
+          <li><b>#3 RERA on the listing</b>Verification at the moment of evaluation, instead of off-platform</li>
+          <li><b>#5 Lead history</b>Memory of every property a buyer has enquired about, and what it cost then</li>
+          <li class="park"><b>Parked, with direction</b>#4 needs developer content partnerships, #6 an intent-scoring model, #7 a new product mode for investors</li>
+        </ul>
+      </div>
+      <figure class="pm">
+        <div class="pm-grid">
+          <span class="pm-q">Quick wins &middot; solved first</span><span class="pm-q">Big bets &middot; direction set</span><span class="pm-q">Fill-ins</span><span class="pm-q">Not worth it now</span>
+          <a class="pm-dot s" href="#t1" style="left:22%;top:20%">#1</a><a class="pm-dot s" href="#t2" style="left:33%;top:12%">#2</a><a class="pm-dot s" href="#t3" style="left:28%;top:30%">#3</a><a class="pm-dot s" href="#t5" style="left:44%;top:34%">#5</a><a class="pm-dot o" href="#t6" style="left:68%;top:22%">#6</a><a class="pm-dot o" href="#t4" style="left:78%;top:38%">#4</a><a class="pm-dot o" href="#t7" style="left:87%;top:14%">#7</a>
+        </div>
+        <span class="pm-y">Impact &rarr;</span><span class="pm-x">Effort &rarr;</span>
+        <figcaption><i class="s"></i>Solved <i class="o"></i>Open &middot; tap a theme to jump to it</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="reflect" id="reflect">
+  <div class="wrap">
+    <div class="head reveal" style="text-align:center;margin-bottom:36px"><span class="tag">Reflection</span><h2 class="h2">What I&#8217;d do differently</h2><p class="sub" style="max-width:680px;margin-inline:auto">The work moved leads and earned trust. Looking back critically, here is where the approach fell short, and what I&#8217;d change.</p></div>
+    <div class="lrn-grid"><div class="lrn reveal"><b>Leads are a proxy, not the outcome.</b><p>We measured lifts in leads against production. The research&#8217;s core problem was deciding, and a lead doesn&#8217;t tell us whether a buyer decided faster or with more confidence.</p><p class="lrn-do"><span>Next time</span>Define success before building: site visits, repeat contacts and time-to-decision, with a clear definition of a high-intent lead.</p></div><div class="lrn reveal"><b>Quick wins favoured the top of the funnel.</b><p>Impact vs effort put discovery and trust signals first. The deepest finding, lived experience (#4), is still open, and #5 shipped as one slice of a much bigger looping problem.</p><p class="lrn-do"><span>Next time</span>Pair every quick win with one long bet funded in parallel, so the hard problems don&#8217;t wait for a quiet quarter.</p></div><div class="lrn reveal"><b>Effort was scored before data feasibility.</b><p>The hotspot comparison was designed before we knew the data side couldn&#8217;t support it in real time. Its effort score was wrong because the dependency was invisible.</p><p class="lrn-do"><span>Next time</span>Bring data and engineering into the scoring, and treat data availability as its own axis in prioritisation.</p></div><div class="lrn reveal"><b>Impact scores leaned on qualitative evidence.</b><p>The 68% quant survey ran after the qual themes were set, and validated only one of them. The other themes were scored on interviews and workshop judgement.</p><p class="lrn-do"><span>Next time</span>Size every theme quantitatively before the workshop, so impact is argued with numbers, not conviction.</p></div></div>
   </div>
 </section>
 
@@ -858,6 +1480,144 @@
     Promise.all([...track.querySelectorAll("img")].map(i => i.complete ? 0 : new Promise(r => i.onload = i.onerror = r)))
       .then(() => { track.style.animation = `tick ${(track.scrollWidth / 2) / 100}s linear infinite`; });
   }
+
+  // renter prototype: glide to the new section once when it comes into view, then hand over scrolling
+  (() => {
+    const sc = document.querySelector(".proto-scroll"); if (!sc) return;
+    const fit = () => sc.style.setProperty("--k", sc.clientWidth / 360); fit(); addEventListener("resize", fit);
+    const screen = sc.parentElement; let touched = false, done = false;
+    const stop = () => { touched = true; screen.classList.add("touched"); };
+    ["wheel", "touchstart", "pointerdown", "keydown"].forEach(ev => sc.addEventListener(ev, stop, { passive: true }));
+    const glide = () => {
+      if (done || touched) return; done = true;
+      const k = sc.clientWidth / 360; const target = (45 + 1440) * k;
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) { sc.scrollTop = target; return; }
+      const from = sc.scrollTop, t0 = performance.now(), dur = 2200;
+      const step = t => { if (touched) return; const p = Math.min(1, (t - t0) / dur); const e = p < .5 ? 4*p*p*p : 1 - Math.pow(-2*p + 2, 3) / 2;
+        sc.scrollTop = from + (target - from) * e; if (p < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    };
+    new IntersectionObserver(([e], o) => { if (e.isIntersecting) { setTimeout(glide, 900); o.disconnect(); } }, { threshold: .6 }).observe(screen);
+  })();
+
+  // hotspot screens: tabs, an interactive map, and a hover-to-zoom lens for the highlighted sections
+  (() => {
+    const root = document.querySelector(".hsp"); if (!root) return;
+    const tabs = root.querySelectorAll(".hsp-tab"), panes = root.querySelectorAll(".hsp-pane");
+    const title = document.getElementById("hspTitle"), desc = document.getElementById("hspDesc"), screen = root.querySelector(".hsp-screen");
+    const fit = () => { const w = screen.clientWidth; root.querySelectorAll(".hsp-scroll").forEach(s => s.style.setProperty("--hk", w / 360)); };
+    fit(); addEventListener("resize", fit);
+    const whos = root.querySelectorAll(".hb-who"); let glided = false;
+    const show = i => {
+      const p = root.querySelector(`.hsp-tab[data-i="${i}"]`).dataset.p;
+      whos.forEach(w => w.classList.toggle("on", w.dataset.p === p));
+      tabs.forEach(x => x.classList.toggle("on", x.dataset.i == i)); root.querySelectorAll(".hsp-grp").forEach(g => g.classList.toggle("on", g.dataset.p === p));
+      panes.forEach(p => { const on = p.dataset.i == i; p.classList.toggle("on", on); if (on) { p.querySelector(".hsp-scroll").scrollTop = 0; title.textContent = p.dataset.title; desc.textContent = p.dataset.desc; } });
+    };
+    tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.i)));
+    // the intent buyer's results glide down once, to where Saket runs out and hotspots take over
+    const glideSrp = () => { if (glided) return; glided = true; const sc = root.querySelector('.hsp-pane[data-i="3"] .hsp-scroll'), end = sc.querySelector(".srp-end");
+      setTimeout(() => sc.scrollTo({ top: end.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - sc.clientHeight * .3, behavior: "smooth" }), 700); };
+    whos.forEach(w => w.addEventListener("click", () => { const i = w.dataset.p === "a" ? 0 : 3; show(i); if (i === 3) glideSrp(); }));
+    tabs[3].addEventListener("click", glideSrp);
+    root.querySelectorAll(".hsp-scroll").forEach(s => ["wheel","touchstart","pointerdown"].forEach(ev => s.addEventListener(ev, () => screen.classList.add("touched"), { passive: true })));
+    // map: swiping the cards swaps the hotspot boundary
+    const row = root.querySelector(".mc-row"), maps = root.querySelectorAll(".map-img"), cards = row.querySelectorAll(".mc");
+    const setSpot = i => maps.forEach(m => m.classList.toggle("on", m.dataset.spot == i));
+    let t; row.addEventListener("scroll", () => { clearTimeout(t); t = setTimeout(() => {
+      const mid = row.scrollLeft + row.clientWidth / 2; let best = 0, d = 1e9;
+      cards.forEach((c, i) => { const cm = c.offsetLeft + c.offsetWidth / 2; if (Math.abs(cm - mid) < d) { d = Math.abs(cm - mid); best = i; } });
+      setSpot(best); }, 60); }, { passive: true });
+    const goMap = i => { show(2); const c = cards[i]; row.scrollLeft = c.offsetLeft - (row.clientWidth - c.offsetWidth) / 2; setSpot(i); };
+    // single click navigates; wait a beat so a double-click (zoom) doesn't also navigate
+    let nav; const later = fn => { clearTimeout(nav); nav = setTimeout(fn, 260); };
+    root.querySelector(".hn-map").addEventListener("click", () => later(() => goMap(0)));
+    root.querySelectorAll(".hsp-pane[data-i='0'] .hc").forEach(c => c.addEventListener("click", () => later(() => goMap(+c.dataset.spot))));
+    root.querySelector(".map-back").addEventListener("click", () => show(0));
+    // hover for a moment on a highlighted section to zoom in
+    const lens = root.querySelector(".hsp-lens"), inner = lens.firstElementChild; let timer;
+    lens.querySelector(".lens-x").addEventListener("click", e => { e.stopPropagation(); close(); });
+    const open = el => {
+      const lw = Math.min(560, innerWidth * .92); inner.style.setProperty("--lz", lw / 360); inner.innerHTML = "";
+      const c = document.createElement("div"); c.className = "lens-c";
+      if (el.dataset.zoom === "img") { const y = +el.dataset.y, hh = +el.dataset.h; const d = document.createElement("div"); d.className = "lens-img";
+        d.style.height = hh + 16 + "px"; d.style.backgroundImage = `url(${el.dataset.src})`; d.style.backgroundPosition = `0 ${-(y - 8)}px`; c.appendChild(d); }
+      else { const cl = el.cloneNode(true); const sc = el.querySelector(".hn-row, .mc-row"); const csc = cl.querySelector(".hn-row, .mc-row"); c.appendChild(cl); requestAnimationFrame(() => { if (sc && csc) csc.scrollLeft = sc.scrollLeft; }); }
+      inner.appendChild(c); lens.classList.add("on");
+    };
+    const close = () => { clearTimeout(timer); lens.classList.remove("on"); };
+    root.querySelectorAll(".zoomable").forEach(el => el.addEventListener("dblclick", e => { e.preventDefault(); clearTimeout(nav); getSelection().removeAllRanges(); open(el); }));
+    document.addEventListener("click", e => { if (lens.classList.contains("on") && !e.target.closest(".zoomable, .hsp-lens")) close(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+    addEventListener("scroll", close, { passive: true });
+  })();
+  // scrapped iterations: open each frame at the hotspot module, not the top of the page
+  document.querySelectorAll(".rfe-f[data-focus]").forEach(f => { const img = f.querySelector("img");
+    const go = () => { f.scrollTop = img.offsetHeight * +f.dataset.focus - 16; };
+    img.complete ? go() : img.addEventListener("load", go); addEventListener("resize", go); });
+  // renter prototype: double-click the highlighted cross-sell to zoom in; the cards stay swipeable inside the zoom
+  (() => {
+    const fig = document.querySelector(".proto"); if (!fig) return;
+    const content = fig.querySelector(".proto-content"), hl = fig.querySelector(".proto-hl"), row = fig.querySelector(".rc-row");
+    const lens = fig.querySelector(".proto-lens"), inner = lens.querySelector(".hsp-lens-in");
+    const close = () => lens.classList.remove("on");
+    content.addEventListener("dblclick", e => {
+      const r = hl.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+      e.preventDefault(); getSelection().removeAllRanges();
+      inner.style.setProperty("--lz", Math.min(560, innerWidth * .92) / 360); inner.innerHTML = "";
+      const c = document.createElement("div"); c.className = "lens-c";
+      const sec = document.createElement("div"); sec.className = "rl-sec";
+      sec.style.backgroundImage = "url(home-buying/fig-page.jpg?v=1)"; sec.style.backgroundPosition = `0 ${-(1609 - 45)}px`;
+      const cl = row.cloneNode(true); sec.appendChild(cl); c.appendChild(sec); inner.appendChild(c);
+      lens.classList.add("on"); inner.scrollTop = 0; requestAnimationFrame(() => { cl.scrollLeft = row.scrollLeft; });
+    });
+    lens.querySelector(".lens-x").addEventListener("click", e => { e.stopPropagation(); close(); });
+    document.addEventListener("click", e => { if (lens.classList.contains("on") && !e.target.closest(".proto-lens")) close(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+    addEventListener("scroll", close, { passive: true });
+  })();
+  // project page prototype: scale the 1280px page into the window, and toggle the "Updated on" line
+  (() => {
+    document.querySelectorAll(".pdp-proto").forEach(fig => {
+    const sc = fig.querySelector(".pdp-scroll"), note = fig.querySelector(".pdp-note"), win = fig.querySelector(".pdp-win");
+    const fit = () => sc.style.setProperty("--pk", sc.clientWidth / 1280); fit(); addEventListener("resize", fit);
+    ["wheel", "touchstart", "pointerdown"].forEach(ev => sc.addEventListener(ev, () => win.classList.add("touched"), { passive: true }));
+    fig.querySelectorAll(".pdp-seg button").forEach(b => b.addEventListener("click", () => {
+      const on = b.dataset.v === "on"; fig.classList.toggle("off", !on);
+      fig.querySelectorAll(".pdp-seg button").forEach(x => x.classList.toggle("on", x === b));
+      note.textContent = note.dataset[on ? "on" : "off"]; sc.scrollTo({ top: 0, behavior: "smooth" });
+    }));
+    });
+  })();
+  // theme 4 concept: pick filters or listing; filter chips narrow the result count
+  (() => {
+    const box = document.querySelector(".c4"); if (!box) return;
+    const screen = box.querySelector(".c4-screen"), panes = box.querySelectorAll(".c4-pane"), picks = box.querySelectorAll(".c4-pick button");
+    const fit = () => box.querySelectorAll(".c4-scroll").forEach(s => s.style.setProperty("--ck", screen.clientWidth / 360)); fit(); addEventListener("resize", fit);
+    picks.forEach(b => b.addEventListener("click", () => { picks.forEach(x => x.classList.toggle("on", x === b)); panes.forEach(p => p.classList.toggle("on", p.dataset.c === b.dataset.c)); }));
+    const n = document.getElementById("lfN"), chips = box.querySelectorAll(".lf-chip[data-w]");
+    const count = () => { let v = 660; chips.forEach(c => { if (c.classList.contains("on")) v *= +c.dataset.w; }); n.textContent = Math.max(3, Math.round(v)); };
+    chips.forEach(c => c.addEventListener("click", () => { c.classList.toggle("on"); count(); })); count();
+  })();
+  // chapter nav: show after the hero, track the chapter in view, and open as a menu on smaller screens
+  (() => {
+    const nav = document.querySelector(".chap"); if (!nav) return;
+    const links = [...nav.querySelectorAll("a")], btn = nav.querySelector(".chap-btn"), now = nav.querySelector(".chap-now");
+    const targets = links.map(a => document.getElementById(a.hash.slice(1)));
+    const darks = [...document.querySelectorAll(".chapter.dark, .hero.dark")];
+    const update = () => {
+      const y = innerHeight * .35; let cur = 0;
+      targets.forEach((t, i) => { if (t && t.getBoundingClientRect().top <= y) cur = i; });
+      links.forEach((a, i) => a.classList.toggle("on", i === cur)); now.textContent = links[cur].textContent;
+      const hero = document.querySelector(".hero"), end = document.querySelector(".next");
+      nav.classList.toggle("show", hero.getBoundingClientRect().bottom < innerHeight * .4 && (!end || end.getBoundingClientRect().top > innerHeight * .6));
+      const mid = innerHeight / 2; nav.classList.toggle("on-dark", darks.some(d => { const r = d.getBoundingClientRect(); return r.top < mid && r.bottom > mid; }));
+    };
+    addEventListener("scroll", update, { passive: true }); addEventListener("resize", update); update();
+    btn.addEventListener("click", () => { const o = nav.classList.toggle("open"); btn.setAttribute("aria-expanded", o); });
+    links.forEach(a => a.addEventListener("click", () => { nav.classList.remove("open"); btn.setAttribute("aria-expanded", false); }));
+    document.addEventListener("click", e => { if (!nav.contains(e.target)) nav.classList.remove("open"); });
+  })();
 </script>
 </body>
 </html>
