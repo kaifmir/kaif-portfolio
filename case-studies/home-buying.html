@@ -697,6 +697,22 @@
   .role-t tbody tr:last-child th, .role-t tbody tr:last-child td { border-bottom: 0; }
   .rw { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
   .rw.y { background: var(--lime); color: var(--ink); } .rw.p { background: var(--tint); color: var(--ink); border: 1px solid var(--line); } .rw.n { background: var(--ink); color: #fff; }
+  .cj { padding: 96px 0 120px; }
+  .cj-scroll { overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 8px; outline: none; }
+  .cj-grid { min-width: 1040px; display: grid; gap: 14px; }
+  .cj-stages { list-style: none; display: grid; grid-template-columns: repeat(9, minmax(0,1fr)); gap: 6px; }
+  .cj-stages li { background: var(--tint); border-radius: 18px; padding: 16px 14px 18px; display: grid; gap: 8px; align-content: start; }
+  .cj-stages li.cj-in { background: var(--ink); color: #fff; }
+  .cj-n { font-size: 12px; font-weight: 800; letter-spacing: .08em; color: var(--ink-50); }
+  .cj-in .cj-n { color: var(--lime); }
+  .cj-stages b { font-weight: 800; font-size: 16px; line-height: 1.2; letter-spacing: -.02em; min-height: 2.4em; }
+  .cj-stages p { font-size: 13.5px; line-height: 19px; color: var(--ink-70); }
+  .cj-in p { color: rgba(255,255,255,.75); }
+  .cj-bands { display: grid; grid-template-columns: repeat(9, minmax(0,1fr)); gap: 6px; }
+  .cj-band { display: grid; place-items: center; text-align: center; min-height: 52px; padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .cj-band.op { background: var(--lime); color: var(--ink); }
+  .cj-band.in { background: var(--ink); color: #fff; }
+  .cj-note { margin: 22px auto 0; max-width: 720px; text-align: center; font-size: 15px; line-height: 22px; color: var(--ink-50); }
   .beyond { margin-top: 16px; } .beyond a { grid-template-columns: auto 1fr auto auto; align-items: center; gap: 14px; }
   .stage-band { padding: 140px 0 0; text-align: center; }
   .stage-band .stage-no { display: inline-block; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; background: var(--ink); color: #fff; border-radius: 999px; padding: 6px 14px; }
@@ -983,7 +999,7 @@
 <body>
 
 <div class="progress" id="progress" aria-hidden="true"></div>
-<nav class="chap" aria-label="Chapters"><button class="chap-btn" type="button" aria-expanded="false"><span class="chap-now">Overview</span><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><ol><li><a href="#why"><i></i><span>Overview</span></a></li><li><a href="#landscape"><i></i><span>The journey</span></a></li><li><a href="#t1"><i></i><span>#1 Renters</span></a></li><li><a href="#t2"><i></i><span>#2 Hotspots</span></a></li><li><a href="#t3"><i></i><span>#3 Trust</span></a></li><li><a href="#t4"><i></i><span>#4 Lived experience</span></a></li><li><a href="#t5"><i></i><span>#5 Buyers loop</span></a></li><li><a href="#t6"><i></i><span>#6 Lead quality</span></a></li><li><a href="#t7"><i></i><span>#7 Investors</span></a></li><li><a href="#results"><i></i><span>Results</span></a></li><li><a href="#reflect"><i></i><span>Reflection</span></a></li></ol></nav>
+<nav class="chap" aria-label="Chapters"><button class="chap-btn" type="button" aria-expanded="false"><span class="chap-now">Overview</span><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><ol><li><a href="#why"><i></i><span>Overview</span></a></li><li><a href="#current"><i></i><span>Current journey</span></a></li><li><a href="#landscape"><i></i><span>Themes on the journey</span></a></li><li><a href="#t1"><i></i><span>#1 Renters</span></a></li><li><a href="#t2"><i></i><span>#2 Hotspots</span></a></li><li><a href="#t3"><i></i><span>#3 Trust</span></a></li><li><a href="#t4"><i></i><span>#4 Lived experience</span></a></li><li><a href="#t5"><i></i><span>#5 Buyers loop</span></a></li><li><a href="#t6"><i></i><span>#6 Lead quality</span></a></li><li><a href="#t7"><i></i><span>#7 Investors</span></a></li><li><a href="#results"><i></i><span>Results</span></a></li><li><a href="#reflect"><i></i><span>Reflection</span></a></li></ol></nav>
 <nav class="pill" aria-label="Main">
   <a href="../index.html#home">Home</a>
   <a href="../index.html#work">Work</a>
@@ -1065,6 +1081,23 @@
   </div>
   <div class="ticker reveal" style="margin-top:56px" aria-label="Photos from the cross-functional workshop"><div class="ticker-track"><img src="home-buying/ws-1.jpg?v=1" alt="The room set up for the Mapping Home Buying workshop" width="1050" height="1400"><img src="home-buying/ws-2.jpg?v=1" alt="Mapping a first-time buyer persona and journey with sticky notes" width="1400" height="1050"><img src="home-buying/ws-3.jpg?v=1" alt="Kaif presenting the workshop agenda during team review and synthesis" width="1050" height="1400"><img src="home-buying/ws-4.jpg?v=1" alt="Teams discussing their persona and journey map" width="1400" height="1050"><img src="home-buying/ws-5.jpg?v=1" alt="The sample user persona template that guided each team" width="1400" height="787"><img src="home-buying/ws-6.jpg?v=1" alt="Cross-functional teams working through the journey together" width="1400" height="1050"><img src="home-buying/ws-7.jpg?v=1" alt="Product, business and tech teams in a breakout" width="1400" height="1050"></div></div>
   <div class="wrap">
+  </div>
+</section>
+
+<section class="cj" id="current">
+  <div class="wide">
+    <div class="head reveal" style="text-align:center;margin-bottom:36px"><span class="tag">Where Housing stood</span><h2 class="h2">The current journey stages</h2><p class="sub" style="max-width:720px;margin-inline:auto">Before solving anything, we mapped how buying actually happens today. Housing played in only two of nine stages. Everything before and after was an opportunity.</p></div>
+    <div class="cj-scroll reveal" tabindex="0" aria-label="Journey stages, scroll sideways on small screens">
+      <div class="cj-grid">
+        <ol class="cj-stages"><li class=""><span class="cj-n">01</span><b>Inventory communication</b><p>Developers push inventory via brokers, ads and networks, with limited clarity</p></li><li class=""><span class="cj-n">02</span><b>Internal trigger</b><p>Life-stage needs or investment discussions spark intent socially. Mostly FTBs</p></li><li class=""><span class="cj-n">03</span><b>External trigger / opportunity</b><p>Informal networks, like laundry staff and security guards, shape early perception of areas and projects</p></li><li class="cj-in"><span class="cj-n">04</span><b>Lead generation</b><p>Fragmented leads: FTBs via platforms and word of mouth, IBs via broker networks, databases and apps</p></li><li class="cj-in"><span class="cj-n">05</span><b>Understanding options</b><p>Buyers explore across platforms, brokers and networks to decode scattered info. Mostly FTBs</p></li><li class=""><span class="cj-n">06</span><b>Shortlisting</b><p>Options narrowed via brokers and other buyers, based on budget, location and value</p></li><li class=""><span class="cj-n">07</span><b>Evaluation</b><p>Deep comparison via digital and physical site visits, discussions and trade-offs</p></li><li class=""><span class="cj-n">08</span><b>Validation</b><p>Trust built via brokers, banks, family, physical verification, websites and videos</p></li><li class=""><span class="cj-n">09</span><b>Transaction</b><p>Final closure happens offline, via broker or developer negotiation and paperwork</p></li></ol>
+        <div class="cj-bands">
+          <span class="cj-band op" style="grid-column:1 / span 3">&larr; Opportunity areas &rarr;</span>
+          <span class="cj-band in" style="grid-column:4 / span 2">&larr; Housing currently plays only here &rarr;</span>
+          <span class="cj-band op" style="grid-column:6 / span 4">&larr; Opportunity areas &rarr;</span>
+        </div>
+      </div>
+    </div>
+    <p class="cj-note reveal">The seven themes below come out of these gaps, most of them in the stages where Housing wasn&#8217;t yet present.</p>
   </div>
 </section>
 
