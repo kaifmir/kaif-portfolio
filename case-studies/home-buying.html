@@ -1566,7 +1566,7 @@
     root.querySelectorAll(".hsp-pane[data-i='0'] .hc").forEach(c => c.addEventListener("click", () => later(() => goMap(+c.dataset.spot))));
     root.querySelector(".map-back").addEventListener("click", () => show(0));
     // hover for a moment on a highlighted section to zoom in
-    const lens = root.querySelector(".hsp-lens"), inner = lens.firstElementChild; let timer;
+    const lens = root.querySelector(".hsp-lens"), inner = lens.querySelector(".hsp-lens-in"); let timer;
     lens.querySelector(".lens-x").addEventListener("click", e => { e.stopPropagation(); close(); });
     const open = el => {
       const lw = Math.min(560, innerWidth * .92); inner.style.setProperty("--lz", lw / 360); inner.innerHTML = "";
