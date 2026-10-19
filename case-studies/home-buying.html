@@ -994,6 +994,9 @@
   .hsp-lens-in .hn, .hsp-lens-in .mc-row-wrap { position: relative; left: 0; right: 0; top: 0; animation: none; box-shadow: none; border-radius: 0; }
   .hsp-lens-in .hl-tag { display: none; }
   @media (max-width: 900px) { .hsp { grid-template-columns: 1fr; gap: 28px; } .hsp-tip { display: none; } }
+  /* text follows the grid: headings and paragraphs run the full width of their container */
+  .head, .sol-sec .wide > .head, .theme-head, .chapter .h2, .thread, .cj-note, .stage-band .sub,
+  .hero .intro, .pdp-note, .sc-b > p, .sc-cmp p, .quote, .q.q-full > .reveal:first-child { max-width: none; }
 </style>
 </head>
 <body>
@@ -1086,7 +1089,7 @@
 
 <section class="cj" id="current">
   <div class="wide">
-    <div class="head reveal" style="text-align:center;margin-bottom:36px"><span class="tag">Where Housing stood</span><h2 class="h2">The current journey stages</h2><p class="sub" style="max-width:720px;margin-inline:auto">Before solving anything, we mapped how buying actually happens today. Housing played in only two of nine stages. Everything before and after was an opportunity.</p></div>
+    <div class="head reveal" style="text-align:center;margin-bottom:36px"><span class="tag">Where Housing stood</span><h2 class="h2">The current journey stages</h2><p class="sub">Before solving anything, we mapped how buying actually happens today. Housing played in only two of nine stages. Everything before and after was an opportunity.</p></div>
     <div class="cj-scroll reveal" tabindex="0" aria-label="Journey stages, scroll sideways on small screens">
       <div class="cj-grid">
         <ol class="cj-stages"><li class=""><span class="cj-n">01</span><b>Inventory communication</b><p>Developers push inventory via brokers, ads and networks, with limited clarity</p></li><li class=""><span class="cj-n">02</span><b>Internal trigger</b><p>Life-stage needs or investment discussions spark intent socially. Mostly FTBs</p></li><li class=""><span class="cj-n">03</span><b>External trigger / opportunity</b><p>Informal networks, like laundry staff and security guards, shape early perception of areas and projects</p></li><li class="cj-in"><span class="cj-n">04</span><b>Lead generation</b><p>Fragmented leads: FTBs via platforms and word of mouth, IBs via broker networks, databases and apps</p></li><li class="cj-in"><span class="cj-n">05</span><b>Understanding options</b><p>Buyers explore across platforms, brokers and networks to decode scattered info. Mostly FTBs</p></li><li class=""><span class="cj-n">06</span><b>Shortlisting</b><p>Options narrowed via brokers and other buyers, based on budget, location and value</p></li><li class=""><span class="cj-n">07</span><b>Evaluation</b><p>Deep comparison via digital and physical site visits, discussions and trade-offs</p></li><li class=""><span class="cj-n">08</span><b>Validation</b><p>Trust built via brokers, banks, family, physical verification, websites and videos</p></li><li class=""><span class="cj-n">09</span><b>Transaction</b><p>Final closure happens offline, via broker or developer negotiation and paperwork</p></li></ol>
@@ -1106,7 +1109,7 @@
     <span class="num" aria-hidden="true">01</span>
     <span class="tag">The landscape</span>
     <h2 class="h2">Seven themes, mapped to the journey</h2>
-    <p class="sub" style="max-width:760px;margin-inline:auto">Home buying isn't one moment. We placed every theme where it shows up in the journey, prioritised them by impact vs effort, and solved the low-hanging fruit first.</p>
+    <p class="sub">Home buying isn't one moment. We placed every theme where it shows up in the journey, prioritised them by impact vs effort, and solved the low-hanging fruit first.</p>
   </div>
 </div>
 
@@ -1479,7 +1482,7 @@
 
 <section class="reflect" id="reflect">
   <div class="wrap">
-    <div class="head reveal" style="text-align:center;margin-bottom:36px"><span class="tag">Reflection</span><h2 class="h2">What I&#8217;d do differently</h2><p class="sub" style="max-width:680px;margin-inline:auto">The work moved leads and earned trust. Looking back critically, here is where the approach fell short, and what I&#8217;d change.</p></div>
+    <div class="head reveal" style="text-align:center;margin-bottom:36px"><span class="tag">Reflection</span><h2 class="h2">What I&#8217;d do differently</h2><p class="sub">The work moved leads and earned trust. Looking back critically, here is where the approach fell short, and what I&#8217;d change.</p></div>
     <div class="lrn-grid"><div class="lrn reveal"><b>Leads are a proxy, not the outcome.</b><p>We measured lifts in leads against production. The research&#8217;s core problem was deciding, and a lead doesn&#8217;t tell us whether a buyer decided faster or with more confidence.</p><p class="lrn-do"><span>Next time</span>Define success before building: site visits, repeat contacts and time-to-decision, with a clear definition of a high-intent lead.</p></div><div class="lrn reveal"><b>Quick wins favoured the top of the funnel.</b><p>Impact vs effort put discovery and trust signals first. The deepest finding, lived experience (#4), is still open, and #5 shipped as one slice of a much bigger looping problem.</p><p class="lrn-do"><span>Next time</span>Pair every quick win with one long bet funded in parallel, so the hard problems don&#8217;t wait for a quiet quarter.</p></div><div class="lrn reveal"><b>Effort was scored before data feasibility.</b><p>The hotspot comparison was designed before we knew the data side couldn&#8217;t support it in real time. Its effort score was wrong because the dependency was invisible.</p><p class="lrn-do"><span>Next time</span>Bring data and engineering into the scoring, and treat data availability as its own axis in prioritisation.</p></div><div class="lrn reveal"><b>Impact scores leaned on qualitative evidence.</b><p>The 68% quant survey ran after the qual themes were set, and validated only one of them. The other themes were scored on interviews and workshop judgement.</p><p class="lrn-do"><span>Next time</span>Size every theme quantitatively before the workshop, so impact is argued with numbers, not conviction.</p></div></div>
   </div>
 </section>
