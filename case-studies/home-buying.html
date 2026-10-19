@@ -496,8 +496,6 @@
   .trust-steps li.stopgap { background: #fff; border: 1.5px dashed var(--line); }
   .upd { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-family: "Rubik", var(--sans); font-size: 12px; line-height: 16px; color: #434343; background: #f2f3f8; border-radius: 8px; padding: 6px 10px; }
   .upd svg { color: #656565; }
-  .trust.solo { grid-template-columns: 1fr; }
-  .trust.solo .trust-steps { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
   .pdp-proto { margin: 48px 0 8px; display: grid; gap: 18px; }
   .pdp-head { display: grid; gap: 10px; justify-items: center; text-align: center; }
   .pdp-head h4 { font-weight: 800; font-size: 24px; line-height: 29px; letter-spacing: -.03em; }
@@ -1282,15 +1280,6 @@
   <div class="wide">
     <div class="head reveal" style="margin-bottom:40px"><span class="tag solved-tag">How we solved #3 · Trust</span><h2 class="h2">Bringing RERA, the trust factor, onto the listing</h2><p class="sub">Buyers were leaving Housing to verify projects on the RERA website. We wanted that trust to sit right beside the listing, so RERA became its anchor.</p></div>
     <div class="star-mini reveal"><div><span>Insight</span>Buyers leave the platform to verify listings on RERA</div><div><span>Design move</span>A RERA tag that links to the RERA website, status sourced from RERA, and developer ratings</div><div class="r"><span>Result</span>30% of users verify on RERA, with only 10% of them dropping the session</div></div>
-    <div class="trust solo">
-      <ol class="trust-steps">
-        <li class="reveal"><span>01</span><div><b>RERA is why buyers leave</b><p>Before committing, buyers left Housing to check the project on the RERA website. RERA is the factor they trust, so that is what we brought to the listing.</p></div></li>
-        <li class="reveal"><span>02</span><div><b>More than a tag: a way to verify</b><p>Instead of a static RERA badge, the tag <strong>opens that property&#8217;s page on the RERA website in a new tab</strong>, so buyers can verify it in one tap without hunting for it, or leaving Housing.</p></div></li>
-        <li class="reveal"><span>03</span><div><b>Status, straight from RERA</b><p>Every project status now <strong>comes directly from RERA</strong>, instead of the CRM team updating it by hand, so "ready to move" is verified, not just claimed.</p></div></li>
-        <li class="reveal"><span>04</span><div><b>A rating for the developer</b><p>Who's building it, with a star rating built from their track record: how many buyers they&#8217;ve delivered to, completion time against commitment, and their social score. It answers &ldquo;will this builder deliver?&rdquo; on the page itself.</p></div></li>
-        <li class="reveal stopgap"><span>05</span><div><b>The quick fix, while the API was built</b><p>Until RERA status was live, we showed <strong>when the property details were last updated</strong>, so buyers could judge freshness for themselves.</p><span class="upd"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5V8l2.4 1.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Updated 2 days ago</span></div></li>
-      </ol>
-    </div>
     <figure class="pdp-proto reveal">
       <div class="pdp-head">
         <span class="proto-k">Prototype &middot; New project page</span>
