@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Designing Houzy — Case Study — Kaif Saleem</title>
+<meta name="description" content="Designing Houzy: bringing photos, follow-ups and the property page into Housing.com's conversational AI, and taking it from app to web." />
+<link rel="icon" type="image/png" href="../assets/favicon.png" />
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400;1,500&family=Playfair+Display:ital,wght@0,600;1,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  /* Same tokens as the portfolio homepage and houzy.html */
+  :root {
+    --lime: #e4ff3a;
+    --ink: #171313;
+    --ink-70: rgba(23, 19, 19, .7);
+    --ink-50: rgba(23, 19, 19, .5);
+    --tint: rgba(23, 19, 19, .05);
+    --tint-2: rgba(23, 19, 19, .07);
+    --char: #3a3a3a;
+    --paper: #ffffff;
+    --line: #e7e7e7;
+    --note: #fff7c2;
+    --note-ink: #6b5800;
+    --sans: "Figtree", system-ui, sans-serif;
+    --serif: "Instrument Serif", Georgia, serif;
+    --pill: "Playfair Display", Georgia, serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); color: var(--ink); background: var(--paper); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; height: auto; }
+  .wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+
+  nav.pill { position: fixed; top: 22px; left: 50%; transform: translateX(-50%); z-index: 50; background: #fff; border-radius: 999px; padding: 14px 40px; display: flex; gap: 54px; box-shadow: 0 6px 24px rgba(0,0,0,.08); }
+  nav.pill a { font-size: 12px; line-height: 14.4px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-70); }
+  nav.pill a:hover { color: var(--ink); }
+
+  .dark { background: var(--char); color: #fff; background-image: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px); background-size: 4px 4px; }
+  .tag { display: inline-block; background: var(--lime); color: var(--ink); font-family: var(--pill); font-style: italic; font-weight: 600; font-size: 20px; line-height: 24px; letter-spacing: -.03em; padding: 6px 18px; border-radius: 999px; }
+  .h1 { font-weight: 900; font-size: clamp(40px, 5.6vw, 76px); line-height: 1.02; letter-spacing: -.05em; }
+  .h1 em, .h2 em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.02em; }
+  .h2 { font-weight: 800; font-size: clamp(30px, 3.4vw, 48px); line-height: 1.083; letter-spacing: -.04em; }
+  .h3 { font-weight: 800; font-size: 24px; line-height: 1.2; letter-spacing: -.03em; }
+  .sub { font-size: 20px; line-height: 30px; letter-spacing: -.03em; color: var(--ink-70); margin-top: 16px; }
+  .dark .sub { color: #c9c9c9; }
+  .head { max-width: 760px; margin: 0 0 48px; }
+  .head .h2 { margin-top: 18px; }
+  section { padding: 110px 0; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-50); }
+  .dark .eyebrow { color: #a9a9a9; }
+  p.body { font-size: 17px; line-height: 27px; color: var(--ink-70); letter-spacing: -.01em; }
+  .dark p.body { color: #d0d0d0; }
+
+  /* phone screen */
+  .screen { border-radius: 26px; overflow: hidden; border: 1px solid var(--line); background: #f6f6f6; box-shadow: 0 18px 40px rgba(0,0,0,.08); }
+  .dark .screen { border-color: #4a4a4a; }
+  figure figcaption { font-size: 14px; line-height: 20px; color: var(--ink-70); margin-top: 12px; }
+  figure figcaption b { display: block; color: var(--ink); font-weight: 700; }
+  .dark figure figcaption { color: #c9c9c9; } .dark figure figcaption b { color: #fff; }
+
+  /* hero */
+  .hero { padding: 170px 0 90px; }
+  .hero .lede { font-size: 22px; line-height: 32px; letter-spacing: -.03em; color: var(--ink-70); max-width: 700px; margin-top: 24px; }
+  .meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--line); }
+  .meta div span { display: block; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-50); margin-bottom: 6px; }
+  .meta div { font-weight: 700; font-size: 17px; }
+
+  /* journey */
+  .journey { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; }
+  .journey figure { position: relative; }
+  .journey .step { font-family: var(--pill); font-style: italic; font-weight: 600; font-size: 15px; background: var(--lime); color: var(--ink); border-radius: 999px; padding: 2px 10px; display: inline-block; margin-bottom: 10px; }
+
+  /* decisions */
+  .decision { display: grid; grid-template-columns: 1fr 1.15fr; gap: 64px; align-items: start; padding: 72px 0; border-top: 1px solid var(--line); }
+  .decision:first-of-type { border-top: 0; padding-top: 0; }
+  .decision .num { font-family: var(--serif); font-style: italic; font-size: 64px; line-height: 1; color: var(--ink-50); }
+  .decision .h3 { margin: 12px 0 14px; }
+  .opts { margin: 22px 0; display: grid; gap: 10px; }
+  .opt { display: grid; grid-template-columns: 92px 1fr; gap: 12px; font-size: 15px; line-height: 22px; padding: 12px 14px; border-radius: 14px; background: var(--tint); }
+  .opt b { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-50); padding-top: 2px; }
+  .opt.chosen { background: var(--ink); color: #fff; }
+  .opt.chosen b { color: var(--lime); }
+  .why { list-style: none; display: grid; gap: 10px; margin-top: 8px; }
+  .why li { font-size: 15px; line-height: 22px; color: var(--ink-70); padding-left: 22px; position: relative; }
+  .why li::before { content: "→"; position: absolute; left: 0; color: var(--ink); font-weight: 700; }
+  .shots { display: grid; gap: 14px; }
+  .shots.c2 { grid-template-columns: repeat(2, 1fr); }
+  .shots.c3 { grid-template-columns: repeat(3, 1fr); }
+  .shots.c4 { grid-template-columns: repeat(4, 1fr); }
+
+  /* before / after */
+  .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .ba .label { font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 10px; }
+  .ba .before .label { color: var(--ink-50); }
+  .ba .ph { aspect-ratio: 700/1340; border-radius: 26px; border: 1.5px dashed var(--ink-50); display: grid; place-items: center; text-align: center; padding: 20px; font-size: 14px; color: var(--ink-50); }
+
+  /* tables */
+  table { width: 100%; border-collapse: collapse; font-size: 16px; line-height: 24px; }
+  th { text-align: left; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-50); padding: 0 16px 14px 0; font-weight: 700; }
+  td { padding: 18px 16px 18px 0; border-top: 1px solid var(--line); vertical-align: top; color: var(--ink-70); }
+  td:first-child { color: var(--ink); font-weight: 700; width: 24%; }
+  .dark th { color: #a9a9a9; } .dark td { border-color: #555; color: #d0d0d0; } .dark td:first-child { color: #fff; }
+
+  /* two-col lists */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .card { border-radius: 24px; padding: 32px; background: var(--tint); }
+  .dark .card { background: rgba(255,255,255,.06); }
+  .card .h3 { margin-bottom: 14px; }
+  .card ul { list-style: none; display: grid; gap: 12px; }
+  .card li { font-size: 16px; line-height: 24px; color: var(--ink-70); padding-left: 18px; position: relative; }
+  .dark .card li { color: #d0d0d0; }
+  .card li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--lime); position: absolute; left: 0; top: 9px; }
+  .card:not(.dark *) li::before { background: var(--ink); }
+
+  /* metrics */
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .metric { border-radius: 24px; padding: 32px; background: rgba(255,255,255,.06); }
+  .metric .big { font-weight: 900; font-size: 64px; line-height: 1; letter-spacing: -.05em; color: var(--lime); }
+  .metric .what { font-weight: 700; margin: 10px 0 14px; color: #fff; }
+  .metric .cause { font-size: 15px; line-height: 22px; color: #c9c9c9; border-top: 1px solid #555; padding-top: 14px; }
+  .metric .cause b { color: #fff; }
+
+  /* states grid */
+  code { font-family: ui-monospace, Menlo, monospace; font-size: .86em; background: rgba(255,255,255,.1); padding: 1px 6px; border-radius: 6px; }
+  .states { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+
+  /* prep notes: visible while preparing, hidden for the public version */
+  .note { background: var(--note); color: var(--note-ink); border-radius: 14px; padding: 14px 16px; font-size: 14px; line-height: 21px; margin-top: 16px; }
+  .note::before { content: "FILL IN · "; font-weight: 800; letter-spacing: .08em; }
+  .note.talk::before { content: "SAY IT · "; }
+  .mins { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .12em; background: var(--note); color: var(--note-ink); padding: 3px 10px; border-radius: 999px; margin-left: 10px; vertical-align: middle; }
+  body:not(.prep) .note, body:not(.prep) .mins { display: none; }
+  .prep-toggle { position: fixed; right: 20px; bottom: 20px; z-index: 60; background: var(--ink); color: #fff; border: 0; border-radius: 999px; padding: 12px 18px; font: 700 13px var(--sans); letter-spacing: .04em; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+  .prep-toggle span { color: var(--lime); }
+
+  .next { padding: 90px 0 120px; text-align: center; }
+  .next a { display: inline-block; margin-top: 18px; font-weight: 800; font-size: clamp(28px, 3vw, 40px); letter-spacing: -.04em; border-bottom: 2px solid var(--ink); }
+
+  @media (max-width: 960px) {
+    .journey { grid-template-columns: repeat(3, 1fr); }
+    .decision { grid-template-columns: 1fr; gap: 32px; }
+    .states { grid-template-columns: repeat(3, 1fr); }
+    .metrics, .split { grid-template-columns: 1fr; }
+    .meta { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    nav.pill { gap: 22px; padding: 12px 22px; }
+    section { padding: 80px 0; }
+    .journey, .shots.c3, .shots.c4, .states { grid-template-columns: repeat(2, 1fr); }
+    .ba { grid-template-columns: 1fr 1fr; }
+    table, thead, tbody, tr, td, th { display: block; }
+    thead { display: none; }
+    td { padding: 6px 0; border: 0; } td:first-child { width: auto; padding-top: 18px; border-top: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body class="prep">
+
+<nav class="pill"><a href="../index.html">Home</a><a href="../index.html#work">Work</a><a href="../index.html#contact">Contact</a></nav>
+<button class="prep-toggle" id="prepToggle" aria-pressed="true">Prep notes: <span>ON</span></button>
+
+<!-- 0–3 min · role and thesis -->
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">UI craft · Conversational AI</span><span class="mins">0–3 MIN</span>
+    <h1 class="h1" style="margin-top:22px">Designing <em>Houzy</em></h1>
+    <p class="h3" style="margin-top:18px;font-weight:700;color:var(--ink-70)">Designed end to end, from first conversation to the moment a buyer decides</p>
+    <p class="lede">Houzy is India's first conversational AI for property search. I designed it end to end. First I built the foundations: its personality, conversation maps and chat interface. Then I took it from a text assistant to a place where buyers decide, with photos, follow-ups and the property page inside the conversation, across app, mobile web and desktop.</p>
+    <div class="meta">
+      <div><span>Role</span>Product Designer, end to end</div>
+      <div><span>Team</span>PM, ML, Android, iOS, Web</div>
+      <div><span>Platforms</span>App · mWeb · Desktop web</div>
+      <div><span>Timeline</span>V1 → V2 · 2026</div>
+    </div>
+    <p class="note">Confirm your exact timeline (when V1 design started) and team size. Jira lists Shashwat on the V1 app tickets (HD-5434, HD-5529, HD-5559). Be ready to say exactly what you did in V1, and credit collaborators by role. Clear attribution reads as Principal-level; vague attribution invites probing.</p>
+    <p class="note talk">"I designed Houzy end to end, in two phases. First, make a conversation buyers trust. Then, make it the place they decide. Throughout, the answers are unpredictable, so the interface has to be the predictable part."</p>
+  </div>
+</header>
+
+<!-- 3–8 min · problem, stakes, constraints -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Problem, stakes, constraints</span><span class="mins">3–8 MIN · 3 SLIDES MAX</span>
+      <h2 class="h2">Buyers think in sentences. <em>Search made them think in filters.</em></h2>
+    </div>
+    <div class="split" style="grid-template-columns:repeat(3,1fr)">
+      <div class="card">
+        <h3 class="h3">The gap</h3>
+        <ul>
+          <li>Buyers describe homes in sentences ("something peaceful, close to my parents, good for a family"). Search needs exact filters and multiple attempts.</li>
+          <li>The existing WhatsApp bot couldn't show photos well, and its links broke when buyers moved to the app.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="h3">The stakes</h3>
+        <ul>
+          <li>The product team's own risk statement: Houzy could become "a novelty Q&amp;A feature rather than a core property discovery tool".</li>
+          <li>Buyers increasingly expect a conversation, not a form, and competitors abroad had already launched one.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="h3">The constraints</h3>
+        <ul>
+          <li>An LLM decides the content: 1 photo or 16, an exact match or none, a reply in 2 seconds or 6.</li>
+          <li>Engineering bandwidth was tight and the ML output was still stabilising, so every pattern had to be cheap to build and safe to fail.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- end to end · two phases -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">End to end</span>
+      <h2 class="h2">Two phases: <em>trust the conversation</em>, then <em>decide inside it</em></h2>
+    </div>
+    <div class="split">
+      <div class="card">
+        <span class="eyebrow">Phase 1 · V1, Android app</span>
+        <h3 class="h3" style="margin-top:10px">Make a conversation buyers trust</h3>
+        <ul>
+          <li>Personality: a collaborative guide, not an authority. One question at a time, short messages, warm but professional.</li>
+          <li>Failure playbook: ambiguous, out-of-scope and frustrated queries each get a way forward.</li>
+          <li>Slot-based conversation maps, so Houzy knows when to answer, when to ask and when to recover.</li>
+          <li>The chat interface: first open, property cards, login only when acting, feedback, shortlist, loading and error states.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Phase 2 · V2, app + web</span>
+        <h3 class="h3" style="margin-top:10px">Make it the place buyers decide</h3>
+        <ul>
+          <li>The property page inside Houzy, with an ask box for that home.</li>
+          <li>Photos, floor plans, price trends and ratings as rich messages, not text dumps.</li>
+          <li>Follow-up pills, Seen/Contacted tags, dates and recovery when nothing matches.</li>
+          <li>From app-only to mobile web and desktop, as one chat system.</li>
+        </ul>
+      </div>
+    </div>
+    <figure style="margin-top:32px"><img src="houzy/conversation-map.jpg?v=1" alt="Slot-based conversation map" style="border-radius:24px;border:1px solid var(--line)" /><figcaption><b>Conversation map</b>Each request is mapped to the slots a buyer gives (project, location, configuration), so Houzy resolves, clarifies or recovers instead of guessing.</figcaption></figure>
+    <p class="note talk">Spend about 60 seconds here. The personality and conversation design make the UI decisions make sense, but the panel is scoring craft, so get to the screens.</p>
+  </div>
+</section>
+
+<!-- 8–12 min · hero journey -->
+<section class="dark">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">The end-to-end journey</span><span class="mins">8–12 MIN · UI ON SCREEN BY MINUTE 8</span>
+      <h2 class="h2">From a question to a contact request, <em>without leaving the thread</em></h2>
+      <p class="sub">Both phases in one path. Each step is a decision I'll unpack next.</p>
+    </div>
+    <div class="journey">
+      <figure><span class="step">1 · Ask</span><img class="screen" src="houzy/start-1.jpg?v=2" alt="Houzy first open with greeting and suggested prompts" /><figcaption><b>Start</b>Suggested prompts and a visible AI disclaimer.</figcaption></figure>
+      <figure><span class="step">2 · Narrow</span><img class="screen" src="houzy/pills-1.jpg?v=2" alt="Budget follow-up pills under results" /><figcaption><b>Follow-up pills</b>The next choice, one tap away.</figcaption></figure>
+      <figure><span class="step">3 · See</span><img class="screen" src="houzy/images-3.jpg?v=2" alt="Bedroom photos in a 2 by 2 grid" /><figcaption><b>Photos in chat</b>No detour to the property page.</figcaption></figure>
+      <figure><span class="step">4 · Recover</span><img class="screen" src="houzy/notfound-1.jpg?v=2" alt="No results with alternatives" /><figcaption><b>No dead ends</b>Alternatives with real counts.</figcaption></figure>
+      <figure><span class="step">5 · Go deep</span><img class="screen" src="houzy/pdp-2.jpg?v=2" alt="Property page inside Houzy with ask bar" /><figcaption><b>Property page in Houzy</b>Ask about this home, in place.</figcaption></figure>
+      <figure><span class="step">6 · Answer</span><img class="screen" src="houzy/pdp-4.jpg?v=2" alt="Houzy answer over the property page" /><figcaption><b>Answer in context</b>The home stays visible.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 12–25 min · design deep dive -->
+<section>
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Design deep dive</span><span class="mins">12–25 MIN · 4 DECISIONS, ~3 MIN EACH</span>
+      <h2 class="h2">Four decisions, <em>across both phases</em></h2>
+      <p class="sub">For each one: what was broken, the options I weighed, what I chose and why.</p>
+    </div>
+
+    <!-- Decision · property card (V1) -->
+    <div class="decision">
+      <div>
+        <div class="num">01</div>
+        <h3 class="h3">A property card that earns trust before it shows the price</h3>
+        <p class="body"><b>Phase 1.</b> In chat, a card gets a fraction of the space of a search results card. I had to decide what a buyer needs to see first to believe an AI's recommendation, and how little it takes to act on it.</p>
+        <div class="opts">
+          <div class="opt"><b>Option A</b>A text list from the model. Cheap, but you can't verify it or act on it, and it reads like a guess.</div>
+          <div class="opt"><b>Option B</b>The full search results card. Familiar, but two cards fill the screen and push the conversation away.</div>
+          <div class="opt chosen"><b>Chosen</b>A compact card: RERA and status tags → BHK and project → area → locality → price → Learn more / Contact. The next card peeks in from the right.</div>
+        </div>
+        <ul class="why">
+          <li>RERA comes first because in this market, verification is the first question.</li>
+          <li>The price is the largest text, so it can be compared across cards at a glance.</li>
+          <li>Only Contact is filled purple: one primary action per card.</li>
+          <li>The peeking card tells you it swipes, with no dots or arrows.</li>
+          <li>Login appears as a sheet only when the buyer acts, and the thread is still there afterwards.</li>
+        </ul>
+      </div>
+      <div class="shots c2">
+        <figure><img class="screen" src="houzy/cards-1.jpg?v=2" alt="Property card in chat" /><figcaption><b>The card</b>Trust → identity → price → action</figcaption></figure>
+        <figure><img class="screen" src="houzy/cards-2.jpg?v=2" alt="Login sheet when acting" /><figcaption><b>Login only when acting</b>A sheet; the thread stays put</figcaption></figure>
+      </div>
+    </div>
+
+    <!-- Decision 1 · PDP overlay -->
+    <div class="decision">
+      <div>
+        <div class="num">02</div>
+        <h3 class="h3">Bring the property page into the conversation</h3>
+        <p class="body"><b>Phase 2.</b> Tapping a card in Houzy redirected to the full property page. Two things broke. To compare the next home, buyers had to back all the way out and re-enter. And on the property page, they could no longer ask Houzy anything.</p>
+        <div class="opts">
+          <div class="opt"><b>Before</b>Full redirect. The explore loop dies, and the property page shows its own seller chat, a second chat that can't answer the same things.</div>
+          <div class="opt"><b>Option</b>A lighter bottom-sheet quick view with key data. Cheaper, but it still sends the buyer out for anything deeper.</div>
+          <div class="opt chosen"><b>Chosen</b>An in-context overlay: swipe between the carousel's properties, and a floating ask box scoped to that home, answered by Houzy.</div>
+        </div>
+        <ul class="why">
+          <li><b>One conversational voice per screen.</b> I removed the three seller-chat entry points, so it's always clear who you're talking to.</li>
+          <li><b>Close (×), not Back.</b> The overlay feels temporary, so you know the chat is right underneath.</li>
+          <li><b>Starter questions by property type.</b> New projects get possession, amenities, configurations and landmarks. Resale gets floor/facing and area. Rent gets price breakup, furnishing and parking.</li>
+          <li><b>Answer windows.</b> Short answers return to the main chat. Long ones stay in a scrolling answer window over the page, capped in height so the hero image stays visible.</li>
+          <li><b>Trimmed page.</b> Similar, compare and recommendation sections were removed; inside Houzy, the conversation does that job.</li>
+        </ul>
+        <p class="note">Confirm the child-chat max height you chose and why. Add your timeout and no-internet designs for the child chat (engineering flagged these as missing). Figma 9041-2345.</p>
+      </div>
+      <div>
+        <div class="ba">
+          <div class="before"><div class="label">Before</div><div class="ph">Add the old screen: a card tap leaves Houzy for the full property page, with seller chat CTAs</div></div>
+          <div class="after"><div class="label">After</div><img class="screen" src="houzy/pdp-2.jpg?v=2" alt="In-context property page with docked Ask Houzy" /></div>
+        </div>
+        <p class="body" style="margin-top:16px;font-size:15px">Clickable prototype: <a href="https://tubular-nougat-d10be6.netlify.app/" style="border-bottom:1px solid">tubular-nougat-d10be6.netlify.app</a></p>
+      </div>
+    </div>
+
+    <!-- Decision 2 · Gallery -->
+    <div class="decision">
+      <div>
+        <div class="num">03</div>
+        <h3 class="h3">Photos in the chat, because hiding them read as hiding something</h3>
+        <p class="body"><b>Phase 2.</b> Seeing photos meant going from carousel to property page to gallery. When buyers typed "show me the bedrooms", Houzy's wording made them think the images were fake or the app was broken. In a market with low trust, a missing photo reads as evasive.</p>
+        <div class="opts">
+          <div class="opt"><b>Option A</b>A link out to the property gallery. Quick to build, but it's the same detour that caused the problem.</div>
+          <div class="opt"><b>Option B</b>A fixed carousel or grid. It hides how many photos exist, or leaves broken-looking gaps at 1 or 3.</div>
+          <div class="opt chosen"><b>Chosen</b>Photos inline, with a layout per count (1 · 2 · 3 · 4 · 4+) and a sentence built from the data: "This property has 2 bedrooms, here are the photos".</div>
+        </div>
+        <ul class="why">
+          <li>1 photo at its own aspect ratio, 2 side by side, 3 as one large and two small, 4+ as a grid with "+N". No count produces an empty cell.</li>
+          <li>"+N" opens the full gallery on that room, with a Close button instead of Back so the chat is preserved underneath.</li>
+          <li>If a room has no photos, Houzy says so for that room only and offers rooms that do. It never gives a blanket "no images".</li>
+          <li>Room synonyms (hall = living room, washroom = bathroom) mean the buyer's words always work.</li>
+        </ul>
+      </div>
+      <div class="shots c2">
+        <figure><img class="screen" src="houzy/images-4.jpg?v=2" alt="Single photo layout" /><figcaption><b>1 photo</b>Own aspect ratio</figcaption></figure>
+        <figure><img class="screen" src="houzy/images-5.jpg?v=2" alt="Two photos side by side" /><figcaption><b>2 photos</b>Side by side</figcaption></figure>
+        <figure><img class="screen" src="houzy/images-6.jpg?v=2" alt="Three photo layout" /><figcaption><b>3 photos</b>One large, two small</figcaption></figure>
+        <figure><img class="screen" src="houzy/images-3.jpg?v=2" alt="Four photos in grid with +12" /><figcaption><b>4+ photos</b>Grid with +N</figcaption></figure>
+      </div>
+    </div>
+
+    <!-- Decision 3 · Follow-up pills -->
+    <div class="decision">
+      <div>
+        <div class="num">04</div>
+        <h3 class="h3">Pills when Houzy can predict, conversation when the buyer needs room</h3>
+        <p class="body"><b>Phase 2.</b> Follow-up questions were buried in prose ("…or specify your maximum budget"). Buyers didn't know what to ask next, and conversations stalled. But turning every question into buttons would make Houzy feel like a form, which is the very thing it replaced.</p>
+        <div class="opts">
+          <div class="opt"><b>Before</b>Choices written inside the reply. Easy to miss, and the buyer has to type them out.</div>
+          <div class="opt"><b>Option</b>Pills everywhere. Fast, but rigid and form-like, and it quietly takes away free text.</div>
+          <div class="opt chosen"><b>Chosen</b>A rule: show pills only when Houzy can confidently predict the next step (after results, at evaluation and at decision points). Keep conversation for subjective or multi-part intent.</div>
+        </div>
+        <ul class="why">
+          <li><b>Concrete values, not prompts.</b> "2 BHK · 3 BHK · 1 BHK", ordered by popularity, not "Choose BHK".</li>
+          <li><b>Five inventory rules:</b> no dead-end pills; only values that exist in these results; each dimension in its own group; skip non-choices (if every result is 2 BHK, don't ask); recalculate on every refresh.</li>
+          <li>Pills are shortcuts, never the only path. The text box is always there.</li>
+          <li>Pills are outlined and neutral, so they never compete with the purple Contact button.</li>
+        </ul>
+      </div>
+      <div class="shots c2">
+        <figure><img class="screen" src="houzy/pills-1.jpg?v=2" alt="Budget pills" /><figcaption><b>Budget</b>One dimension, concrete ranges</figcaption></figure>
+        <figure><img class="screen" src="houzy/pills-5.jpg?v=2" alt="Budget and BHK pills" /><figcaption><b>Budget + BHK</b>Grouped by dimension</figcaption></figure>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Smaller craft details -->
+<section style="background:#f6f6f6">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Details</span>
+      <h2 class="h2">Small decisions that <em>add up to trust</em></h2>
+      <p class="sub">An AI fails more often than a form does, so its states and details are part of the main experience.</p>
+    </div>
+    <div class="states">
+      <figure><img class="screen" src="houzy/specify-5.jpg?v=2" alt="Loading state" /><figcaption><b>Waiting that talks</b>Copy changes every 3s: "Running through the details…" → "Still working on it…". About 40% of internal testers said the bot felt slow.</figcaption></figure>
+      <figure><img class="screen" src="houzy/edge-2.jpg?v=2" alt="Network lost inline" /><figcaption><b>Network lost</b>Inline, where the answer would be, with Retry</figcaption></figure>
+      <figure><img class="screen" src="houzy/edge-3.jpg?v=2" alt="Request timed out" /><figcaption><b>Timed out</b>Same slot, same recovery</figcaption></figure>
+      <figure><img class="screen" src="houzy/fp-empty.png?v=1" alt="Empty floor plan" /><figcaption><b>No floor plan yet</b>Contact becomes the next step</figcaption></figure>
+      <figure><img class="screen" src="houzy/edge-4.jpg?v=2" alt="Houzy docked during page scroll" /><figcaption><b>On scroll</b>Houzy stays docked</figcaption></figure>
+    </div>
+    <div class="split" style="margin-top:40px;grid-template-columns:repeat(2,1fr)">
+      <div class="card"><h3 class="h3">Never a dead end</h3><ul><li>When nothing matches, each alternative relaxes one filter and shows what it unlocks ("Nearby localities · +9 homes").</li><li>An option only appears if it unlocks at least 3 homes. When budget is the blocker, Houzy shows the real market price.</li></ul></div>
+      <div class="card"><h3 class="h3">Dates, not timestamps</h3><ul><li>No time on AI replies: they arrive in seconds, so a time adds nothing.</li><li>The date started as a sticky bar; it became a pill that shows only while scrolling, then fades.</li></ul></div>
+      <div class="card"><h3 class="h3">Seen and Contacted</h3><ul><li>A small corner tag that never covers price or photo. Contacted beats Seen beats nothing.</li><li>Seen expires (15 days for resale and rent, 30 for projects). Contacted never does.</li></ul></div>
+      <div class="card"><h3 class="h3">Data as cards, not text</h3><ul><li>Price trends lead with the year-on-year verdict and show the change in ₹ per sq ft, which is more honest than a percentage alone.</li><li>Ratings use sentiment-coloured bars, so strengths and concerns don't look identical.</li></ul></div>
+    </div>
+    <p class="note">The price trends and ratings cards (HD-5695/5696) are still To Do in Jira, but the ratings prototype exists (loquacious-chebakia-d857f4.netlify.app). Show them as "designed, shipping next", or cut.</p>
+  </div>
+</section>
+
+<!-- 25–30 min · systems -->
+<section class="dark">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">System thinking</span><span class="mins">25–30 MIN</span>
+      <h2 class="h2">Bricks foundations, <em>Houzy-owned components</em></h2>
+      <p class="sub">The rule I designed by: Houzy inherits every foundation from Bricks, Housing's design system (type, colour, spacing, radius, the property card's anatomy), but owns the components a conversation needs. It should feel like a native part of Housing, while being clearly the AI part.</p>
+    </div>
+
+    <figure><img src="houzy/figma/cards.png" alt="Houzy property card variants" style="border-radius:20px;background:#f3f3f3" /><figcaption><b>8 card variants, one anatomy</b>Resale (project and non-project), rent, new project, no image, floor plan and empty floor plan. Same Bricks tokens as the search results card, resized for a chat column.</figcaption></figure>
+
+    <div class="split" style="margin-top:40px;grid-template-columns:repeat(3,1fr)">
+      <div class="card">
+        <span class="eyebrow">Derived from Bricks</span>
+        <h3 class="h3" style="margin-top:10px">Foundations, token for token</h3>
+        <ul>
+          <li><b>Type:</b> Rubik via <code>brand_font</code>. Price in <code>title_xl_m</code> (18/20), project name in <code>title_m_m</code>, messages in <code>title_m_r</code>, tags in <code>caption_xs</code>, buttons in <code>label_m_m</code>.</li>
+          <li><b>Colour:</b> <code>background/brand/primary</code> for Contact and Send only; <code>stroke/brand</code> outline for secondary actions; RERA and Verified tags use <code>text/semantic/success</code> on <code>background/semantic/success</code>.</li>
+          <li><b>Layout:</b> <code>space/2xs · s · m</code> (4 · 12 · 16), <code>radius/s</code> (8) on buttons, <code>border/default</code> and <code>stroke/primary</code> dividers.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Defined in Houzy</span>
+        <h3 class="h3" style="margin-top:10px">What a conversation needs</h3>
+        <ul>
+          <li><b>Asymmetric messages:</b> the buyer's words sit in a white bubble; Houzy's answer sits on the canvas with no bubble, so it reads as content, not chatter.</li>
+          <li><b>Scoped question:</b> a "↳ Evolvus Phase 1" quote above a question asked from a property page, so you know which home it's about.</li>
+          <li><b>Floating pill header:</b> back button plus "Houzy · BETA · ⓘ", with no app bar. Content scrolls underneath and the beta status stays visible.</li>
+          <li><b>Composer states:</b> Default, Fill, Long message; Send turns brand purple only when there's something to send; Stop and Next.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Defined in Houzy</span>
+        <h3 class="h3" style="margin-top:10px">Rich answers</h3>
+        <ul>
+          <li><b>"Did you mean one of these?"</b> Each option labelled with its type (Locality, Developer, City, Landmark), paged "1 of 2", with "Something else" or Skip. The conversation map, made visible.</li>
+          <li><b>AI answer cards:</b> loading skeleton, brochure, locality (Rating ★4/5 and Growth ▲26.7% YoY tiles) and property.</li>
+          <li><b>Carousel end:</b> a "View more" card that grows as you pull, from a minimum to a maximum state.</li>
+          <li><b>Quiet tags:</b> Seen and Contacted in grey <code>caption_xs_r</code>, so they never compete with the green RERA tag.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="shots c4" style="margin-top:40px;align-items:start">
+      <figure><img src="houzy/figma/searchbar.png" alt="Composer and disambiguation states" style="border-radius:16px" /><figcaption><b>Composer and "Did you mean"</b>Slot clarification as UI</figcaption></figure>
+      <figure><img src="houzy/figma/aicards.png" alt="AI answer cards" style="border-radius:16px" /><figcaption><b>Answer cards</b>Skeleton, brochure, locality, property</figcaption></figure>
+      <figure><img src="houzy/figma/pills.png" alt="Starter prompt pills with category icons" style="border-radius:16px" /><figcaption><b>Starter prompts</b>The only place Houzy uses multicolour icons: categories you can recognise before you read</figcaption></figure>
+      <figure><img src="houzy/figma/logos.png" alt="Houzy mark explorations" style="border-radius:16px;max-width:90px;margin:auto" /><figcaption><b>The mark</b>Housing's purple and yellow, reshaped into an AI sparkle</figcaption></figure>
+    </div>
+
+    <div class="card" style="margin-top:40px">
+      <span class="eyebrow">Governance · where it drifted</span>
+      <h3 class="h3" style="margin-top:10px">What the audit found, and what I'd fix</h3>
+      <ul>
+        <li>The locality picker and options list still use the older Housing tokens (<code>text_colors/grey/500</code>, <code>background_&amp;_surface_colors/low_impact</code>, a hard-coded <code>subtitles/12-400</code>), not Bricks.</li>
+        <li>One chat bubble spec uses Google Sans Flex, a third type system, instead of Rubik.</li>
+        <li>A local <code>Neutral #323232</code> variable in the header and screens has no Bricks equivalent.</li>
+        <li><b>Fix:</b> rebind these to Bricks tokens, and propose the chat patterns (composer, answer cards, quiet tags) back to Bricks as a conversational layer, so the next AI surface starts from them.</li>
+      </ul>
+    </div>
+    <p class="note">Check the three drift items in Figma before you say them out loud. This is your strongest "where the system didn't fit" answer. If you've already started rebinding them, say so.</p>
+  </div>
+</section>
+
+<!-- 30–35 min · influence and AI practice -->
+<section>
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Influence, leadership and AI</span><span class="mins">30–35 MIN</span>
+      <h2 class="h2">How the work <em>got made</em></h2>
+    </div>
+    <div class="split">
+      <div class="card">
+        <h3 class="h3">When engineering said "not now"</h3>
+        <ul>
+          <li><b>Situation:</b> the web engineering lead pushed back on the property page overlay. He said there was no scalable way to swipe between properties without leaving Houzy, that it would be high effort and bug-prone, and suggested shipping without it and waiting for metrics.</li>
+          <li><b>My move:</b> <span class="note" style="display:inline;padding:2px 6px">what you did: the coded prototype? a reduced version? the "highest-intent moment" data?</span></li>
+          <li><b>Outcome:</b> <span class="note" style="display:inline;padding:2px 6px">what shipped, and when</span></li>
+        </ul>
+        <p class="note">Source: NPS-9839 comment, 7 Aug 2026 (sachin.agrawal1). Jira doesn't record the outcome. HD-5690 is Done, NPS-9839 is still Open. Add one line on raising the bar for other designers.</p>
+      </div>
+      <div class="card">
+        <h3 class="h3">AI in my workflow</h3>
+        <ul>
+          <li><b>I directed:</b> the interaction model, the pill rules and what each prototype had to prove.</li>
+          <li><b>AI generated:</b> coded, clickable prototypes (the property page overlay and ratings card) that engineering and product could actually use before committing.</li>
+          <li><b>I changed:</b> <span class="note" style="display:inline;padding:2px 6px">the specific things you corrected</span></li>
+        </ul>
+        <p class="note">Name your tools (Claude Code, Figma MCP, your Housing design skills) and your guardrails.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 35–40 min · outcomes -->
+<section class="dark">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Outcomes</span><span class="mins">35–40 MIN</span>
+      <h2 class="h2">Early numbers, <em>and what each feature is measured on</em></h2>
+      <p class="sub">Live to 20% of users in a controlled rollout. The north star: chat sessions where a lead is dropped.</p>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="big">3%</div><div class="what">Adoption among users with access</div><div class="cause"><b>Watch next:</b> desktop and mobile web sessions, now that Houzy isn't app-only.</div></div>
+      <div class="metric"><div class="big">3</div><div class="what">Queries per user</div><div class="cause"><b>Linked to:</b> follow-up pills, measured on % of sessions where pills are tapped and messages per conversation.</div></div>
+      <div class="metric"><div class="big">+0.67%</div><div class="what">More leads overall via Houzy</div><div class="cause"><b>Linked to:</b> the property page in Houzy and photos in chat, measured on % of sessions with a lead after viewing.</div></div>
+    </div>
+    <p class="note">The numbers above come from your earlier case study; Jira only holds the definitions (results are in the success-metrics sheet). Pull per-feature results if you can. Otherwise say "this is what it's measured on" rather than "this caused it".</p>
+  </div>
+</section>
+
+<!-- reflection + domain bridge -->
+<section>
+  <div class="wrap">
+    <div class="split">
+      <div class="card">
+        <span class="eyebrow">If I went back</span>
+        <h3 class="h3" style="margin-top:10px">What I'd do differently</h3>
+        <ul>
+          <li><span class="note" style="display:inline;padding:2px 6px">e.g. design the error states for the property page answer window up front. Engineering had to ask for them.</span></li>
+          <li><span class="note" style="display:inline;padding:2px 6px">e.g. design V1 around the ML's real limits sooner. Floor plans, photos and streaming slipped out of V1 because the model couldn't support them yet; phase 2 had to add them.</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Why this transfers</span>
+        <h3 class="h3" style="margin-top:10px">Designing trust into high-stakes flows</h3>
+        <ul>
+          <li>Show, don't claim: photos in chat because hiding them read as evasive.</li>
+          <li>Disclosure up front: the AI disclaimer, and RERA before the price.</li>
+          <li>Honest gaps: real market prices instead of a vague "no results".</li>
+          <li>One voice per screen, so users always know who's answering.</li>
+        </ul>
+        <p class="note talk">For the protection and fintech question, pair this with your Payments work: home page trust (HD-5175), adding a beneficiary (HD-5174) and NPCI feedback for BBPS (HD-5182).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="next">
+  <span class="eyebrow">Second case study</span>
+  <div><a href="bricks.html">Bricks Design System →</a></div>
+</div>
+
+<script>
+  const btn = document.getElementById('prepToggle');
+  btn.addEventListener('click', () => {
+    const on = document.body.classList.toggle('prep');
+    btn.setAttribute('aria-pressed', on);
+    btn.querySelector('span').textContent = on ? 'ON' : 'OFF';
+  });
+</script>
+</body>
+</html>

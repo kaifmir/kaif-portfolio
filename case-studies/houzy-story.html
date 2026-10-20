@@ -1,0 +1,1122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Designing Houzy — Kaif Saleem</title>
+<meta name="description" content="An interactive case study told through a buyer's eyes: the psychology and design decisions behind Houzy, Housing.com's conversational AI for property search." />
+<link rel="icon" type="image/png" href="../assets/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400&family=Rubik:wght@400;500&family=Playfair+Display:ital,wght@1,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --lime: #e4ff3a;
+    --ink: #171313;
+    --ink-70: rgba(23,19,19,.7);
+    --ink-50: rgba(23,19,19,.5);
+    --line: rgba(23,19,19,.1);
+    --stage: #15120e;
+    --stage-2: #211d18;
+    --paper: #fbfaf6;
+    --cream: #fff6d6;
+    --sans: "Figtree", system-ui, sans-serif;
+    --serif: "Instrument Serif", Georgia, serif;
+    --pill: "Playfair Display", Georgia, serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: var(--sans); background: var(--stage); color: #fff; -webkit-font-smoothing: antialiased; overflow: hidden; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; }
+
+  /* chrome */
+  .top { position: fixed; inset: 0 0 auto 0; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 20; }
+  .top a, .count { font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.55); text-decoration: none; }
+  .top a:hover { color: #fff; }
+  .bar { position: fixed; left: 0; top: 0; height: 3px; background: var(--lime); width: 0; transition: width .35s ease; z-index: 21; }
+  .controls { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; align-items: center; z-index: 20; }
+  .controls button { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.06); color: #fff; font: 700 18px var(--sans); cursor: pointer; }
+  .controls button:hover { background: var(--lime); color: var(--ink); }
+  .controls button:disabled { opacity: .3; cursor: default; background: transparent; color: #fff; }
+  .hint { font-size: 12px; color: rgba(255,255,255,.45); }
+
+  #stage { position: absolute; inset: 48px 0 64px; display: flex; align-items: center; justify-content: center; padding: 0 24px; }
+
+  /* phone scene */
+  .scene { --phone-w: min(calc((100vh - 112px) * 360 / 696), calc(780px * 360 / 696)); position: relative; width: min(1240px, 100%); height: 100%; display: grid; grid-template-columns: minmax(240px, 1fr) var(--phone-w) minmax(260px, 1fr); grid-template-rows: minmax(0, 100%); gap: 72px; align-items: center; }
+  .narr { display: flex; flex-direction: column; gap: 12px; justify-content: center; align-items: flex-end; text-align: left; }
+  .who { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 4px; align-self: flex-end; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--lime); color: var(--ink); display: grid; place-items: center; font-weight: 900; font-size: 13px; letter-spacing: 0; }
+  .kicker { font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--lime); align-self: flex-end; }
+  .say { max-width: 360px; background: #fff; color: var(--ink); border-radius: 20px 20px 4px 20px; padding: 14px 18px; font-size: 19px; line-height: 27px; letter-spacing: -.02em; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,.35); transition: opacity .3s, transform .3s; }
+  .say.old { opacity: .32; transform: scale(.94); transform-origin: right center; font-size: 16px; line-height: 22px; padding: 10px 14px; }
+  .say.me { background: var(--lime); }
+  .say.aside { background: transparent; color: rgba(255,255,255,.8); box-shadow: none; border: 1px dashed rgba(255,255,255,.35); font-style: italic; font-size: 16px; line-height: 23px; }
+  .say.enter { animation: pop .35s cubic-bezier(.2,.9,.3,1.2) both; }
+  @keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: none; } }
+
+  .device { position: relative; height: 100%; min-height: 0; max-height: 780px; display: flex; align-items: center; justify-content: center; }
+  .screen { position: relative; width: var(--phone-w); height: calc(var(--phone-w) * 696 / 360); flex: 0 0 auto; border-radius: 34px; overflow: hidden; background: #fff; box-shadow: 0 0 0 8px #000, 0 0 0 9px rgba(255,255,255,.15), 0 30px 80px rgba(0,0,0,.6); }
+  .screen { container-type: inline-size; }
+  /* live screens have no intrinsic size, so size them from the stage height explicitly */
+  .screen.live {
+    container-type: normal; /* Safari sizes containers as if empty */
+  }
+
+  .scene .device { width: 100%; }
+  #live-layer { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: 3; pointer-events: none; }
+  .livewrap { position: absolute; overflow: hidden; border-radius: 34px; visibility: hidden; }
+  .livewrap iframe { position: absolute; left: 0; top: 0; width: 360px; height: 696px; border: 0; transform-origin: 0 0; pointer-events: none; background: transparent; opacity: 0; transition: opacity .35s; }
+  .livewrap iframe.ready { opacity: 1; }
+  .livewrap.blocked { display: none; }
+  .scene .link { z-index: 6; }
+  @media (max-width: 900px) { .livewrap { border-radius: 28px; } }
+  .screen.live > img.poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .screen.live iframe { position: absolute; left: 0; top: 0; width: 360px; height: 740px; border: 0; transform-origin: 0 0; pointer-events: none; background: transparent; opacity: 0; transition: opacity .35s; }
+  .screen.live iframe.ready { opacity: 1; }
+  .screen.live.blocked iframe { display: none; }
+  .screen img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  /* property page inside Houzy: one continuous page stitched from the two screenshots */
+  .pdps { position: absolute; inset: 0; background: #faf9f5; overflow: hidden; z-index: 1; }
+  .screen .pdps img { height: auto; object-fit: initial; display: block; width: 100%; }
+  .pdps-track { position: absolute; left: 0; top: 0; width: 100%; transform: translateY(-99.8cqw); will-change: transform; }
+  .pdps-head { position: absolute; left: 0; top: 0; box-shadow: 0 2px 10px rgba(0,0,0,.06); z-index: 2; }
+  .pdps-sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; }
+  .pdps-sheet img { position: absolute; left: 0; bottom: 0; }
+  .pdps-sheet.up img { animation: sheet-up .38s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes sheet-up { from { transform: translateY(35%); opacity: 0; } to { transform: none; opacity: 1; } }
+  /* follow-up pills for this property, scrolling sideways (360px design: 40px pills, 14px Rubik, 12px gaps) */
+  .pdps-pills { position: absolute; left: 0; right: 0; bottom: 22.4cqw; height: 13cqw; background: #fff; overflow: hidden; display: flex; align-items: center; }
+  .pdps-pills .row { display: flex; gap: 3.33cqw; padding-left: 4.2cqw; width: max-content; will-change: transform; animation: pills-scroll 7s 1s ease-in-out infinite; }
+  .pdps-pills .pp { display: inline-flex; align-items: center; gap: 2.2cqw; height: 11.1cqw; padding: 0 4.44cqw; border: 1px solid #e1e2e8; border-radius: 999px; background: #fff; font: 400 3.89cqw/1 "Rubik", sans-serif; color: #656565; white-space: nowrap; }
+  .pdps-pills .pp svg { width: 4.4cqw; height: 4.4cqw; }
+  @keyframes pills-scroll { 0%, 14% { transform: translateX(0); } 46%, 62% { transform: translateX(var(--shift, -60cqw)); } 92%, 100% { transform: translateX(0); } }
+  .pdps.anim .pdps-pills { animation: sheet-up .45s 1.45s cubic-bezier(.2,.8,.2,1) both; }
+  .pdps.anim .pdps-pills .row { animation-delay: 2.6s; }
+  @media (prefers-reduced-motion: reduce) { .pdps-pills .row { animation: none; } }
+  /* animated version: drag up → page scrolls → header slides in → ask bar grows into pills */
+  .pdps.anim .pdps-track { animation: pdps-scroll 1.9s .5s cubic-bezier(.45,0,.25,1) both; }
+  @keyframes pdps-scroll { from { transform: translateY(0); } to { transform: translateY(-99.8cqw); } }
+  .pdps.anim .pdps-head { animation: pdps-head .35s 1.75s ease-out both; }
+  @keyframes pdps-head { from { transform: translateY(-100%); opacity: 0; } to { transform: none; opacity: 1; } }
+  .pdps.anim .s-compact { animation: pdps-out .3s 1.3s ease-in both; }
+  @keyframes pdps-out { to { opacity: 0; transform: translateY(20%); } }
+  .pdps.anim .s-pills { animation: sheet-up .45s 1.45s cubic-bezier(.2,.8,.2,1) both; }
+  .pdps .drag { position: absolute; left: 62%; top: 74%; width: 8.5cqw; height: 8.5cqw; z-index: 5; filter: drop-shadow(0 2px 3px rgba(0,0,0,.3)); animation: pdps-drag 1.9s .5s cubic-bezier(.45,0,.25,1) both; }
+  @keyframes pdps-drag { 0% { top: 74%; opacity: 1; } 85% { top: 36%; opacity: 1; } 100% { top: 34%; opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .pdps.anim * { animation: none !important; } .pdps.anim .s-compact, .pdps .drag { display: none; } }
+  /* cursor gestures between screens */
+  .gest { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
+  .gest .cursor-ico { position: absolute; width: 8.5cqw; height: 8.5cqw; left: 78%; top: 92%; filter: drop-shadow(0 2px 3px rgba(0,0,0,.3)); }
+  .gest.tap .cursor-ico { animation: g-move .6s cubic-bezier(.4,0,.2,1) forwards, g-press .2s .66s ease-in-out; }
+  .gest.swipe .cursor-ico { left: 60%; top: var(--y); animation: g-drag .7s .2s cubic-bezier(.4,0,.2,1) forwards; }
+  @keyframes g-move { to { left: var(--x); top: var(--y); } }
+  @keyframes g-press { 50% { transform: scale(.82); } }
+  @keyframes g-drag { to { top: var(--y2); } }
+  .gest .ripple { position: absolute; left: var(--x); top: var(--y); width: 16cqw; height: 16cqw; margin: -8cqw 0 0 -8cqw; border-radius: 50%; background: rgba(94,35,220,.28); transform: scale(0); opacity: 0; }
+  .gest.tap .ripple { animation: g-ripple .45s .68s ease-out forwards; }
+  @keyframes g-ripple { 0% { transform: scale(.2); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+  .screen.zoom-in > img { transform-origin: var(--ox) var(--oy); animation: g-zoom .48s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes g-zoom { from { transform: scale(.3); opacity: 0; } to { transform: none; opacity: 1; } }
+  .screen.scroll-in > img { animation: g-scroll .5s cubic-bezier(.2,.8,.2,1) both; }
+  .screen.fade-in > img { animation: g-fade .35s ease-out both; }
+  /* screenshots without a status bar: add one, and fit the screen to full width (no side crop) */
+  .screen.padded { background: #fff; }
+  .screen.padded > img { position: absolute; left: 0; top: 9.39cqw; width: 100%; height: auto; object-fit: initial; }
+  .screen.padded > img.sb { top: 0; }
+  @keyframes g-fade { from { opacity: 0; } to { opacity: 1; } }
+  .screen.arrive-scroll > img { animation: g-arrive 1.4s .3s cubic-bezier(.45,0,.25,1) both; }
+  @keyframes g-arrive { from { transform: translateY(32%); } to { transform: none; } }
+  /* a nudge that rises over the page as a bottom sheet */
+  .screen .sheet-up { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; animation: g-sheet .55s var(--d, .6s) cubic-bezier(.2,.85,.25,1) both; }
+  .screen .sheet-up img { display: block; width: 100%; height: auto; border-radius: 5.5cqw 5.5cqw 0 0; filter: drop-shadow(0 -1px 16px rgba(0,0,0,.16)); }
+  @keyframes g-sheet { from { transform: translateY(105%); } to { transform: none; } }
+  @keyframes g-scroll { from { transform: translateY(26%); opacity: .2; } to { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .gest { display: none; } .screen.zoom-in > img, .screen.scroll-in > img { animation: none; } }
+  /* loading shimmer sweeping across a skeleton screenshot */
+  .skeleton-shimmer { position: absolute; left: 0; right: 0; top: 16%; height: 48%; z-index: 1; pointer-events: none;
+    background: linear-gradient(100deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.75) 50%, rgba(255,255,255,0) 70%);
+    background-size: 220% 100%; animation: skel 1.6s ease-in-out infinite; }
+  @keyframes skel { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+  @media (prefers-reduced-motion: reduce) { .skeleton-shimmer { animation: none; display: none; } }
+  /* swipeable property carousel, rebuilt from the card screenshot */
+  .carousel { position: absolute; left: 0; right: 0; top: 37.9cqw; height: 123cqw; background: #f6f6f6; overflow: hidden; z-index: 1; }
+  .carousel .track { position: absolute; left: 4.4cqw; top: 0.4cqw; display: flex; gap: 3.2cqw; align-items: flex-start; will-change: transform; animation: swipe 9s cubic-bezier(.65,0,.35,1) infinite; }
+  .carousel img { display: block; height: auto; border-radius: 4.4cqw; box-shadow: 0 0 0 1px #e4e4e4; }
+  .carousel img.c { width: 73.2cqw; }
+  .carousel img.v { width: 42.5cqw; height: 121.2cqw; object-fit: cover; }
+  @keyframes swipe {
+    0%, 10% { transform: translateX(0); }
+    22%, 34% { transform: translateX(-76.4cqw); }
+    46%, 58% { transform: translateX(-152.8cqw); }
+    70%, 84% { transform: translateX(-180.5cqw); }
+    100% { transform: translateX(0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .carousel .track { animation: none; } }
+  /* the prototype's loading state, scaled to the screen (360px design) */
+  .loading-row { position: absolute; left: 2%; top: 23.4%; width: 90%; height: 5.4%; background: #f6f6f6; display: flex; align-items: center; padding-left: 2.2cqw; z-index: 1; }
+  .loader-5 { height: 6.67cqw; width: 6.67cqw; position: relative; flex: 0 0 auto; animation: loader-5-1 2s cubic-bezier(.77,0,.175,1) infinite; }
+  .loader-5::before, .loader-5::after, .loader-5 span::before, .loader-5 span::after { content: ""; display: block; position: absolute; margin: auto; width: 1.67cqw; height: 1.67cqw; background: #B8A082; border-radius: 50%; }
+  .loader-5::before { top: 0; left: 0; bottom: 0; animation: loader-5-2 2s cubic-bezier(.77,0,.175,1) infinite; }
+  .loader-5::after { top: 0; right: 0; bottom: 0; animation: loader-5-3 2s cubic-bezier(.77,0,.175,1) infinite; }
+  .loader-5 span { display: block; position: absolute; inset: 0; margin: auto; height: 6.67cqw; width: 6.67cqw; }
+  .loader-5 span::before { top: 0; left: 0; right: 0; animation: loader-5-4 2s cubic-bezier(.77,0,.175,1) infinite; }
+  .loader-5 span::after { bottom: 0; left: 0; right: 0; animation: loader-5-5 2s cubic-bezier(.77,0,.175,1) infinite; }
+  @keyframes loader-5-1 { to { transform: rotate(360deg); } }
+  @keyframes loader-5-2 { 50% { transform: translate3d(0, -5cqw, 0) scale(.5); } }
+  @keyframes loader-5-3 { 50% { transform: translate3d(-5cqw, 0, 0) scale(.5); } }
+  @keyframes loader-5-4 { 50% { transform: translate3d(0, 5cqw, 0) scale(.5); } }
+  @keyframes loader-5-5 { 50% { transform: translate3d(0, -5cqw, 0) scale(.5); } }
+  .loading-row .shimmer { margin-left: 2.8cqw; font: 400 3.89cqw/1.2 "Rubik", sans-serif; white-space: nowrap; background: linear-gradient(90deg, #666 0%, #666 38%, #999 50%, #666 62%, #666 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: typing-shimmer 2.5s ease-in-out infinite; }
+  @keyframes typing-shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+  /* animated starter prompts on the first-open screen, matching the live prototype
+     (Rubik 14px, 40px pills, 12px gaps, both rows drift left at 12px/s on a 360px screen) */
+  .prompts { position: absolute; left: 0; right: 0; top: 49.3%; height: 14.6%; background: #f7f7f7; overflow: hidden; }
+  .prompts::before, .prompts::after { content: ""; position: absolute; top: 0; bottom: 0; width: 6.67cqw; z-index: 2; pointer-events: none; }
+  .prompts::before { left: 0; background: linear-gradient(to right, #f7f7f7, rgba(247,247,247,0)); }
+  .prompts::after { right: 0; background: linear-gradient(to left, #f7f7f7, rgba(247,247,247,0)); }
+  .prow { position: absolute; left: 0; display: flex; width: max-content; will-change: transform; animation: drift 60s linear infinite; }
+  .prow.r1 { top: 1.3cqw; } .prow.r2 { top: 15.2cqw; }
+  .ppill { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 2.22cqw; height: 11.11cqw; margin-right: 3.33cqw; padding: 0 4.44cqw; background: linear-gradient(to bottom, #fff 0%, #fafafa 100%); border: 1px solid var(--b); border-radius: 6.67cqw; font: 400 3.89cqw/1 "Rubik", system-ui, sans-serif; color: #656565; white-space: nowrap; }
+  .ppill img { width: 4.44cqw; height: 4.44cqw; }
+  @keyframes drift { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+  @media (prefers-reduced-motion: reduce) { .prow { animation: none !important; } }
+  /* hand-drawn pencil callouts */
+  :root { --pencil: #e5533d; }
+  .ring { position: absolute; pointer-events: none; z-index: 3; }
+  .ring svg { display: none; } /* the ring is now just an invisible target for the arrow */
+  .ring path, .link path { fill: none; stroke: var(--pencil); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .ring path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .55s cubic-bezier(.5,0,.3,1) forwards; }
+  .link { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 4; }
+  .link circle { fill: var(--pencil); }
+  .link path.tie { stroke-width: 1.6; opacity: .75; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @media (prefers-reduced-motion: reduce) { .ring path, .link path { animation: none; stroke-dashoffset: 0; } }
+
+  .side { display: flex; flex-direction: column; gap: 14px; justify-content: center; max-width: 380px; }
+  .card { border-radius: 18px; padding: 18px 20px; font-size: 15px; line-height: 22px; color: var(--ink); box-shadow: 0 14px 40px rgba(0,0,0,.4); animation: pop .4s ease both; }
+  .card.old { opacity: .35; animation: none; }
+  .card b.t { display: block; font-size: 17px; line-height: 22px; margin-bottom: 6px; letter-spacing: -.01em; }
+  .card.pin { background: var(--cream); }
+  .card.pin b.t::before { content: "📌 "; }
+  .card.note { background: #fff; }
+  .card.note .lbl { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; background: var(--ink); color: var(--lime); padding: 3px 8px; border-radius: 999px; margin-bottom: 8px; }
+  .card sup { font-size: 10px; }
+  .card ul { padding-left: 18px; margin-top: 4px; } .card li + li { margin-top: 4px; }
+
+  /* wide scene */
+  .wide { width: min(1240px, 100%); height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 18px; justify-items: center; align-items: center; }
+  .wide .narr { align-items: center; flex-direction: row; flex-wrap: wrap; justify-content: center; }
+  .wide .narr .who, .wide .narr .kicker { align-self: center; }
+  .wide img.big { height: auto; min-height: 0; max-height: 100%; max-width: min(100%, 860px); object-fit: contain; border-radius: 18px; box-shadow: 0 30px 80px rgba(0,0,0,.5); background: #f3f3f3; }
+  .wide .side { flex-direction: row; max-width: 980px; }
+
+  /* raw slides */
+  .raw { width: min(1180px, 100%); height: 100%; display: flex; align-items: center; justify-content: center; }
+  .raw [data-beat]:not(.shown) { opacity: 0; }
+  .raw [data-beat] { transition: opacity .35s; }
+  .title-card { text-align: center; display: grid; gap: 18px; justify-items: center; max-width: 820px; }
+  .title-card h1 { font-weight: 900; font-size: clamp(44px, 6vw, 84px); line-height: 1; letter-spacing: -.05em; }
+  .title-card h1 em, .chap h2 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--lime); letter-spacing: -.02em; }
+  .title-card p { font-size: 20px; line-height: 30px; color: rgba(255,255,255,.72); }
+  .tag { display: inline-block; background: var(--lime); color: var(--ink); font-family: var(--pill); font-style: italic; font-weight: 600; font-size: 17px; padding: 4px 14px; border-radius: 999px; }
+  .chap { text-align: center; display: grid; gap: 18px; justify-items: center; width: 100%; }
+  .chap h2 { font-weight: 800; font-size: clamp(32px, 4vw, 56px); line-height: 1.05; letter-spacing: -.04em; }
+  .chap p { font-size: 19px; line-height: 28px; color: rgba(255,255,255,.72); max-width: 680px; }
+  .chap svg { width: min(720px, 100%); height: auto; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: min(820px, 100%); }
+  .stat { background: rgba(255,255,255,.07); border-radius: 16px; padding: 16px; text-align: left; }
+  .stat .n { font-weight: 900; font-size: 34px; color: var(--lime); letter-spacing: -.04em; line-height: 1; }
+  .stat span { display: block; font-size: 13px; color: rgba(255,255,255,.7); margin-top: 6px; }
+  .chart { width: min(780px, 100%); background: var(--paper); border-radius: 22px; padding: 24px 20px 10px; }
+  .chart svg { width: 100%; height: auto; overflow: visible; }
+  .foot { font-size: 12px; line-height: 18px; color: rgba(255,255,255,.55); text-align: left; max-width: 720px; }
+  .foot ol { padding-left: 18px; columns: 2; column-gap: 28px; }
+  .cta { display: inline-block; background: var(--lime); color: var(--ink); text-decoration: none; font-weight: 800; font-size: 15px; padding: 10px 18px; border-radius: 999px; }
+  .learn { background: #fff; color: var(--ink); border-radius: 18px; padding: 18px 20px; text-align: left; max-width: 640px; font-size: 16px; line-height: 24px; }
+  .learn b { display: block; font-size: 18px; margin-bottom: 4px; }
+
+  /* a stop on the phone: the screen dims and a tip card lands over it */
+  .screen .alert-dim { position: absolute; inset: 0; z-index: 4; background: rgba(12,10,8,.72); animation: g-fade .35s ease-out both; }
+  .alert-card { position: absolute; z-index: 6; top: 9%; left: 34%; width: min(520px, 46vw); display: grid; grid-template-columns: 44px 1fr; gap: 18px; background: #fff; color: var(--ink); border-left: 7px solid #ffc531; border-radius: 4px; padding: 30px 34px 32px 26px; box-shadow: 0 30px 80px rgba(0,0,0,.55); animation: pop .45s .15s cubic-bezier(.2,.9,.3,1.2) both; }
+  .alert-card .warn { width: 44px; height: 40px; margin-top: 4px; }
+  .alert-card .eyebrow { display: block; font-size: 14px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #a87800; }
+  .alert-card h3 { font-size: 32px; font-weight: 800; line-height: 1.1; letter-spacing: -.03em; margin: 6px 0 14px; }
+  .alert-card p { font-size: 19px; line-height: 29px; color: var(--ink-70); }
+  .alert-card p + p { margin-top: 14px; }
+  .scene.alerting .side, .scene.alerting .narr .say:not(:last-child) { opacity: .25; transition: opacity .3s; }
+  @media (max-width: 900px) { .alert-card { left: 4%; width: 92%; top: 6%; } }
+  /* opening slide: a full-screen Figma canvas */
+  .canvas { position: fixed; inset: 0; z-index: 5; background: #f4f3ef; background-image: radial-gradient(rgba(23,19,19,.13) 1px, transparent 1px); background-size: 22px 22px; color: var(--ink); display: grid; grid-template-columns: minmax(0, 560px) auto; justify-content: center; align-items: center; column-gap: clamp(56px, 9vw, 140px); padding: 72px 48px 88px; overflow: hidden; }
+  .canvas .intro { display: grid; gap: 22px; align-content: center; position: relative; z-index: 4; }
+  .canvas .kicker { align-self: auto; color: var(--ink-50); }
+  .canvas h1 { font-weight: 900; font-size: clamp(48px, 5.6vw, 84px); line-height: .95; letter-spacing: -.05em; }
+  .canvas h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: #5e23dc; letter-spacing: -.02em; }
+  .canvas .lede { font-size: 20px; line-height: 30px; color: var(--ink-70); max-width: 500px; }
+  .canvas .meta { display: flex; flex-wrap: wrap; gap: 8px; }
+  .canvas .meta span { font-size: 13px; font-weight: 700; color: var(--ink-70); background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
+  .qr-card { display: flex; align-items: center; gap: 16px; width: max-content; background: #fff; border-radius: 18px; padding: 12px 20px 12px 12px; box-shadow: 0 12px 30px rgba(0,0,0,.08); border: 1px solid var(--line); text-decoration: none; margin-top: 6px; }
+  .qr-card #qr { width: 88px; flex: 0 0 auto; }
+  .qr-card #qr svg { width: 100%; height: auto; display: block; }
+  .qr-card b { display: block; font-size: 16px; }
+  .qr-card span { display: block; font-size: 13px; color: var(--ink-50); margin-top: 3px; }
+  .canvas .begin { font-size: 13px; font-weight: 700; color: var(--ink-50); }
+  .canvas .begin kbd { font: inherit; background: var(--ink); color: #fff; border-radius: 6px; padding: 2px 7px; margin: 0 2px; }
+  .fig-frame { position: relative; z-index: 2; }
+  .fig-name { position: absolute; top: -26px; left: 0; font-size: 12px; font-weight: 500; color: rgba(23,19,19,.55); white-space: nowrap; }
+  .fig-sel { position: absolute; inset: -7px; border: 1.5px solid #0d99ff; pointer-events: none; }
+  .fig-sel i { position: absolute; width: 8px; height: 8px; background: #fff; border: 1.5px solid #0d99ff; }
+  .fig-sel i:nth-child(1) { left: -5px; top: -5px; } .fig-sel i:nth-child(2) { right: -5px; top: -5px; }
+  .fig-sel i:nth-child(3) { left: -5px; bottom: -5px; } .fig-sel i:nth-child(4) { right: -5px; bottom: -5px; }
+  .fig-size { position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%); background: #0d99ff; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+  /* the phone plays the real prototype at 375 × 812, scaled to fit */
+  .demo { position: relative; height: min(calc(100vh - 200px), 720px); aspect-ratio: 375 / 812; border-radius: 34px; overflow: hidden; background: #fff; box-shadow: 0 0 0 8px #111, 0 30px 70px rgba(0,0,0,.22); }
+  .demo iframe { position: absolute; left: 0; top: 0; width: 375px; height: 812px; border: 0; transform-origin: 0 0; transform: scale(var(--s, 1)); pointer-events: none; }
+  .demo .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .4s; }
+  .demo.ready .poster { opacity: 0; }
+  .demo .tapper { position: absolute; left: 0; top: 0; width: 30px; height: 30px; z-index: 3; opacity: 0; transition: transform .7s cubic-bezier(.4,0,.2,1), opacity .25s; pointer-events: none; }
+  .demo .tapper svg { width: 100%; height: 100%; filter: drop-shadow(0 2px 3px rgba(0,0,0,.3)); }
+  .demo .tapper.on { opacity: 1; }
+  .demo .tapper.press svg { animation: g-press .2s ease-in-out; }
+  .demo .tapper::before { content: ""; position: absolute; left: -14px; top: -14px; width: 28px; height: 28px; border-radius: 50%; background: rgba(94,35,220,.3); transform: scale(0); }
+  .demo .tapper.press::before { animation: d-ripple .5s ease-out; }
+  @keyframes d-ripple { from { transform: scale(.2); opacity: 1; } to { transform: scale(1.6); opacity: 0; } }
+  .fig-frame .caption { position: absolute; left: 50%; bottom: -70px; transform: translateX(-50%); z-index: 3; background: var(--ink); color: #fff; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 999px; white-space: nowrap; opacity: 0; transition: opacity .3s; }
+  .fig-frame .caption.on { opacity: 1; }
+  .cursor { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 3; will-change: transform; }
+  .cursor svg { display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,.2)); }
+  .cursor em { position: absolute; left: 16px; top: 18px; font-style: normal; font-size: 12px; font-weight: 700; color: #fff; padding: 3px 8px; border-radius: 4px 10px 10px 10px; white-space: nowrap; }
+  .c1 { animation: c1 42s ease-in-out infinite; } .c2 { animation: c2 50s ease-in-out infinite; } .c3 { animation: c3 38s ease-in-out infinite; } .c4 { animation: c4 46s ease-in-out infinite; }
+  @keyframes c1 { 0%,100% { transform: translate(56%, 80%); } 25% { transform: translate(55%, 26%); } 50% { transform: translate(57%, 54%); } 75% { transform: translate(40%, 90%); } }
+  @keyframes c2 { 0%,100% { transform: translate(86%, 30%); } 30% { transform: translate(82%, 62%); } 60% { transform: translate(90%, 44%); } 80% { transform: translate(84%, 20%); } }
+  @keyframes c4 { 0%,100% { transform: translate(70%, 8%); } 30% { transform: translate(52%, 10%); } 55% { transform: translate(88%, 78%); } 80% { transform: translate(40%, 6%); } }
+  @keyframes c3 { 0%,100% { transform: translate(8%, 88%); } 35% { transform: translate(30%, 92%); } 70% { transform: translate(4%, 70%); } }
+  .cursor-layer { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+  .cursor-layer .cursor { width: 100%; height: 100%; }
+  .cursor-layer .cursor > div { position: absolute; left: 0; top: 0; }
+  /* the intro is light, so the chrome on top of it turns dark */
+  body.on-canvas .top a, body.on-canvas .count, body.on-canvas .hint { color: var(--ink-50); }
+  body.on-canvas .controls button { border-color: var(--line); background: #fff; color: var(--ink); }
+  body.on-canvas .controls button:disabled { background: transparent; color: var(--ink); }
+  @media (prefers-reduced-motion: reduce) { .c1, .c2, .c3, .c4 { animation: none; } }
+  @media (max-width: 900px) {
+    .canvas { position: relative; inset: auto; grid-template-columns: 1fr; justify-items: center; text-align: center; padding: 28px 16px 48px; row-gap: 56px; border-radius: 24px; }
+    .canvas .intro { justify-items: center; }
+    .canvas .meta { justify-content: center; }
+    .demo { height: auto; width: min(72vw, 300px); }
+    .cursor-layer { display: none; }
+  }
+
+
+  .raw .canvas { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    body { overflow: auto; }
+    #stage { position: relative; inset: auto; min-height: 100vh; padding: 60px 16px 90px; display: block; }
+    .scene { grid-template-columns: 1fr; gap: 18px; height: auto; }
+    .narr { align-items: stretch; order: 2; }
+    .who, .kicker { align-self: flex-start; }
+    .say { max-width: none; font-size: 17px; line-height: 24px; }
+    .say.old { display: none; }
+    .device { order: 1; height: auto; justify-content: center; }
+    .scene { --phone-w: min(78vw, 320px); grid-template-columns: 1fr; }
+
+
+    .side { order: 3; max-width: none; }
+    .card.old { display: none; }
+    .link { display: none; }
+    .wide { height: auto; }
+    .wide .side { flex-direction: column; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .foot ol { columns: 1; }
+    .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<header class="top"><a href="../index.html#work">← Kaif Saleem</a><span class="count" id="count"></span></header>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="pencil" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G" result="d"/><feComponentTransfer in="n" result="g"><feFuncA type="table" tableValues="0.55 1"/></feComponentTransfer><feComposite in="d" in2="g" operator="in"/></filter></svg>
+<main id="stage" aria-live="polite"></main>
+<nav class="controls" aria-label="Story controls">
+  <button id="prev" aria-label="Previous">←</button>
+  <span class="hint">← → or click to move through the story</span>
+  <button id="next" aria-label="Next">→</button>
+</nav>
+
+<!-- raw slides -->
+<template id="raw-canvas">
+  <div class="canvas">
+    <div class="intro">
+      <span class="kicker">Case study · Housing.com · 2026</span>
+      <h1>Designing <em>Houzy</em></h1>
+      <p class="lede">The psychology behind India's first conversational AI for property search: 11 principles, told through the eyes of one buyer.</p>
+      <div class="meta"><span>9 min story</span><span>Narrated by Priya, a buyer persona</span></div>
+      <a class="qr-card" href="https://kaifmir.github.io/house-pdp/" target="_blank" rel="noopener">
+        <div id="qr" role="img" aria-label="QR code linking to the Houzy prototype"></div>
+        <div><b>Try Houzy on your phone</b><span>Scan, or open kaifmir.github.io/house-pdp</span></div>
+      </a>
+      <p class="begin">Press <kbd>→</kbd> or click to begin</p>
+    </div>
+    <div class="fig-frame">
+      <span class="fig-name">Houzy / Mobile / Search</span>
+      <div class="demo" id="intro-demo" aria-label="The Houzy prototype playing a search: a buyer asks for homes in plain words and gets property cards back">
+        <img class="poster" src="houzy/story/s/home-nav.png" alt="">
+        <span class="tapper"><svg viewBox="0 0 24 24"><path d="M5 2.5v17.2l4.6-4.3 2.9 6.6 2.9-1.3-2.9-6.5 6.3-.3z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+      </div>
+      <span class="caption" aria-hidden="true"></span>
+      <div class="fig-sel"><i></i><i></i><i></i><i></i></div>
+      <span class="fig-size">375 × 812</span>
+    </div>
+    <div class="cursor-layer" aria-hidden="true">
+      <div class="cursor c1"><div><svg width="18" height="22" viewBox="0 0 18 22"><path d="M1 1l15 9.5-6.6 1.4L13 20l-3.2 1.4-3.6-8.2L1 17.6z" fill="#7b61ff" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><em style="background:#7b61ff">Designer</em></div></div>
+      <div class="cursor c2"><div><svg width="18" height="22" viewBox="0 0 18 22"><path d="M1 1l15 9.5-6.6 1.4L13 20l-3.2 1.4-3.6-8.2L1 17.6z" fill="#0fa958" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><em style="background:#0fa958">PM</em></div></div>
+      <div class="cursor c3"><div><svg width="18" height="22" viewBox="0 0 18 22"><path d="M1 1l15 9.5-6.6 1.4L13 20l-3.2 1.4-3.6-8.2L1 17.6z" fill="#f24e1e" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><em style="background:#f24e1e">Engineer</em></div></div>
+      <div class="cursor c4"><div><svg width="18" height="22" viewBox="0 0 18 22"><path d="M1 1l15 9.5-6.6 1.4L13 20l-3.2 1.4-3.6-8.2L1 17.6z" fill="#171313" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><em style="background:#171313">Kaif Saleem</em></div></div>
+    </div>
+  </div>
+</template>
+
+<template id="raw-part1">
+  <div class="chap">
+    <span class="tag">Part 1</span>
+    <h2>Designing <em>the conversation</em></h2>
+    <p>One rule shaped every screen: a predictable shell around unpredictable answers. The header, composer, cards and error states never change shape, so whatever the AI says lands somewhere familiar.</p>
+  </div>
+</template>
+
+<template id="raw-part2">
+  <div class="chap">
+    <span class="tag">Part 2</span>
+    <h2>Houzy <em>×</em> Housing.com</h2>
+    <p>Houzy doesn't replace search. It runs alongside it, and every surface hands it context.</p>
+    <svg viewBox="0 0 680 250" role="img" aria-label="Houzy sits between Home, Search results, Property page and Contact" data-beat="1">
+      <g font-family="Figtree, sans-serif" font-size="15" font-weight="700" text-anchor="middle">
+        <rect x="10" y="20" width="140" height="56" rx="16" fill="#fff"/><text x="80" y="54" fill="#171313">Home</text>
+        <rect x="180" y="20" width="140" height="56" rx="16" fill="#fff"/><text x="250" y="54" fill="#171313">Search results</text>
+        <rect x="350" y="20" width="140" height="56" rx="16" fill="#fff"/><text x="420" y="54" fill="#171313">Property page</text>
+        <rect x="520" y="20" width="150" height="56" rx="16" fill="#e4ff3a"/><text x="595" y="54" fill="#171313">Contact (lead)</text>
+        <path d="M150 48h30M320 48h30M490 48h30" stroke="#fff" stroke-width="2"/>
+        <path d="M80 76v60M250 76v60M420 76v60M595 136v-60" stroke="#a78bfa" stroke-width="2" stroke-dasharray="4 4"/>
+        <rect x="10" y="136" width="660" height="64" rx="20" fill="#5e23dc"/>
+        <text x="340" y="174" fill="#fff" font-size="18">✦ Houzy: one conversation across the journey</text>
+        <g font-size="12" font-weight="500" fill="#c4b5fd"><text x="80" y="226">city + service</text><text x="250" y="226">your filters</text><text x="420" y="226">this property</text><text x="595" y="226">one tap to contact</text></g>
+      </g>
+    </svg>
+    <div class="learn" data-beat="2" style="max-width:720px"><b>Introduced only where it's needed</b>We don't crowd buyers with yet another way to search. Houzy stays quiet until the buyer is overwhelmed: zero results, filters changed again and again, endless scrolling, too many matches. An overwhelmed buyer is our cue to offer Houzy.</div>
+  </div>
+</template>
+
+<template id="raw-part3">
+  <div class="chap">
+    <span class="tag">Part 3</span>
+    <h2>The ideal, <em>and what shipped</em></h2>
+    <p>Two features where the ideal design didn't fit the release: the gallery and the property page. What shipped instead, and what testing taught us.</p>
+  </div>
+</template>
+
+<template id="raw-journey">
+  <div class="chap">
+    <h2>Priya's journey: <em>from fatigue to a phone call</em></h2>
+    <div class="chart">
+        <svg viewBox="0 0 760 300" role="img" aria-label="Priya's confidence across the journey">
+          <g font-family="Figtree, sans-serif">
+            <line x1="40" y1="150" x2="740" y2="150" stroke="rgba(23,19,19,.15)" stroke-dasharray="4 6"/>
+            <text x="4" y="40" font-size="11" fill="rgba(23,19,19,.5)">Confident</text>
+            <text x="4" y="276" font-size="11" fill="rgba(23,19,19,.5)">Fatigued</text>
+            <polyline id="jline" fill="none" stroke="#171313" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"
+              points="70,190 160,240 250,150 340,110 430,90 520,180 610,80 700,40" />
+            <g class="pts" font-size="12" font-weight="700" text-anchor="middle" fill="#171313">
+              <g class="pt" data-i="0"><circle cx="70" cy="190" r="7" fill="#fff" stroke="#171313" stroke-width="2"/><text x="70" y="218">Filters</text></g>
+              <g class="pt" data-i="1"><circle cx="160" cy="240" r="7" fill="#fff" stroke="#171313" stroke-width="2"/><text x="160" y="268">Scrolling</text></g>
+              <g class="pt" data-i="2"><circle cx="250" cy="150" r="7" fill="#e4ff3a" stroke="#171313" stroke-width="2"/><text x="250" y="178">Houzy prompt</text></g>
+              <g class="pt" data-i="3"><circle cx="340" cy="110" r="7" fill="#e4ff3a" stroke="#171313" stroke-width="2"/><text x="340" y="138">Own words</text></g>
+              <g class="pt" data-i="4"><circle cx="430" cy="90" r="7" fill="#e4ff3a" stroke="#171313" stroke-width="2"/><text x="430" y="70">Trusted cards</text></g>
+              <g class="pt" data-i="5"><circle cx="520" cy="180" r="7" fill="#fff" stroke="#b3261e" stroke-width="2"/><text x="520" y="208" fill="#b3261e">Photo redirect</text></g>
+              <g class="pt" data-i="6"><circle cx="610" cy="80" r="7" fill="#e4ff3a" stroke="#171313" stroke-width="2"/><text x="610" y="60">Ask on the page</text></g>
+              <g class="pt" data-i="7"><circle cx="700" cy="40" r="9" fill="#171313"/><text x="700" y="22">Contact</text></g>
+            </g>
+          </g>
+        </svg>
+      </div>
+    <p data-beat="8" style="font-size:16px">The one dip, the photo redirect, is the moment testing exposed. Answering photos in the chat lifted it back up.</p>
+  </div>
+</template>
+
+<template id="raw-outcomes">
+  <div class="chap">
+    <span class="tag">Outcomes</span>
+    <h2>Houzy as a <em>lead generation module</em></h2>
+    <p>Every answer ends one tap from a lead: on cards, brochures, the gallery and the property page. The north star is chat sessions where a buyer contacts a seller.</p>
+    <div class="stats" data-beat="1">
+      <div class="stat"><div class="n">20%</div><span>of users have Houzy, in a controlled rollout</span></div>
+      <div class="stat"><div class="n">3%</div><span>adoption among them</span></div>
+      <div class="stat"><div class="n">3</div><span>queries per user</span></div>
+      <div class="stat"><div class="n">+0.67%</div><span>more leads overall via Houzy</span></div>
+    </div>
+  </div>
+</template>
+
+<template id="raw-next">
+  <div class="chap">
+    <span class="tag">What's next</span>
+    <h2>From a chat window to <em>how people search</em></h2>
+    <p data-beat="1"><b style="color:#fff">A search and discovery mode.</b> Houzy at every touchpoint, on app, mobile web and desktop.</p>
+    <p data-beat="2"><b style="color:#fff">The ideal, shipped.</b> The native gallery and a property page designed for conversation.</p>
+    <p data-beat="3"><b style="color:#fff">Deeper conversations.</b> Streaming answers, floor plans, price trends, and memory of what the buyer already said.</p>
+    <div class="learn" data-beat="4"><b>What I learned</b>Design the ideal, then design the version that ships, and test it. The interim gallery and property page weren't compromises to hide. They were how we found out what buyers actually needed in the chat.</div>
+  </div>
+</template>
+
+<template id="raw-end">
+  <div class="chap">
+    <span class="tag">The end</span>
+    <h2>Thanks for reading <em>the story of Houzy</em></h2>
+    <p><a class="cta" href="https://kaifmir.github.io/house-pdp/" target="_blank" rel="noopener">Try the live prototype ↗</a> &nbsp; <a href="designing-houzy.html" style="color:#fff">Read the craft details →</a></p>
+    <div class="foot" id="footnotes"></div>
+  </div>
+</template>
+
+<script src="houzy/story/qrcode.min.js"></script>
+<script>
+const PROTO = 'houzy/proto/index.html?v=2';
+const SR = 'houzy/srp/';
+const PH = 'houzy/chat/hd/photos/';
+const FU = 'houzy/chat/hd/follow/';
+const PADDED = new Set([SR + 'noresults.png', SR + 'filterpanel.png', PH + 'pdp-gallery.png']);
+const HD = 'houzy/chat/hd/';
+const C = 'houzy/chat/s/', S = 'houzy/story/', T = 'houzy/story/s/', H = 'houzy/';
+const REFS = [];
+const ref = (text) => { let i = REFS.indexOf(text); if (i < 0) { REFS.push(text); i = REFS.length - 1; } return '<sup>' + (i + 1) + '</sup>'; };
+const pin = (t, b, src) => ({ kind: 'pin', t, b: b.replace('{ref}', src ? ref(src) : '') });
+const note = (t, b) => ({ kind: 'note', t, b });
+
+const SLIDES = [
+  { raw: 'raw-canvas' },
+
+  // ---------- Prologue ----------
+  { live: PROTO, poster: T + 'home-nav.png', beats: [
+    { say: "Sunday night. I'm looking for a 2BHK near my parents in Pune. Under ₹1 Cr, ready soon." },
+    { say: "Normally that means fourteen filters and an hour of scrolling.",
+      card: pin('Choice overload', 'When options pile up, people delay or give up rather than choose.{ref} Search asked buyers to translate a life into filters, one dropdown at a time.', 'Iyengar & Lepper, "When choice is demotivating" (2000).') },
+    { say: "…huh, what's this?", ring: [3, 80, 91, 9.5],
+      card: note('Why we built Houzy', '<ul><li><b>Buyers think in sentences, search made them think in filters.</b> "Users don\'t know what to search for."</li><li><b>Intent is strongest on the platform.</b> The WhatsApp bot couldn\'t show photos well, its links broke, and every message cost money.</li></ul>') },
+    { say: "\"Ask Houzy. It's faster than searching.\" Okay, I'll bite.", ring: [60.5, 90, 17.5, 9] },
+  ]},
+
+  { raw: 'raw-part1' },
+
+  { img: C + 'first-hd.png', overlay: 'prompts', beats: [
+    { say: "\"Hey, how can I help you today?\"", ring: [22, 37.5, 56, 9] },
+    { say: "Oh nice, it gives me ideas.", ring: [0, 49, 100, 15],
+      card: pin('Recognition over recall', 'Picking from options is easier than inventing a question from nothing.{ref} Prompts solve the blank page and quietly teach what Houzy can do.', 'Nielsen Norman Group, "Recognition rather than recall".') },
+    { say: "Near me, budget, rentals, reviews, price trends…", ring: [0, 49, 100, 15],
+      card: note('Eight prompts, eight capabilities', 'Two rows drift sideways so the screen feels alive without demanding attention. Each prompt has a coloured category icon, the only multicolour icons in Houzy.') },
+    { say: "And it admits it can make mistakes. Fair enough.", ring: [3, 95.2, 94, 3.6],
+      card: note('Honest by default', 'A BETA badge in the header and a disclaimer under the composer: "Houzy is an AI assistant and may occasionally make mistakes."') },
+  ]},
+
+  { img: HD + 'about.png', beats: [
+    { say: "What does the little ⓘ do?", ring: [19, 6.8, 37, 6] },
+    { say: "\"Verify details before making any decisions.\" Good to know up front.", ring: [0, 63.2, 100, 36.8],
+      card: note('About the responses', 'Tapping the header opens a sheet: answers are guidance only, so verify with the listing agent or Housing.com. One button, "Understood".') },
+  ]},
+
+  // your screenshots, with the prototype's own loading animation on the thinking step
+  { img: HD + 'typing.png', beats: [
+    { say: "I'll just type it the way I'd say it to a friend.", ring: [4, 47.3, 92, 7.5] },
+    { say: "The send button just lit up.", ring: [84.5, 49, 8, 4.2],
+      card: note('A composer that reacts', 'Send stays grey until there\'s something to send, then turns brand purple, the only purple on the screen.') },
+    { img: HD + 'sent.png', say: "There's my message, on the right. Like WhatsApp.", ring: [28.6, 17.3, 66.8, 5.4],
+      card: pin("Jakob's law", 'People spend most of their time in other apps, and expect yours to work the same way.{ref} Right means me, left means them, the box at the bottom is where I type.', 'Jakob Nielsen, "End of web design" (2000).') },
+    { say: "And the box now says \"Reply to Houzy\". It's a conversation.", kind: 'aside', ring: [4, 90.2, 92, 7.5],
+      card: note('Asymmetric messages', 'Buyer messages sit in a white bubble; Houzy\'s answers sit on the canvas with no bubble, so they read as content, not chatter.') },
+    { img: HD + 'thinking.png', overlay: 'loading', say: "It's thinking.", ring: [4, 23.8, 64, 4.6],
+      card: pin('The labour illusion', 'People mind waits less, and value results more, when they can see work happening.{ref} The loader keeps moving and the line changes every 1.5 seconds, so the wait always says something.', 'Buell & Norton, "The labor illusion" (2011).') },
+    { img: HD + 'skel-prop.png', say: "Cards are already taking shape.", ring: [4, 18.2, 93, 60.5],
+      card: note('Skeletons that match the answer', 'A property search shows card skeletons; a question shows message skeletons. The shape of the answer arrives before the answer.') },
+    { img: HD + 'card.png', say: "RERA registered. Ready to move.", ring: [8.8, 44.2, 42.4, 3.2],
+      card: pin('Authority bias', 'People trust signals from recognised authorities.{ref} RERA registration and status come first on every card, before the AI asks for any trust.', 'Robert Cialdini, Influence (1984).') },
+    { say: "₹3 Cr is the biggest thing on the card. Easy to compare.", ring: [8.8, 66.6, 14, 3.4],
+      card: note('Trust → identity → price → action', 'Tags, then the home, then price as the largest text, then one filled button. Six variants share this anatomy, including a no-image state.') },
+    { say: "And Contact is right there.", ring: [42, 71.9, 30.7, 6.8] },
+    { say: "Another card peeks in. I can swipe.", overlay: 'carousel', ring: [80.6, 19.5, 19.4, 61.4],
+      card: note('A peek, not dots', 'The next card shows at the edge, so the row obviously scrolls. Carousels hold up to 10 cards.') },
+  ]},
+
+  { img: HD + 'card-msg.png', beats: [
+    { say: "It's asking if I want to narrow things down.", ring: [4, 33, 92, 9.5],
+      card: pin('Progressive disclosure', 'Show what matters now, and offer the rest when it\'s needed.{ref} Results first, then a gentle next step: budget, BHK or locality.', 'Nielsen Norman Group, "Progressive disclosure" (2006).') },
+    { img: HD + 'viewmore.png', say: "At the end of the row, \"View more\" opens every match.", ring: [52, 13, 43, 63],
+      card: note('Escape hatch to search', '"View more" opens the full search results with the 11th listing in view, through a short transition, so the chat never traps anyone.') },
+    { img: HD + 'shortlist.png', say: "♥ Saved one for later.", ring: [4, 81.4, 92, 6.6],
+      card: note('Confirm in place', 'Shortlisting fills the heart and a toast confirms it, without leaving the conversation.') },
+  ]},
+
+  { img: HD + 'card.png', beats: [
+    { say: "I'll contact this one—", ring: [41.5, 71.5, 31, 7.5] },
+    { img: HD + 'login-sheet.png', say: "—oh, it wants me to log in. WhatsApp works.", ring: [4, 89, 92, 7.5],
+      card: pin('Gradual engagement', 'Asking for commitment after people see value converts better than asking up front.{ref} Browsing and asking never need an account; only Contact, Brochure and Shortlist do.', 'Luke Wroblewski, "Sign up forms must die" (2008).') },
+    { img: HD + 'login-toast.png', say: "And I'm right back where I was.", ring: [4, 81, 91.5, 7],
+      card: note('The thread survives login', 'A toast confirms it; the cards and the conversation are exactly where they were. No reload.') },
+    { img: C + 'card-contacted.png', say: "\"Someone will reach out to you soon.\"", ring: [3, 18, 80, 6.5] },
+  ]},
+
+  { img: HD + 'skel-msg.png', beats: [
+    { overlay: 'shimmer', say: "Next morning I open Houzy again. While my chat loads, I can already see its shape.", ring: [3, 16.5, 94, 47],
+      card: note('Chat loading skeleton', 'While the conversation history loads, message-shaped bars alternate right and left, mirroring the buyer\'s bubbles and Houzy\'s replies, so the screen never looks empty or broken.') },
+    { img: C + 'older-today.png', say: "And the whole chat's still here.", ring: [40, 14.5, 20, 4.5] },
+    { img: HD + 'older-load.png', say: "Older messages load when I scroll up.", ring: [27, 15, 46.5, 4.5],
+      card: note('One thread, loaded on demand', 'Full history in a single chat. Older messages load on demand: after two weeks on Android, after five screens of scrolling on iOS.') },
+    { img: C + 'bottom.png', say: "A little arrow takes me back down.", ring: [42, 82.3, 16, 7] },
+    { img: HD + 'timeout.png', say: "In the lift. No signal.", ring: [5, 23, 90, 7.5],
+      card: pin('Help users recover from errors', 'Errors should say what happened and offer a way out.{ref} Failures appear right under the message that failed, with Retry, never as a toast you might miss.', 'Jakob Nielsen, "10 usability heuristics" (1994).') },
+    { img: HD + 'nonetwork.png', say: "Same place, same Retry.", ring: [78, 24.3, 14, 5] },
+  ]},
+
+  // the gallery as designed, and the quick fix that shipped
+  { img: HD + 'card.png', beats: [
+    { say: "Let me tap the photo on this one.", ring: [4.4, 19.5, 72.7, 22.5] },
+    { img: HD + 'gallery-room.png', tap: [40, 31], say: "A full-screen gallery, right inside the chat.", ring: [1, 23.5, 98, 57.2],
+      card: note('The gallery I designed', 'Tapping a card\'s photo opens a native, full-screen viewer over the chat: photos grouped by room, arrows to move through them, and a close button that drops you back into the conversation.') },
+    { say: "\"Kitchen, 2 of 9.\" I always know where I am.", ring: [4, 7, 16, 5.5],
+      card: note('Organised by room', 'The header names the room and counts within it, so buyers browse the way they think: kitchen, bedrooms, balcony.') },
+    { say: "And I can still contact the seller from here.", ring: [4.6, 90.8, 90.9, 6.8],
+      card: note('No dead ends', 'Contact seller stays pinned at the bottom of every photo, so a buyer who likes what they see never has to go back to act.') },
+    { img: HD + 'card.png', kind: 'aside', say: "But that gallery needed more build time. So we shipped a quick fix…",
+      card: note('The limitation', 'A native gallery inside the chat needed room-level photo tags and more engineering time than the first release had. We needed a quick fix.') },
+    { img: HD + 'pdp-native.png', tap: [40, 31], say: "Tapping a card now opens the full property page, rendered natively inside Houzy.", ring: [3, 90.2, 94, 7.6],
+      card: note('The quick fix', 'Instead of building a new gallery, the existing property page renders natively inside Houzy, photos and all, with Ask Houzy docked at the bottom so the conversation comes along.') },
+  ]},
+
+  // the property page inside Houzy: scroll up, the ask bar grows into follow-up pills
+  { img: HD + 'pdp-native.png', beats: [
+    { overlay: 'pdp-scroll', say: "I scroll up to read more about it.",
+      card: note('Scroll to expand', 'Any upward scroll expands the property page to full height. A compact header slides in at the top, and the bottom ask bar grows into suggested questions.') },
+    { overlay: 'pdp-pills', say: "Now there are questions about this home waiting at the bottom. I can swipe through them.", ring: [3, 83.2, 97, 6],
+      card: note('Follow-ups for the property you opened', 'These pills aren\'t general prompts. They\'re follow-up questions about the property the buyer just clicked on: its amenities, parking, pictures and possession. The set changes by type: resale asks about floor and facing, rent about price breakup and furnishing. They scroll sideways, and the ask bar is always there for anything else.') },
+    { overlay: 'pdp-pills', say: "It's the same property page I know, with a cross instead of a back arrow.", ring: [3.5, 2.6, 10, 4.6],
+      card: note('Same page, one change', 'Inside Houzy the existing property page is reused as it is. The one change: back became a close (×), so the page reads as a layer over the chat, and closing it drops the buyer straight back into the conversation.') },
+    { overlay: 'pdp-thinking', tap: [28, 86], inplace: true, say: "\"What amenities are there?\"", ring: [3, 84.5, 60, 4.4],
+      card: note('Asked in place', 'Tapping a pill sends it as a question about this home. Houzy thinks right there in the sheet; no new screen, no lost scroll position.') },
+    { overlay: 'pdp-reply', say: "The answer opens over the page. The home is still right there.", ring: [3, 56, 94, 30],
+      card: pin('The cost of switching context', 'Every time people leave a task, they pay to rebuild it.{ref} The question stays tied to the property, and the answer stays on top of it.', 'Rubinstein, Meyer & Evans, task switching (2001).') },
+    { overlay: 'pdp-pills', tap: [92.7, 59.4], inplace: true, say: "I close the answer, and I'm back on the property page.", ring: [3.5, 2.6, 10, 4.6],
+      card: note('Close goes back one step', 'The answer\'s × closes just the answer, back to the property page and its questions. The page\'s own × is the next step back.') },
+    { img: S + 'pdp-parent.png', tap: [8.1, 4.6], say: "Closing the page takes me back to the main chat, with my question and the answer saved there.", ring: [38, 19.5, 58, 9.5],
+      card: note('Saved for context', 'Questions asked on the property page are saved into the primary chat, with a small "↳ Evolvus Phase 1" quote and Houzy\'s answer below it, so the conversation remembers which home they were about.') },
+  ]},
+
+  // photos asked for in the chat: one rule per image count (from the Figma dev-mode annotations), then the gallery
+  { img: PH + 'loading.png', beats: [
+    { say: "\"Show me pics of the bedrooms.\"", ring: [29, 14.6, 65.5, 5.4] },
+    { say: "Running through the details…", ring: [4, 23.4, 64, 4.6],
+      card: note('Loading', 'The line keeps rotating: "Looking around the neighborhood…", "Thinking through…", "Just a second…", "Searching for better answers…". The loader disappears if the user stops the request.') },
+    { img: PH + 'grid.png', enter: 'fade', say: "Four or more photos come back as a grid.", ring: [4.5, 30.7, 88.5, 34.5],
+      card: note('4+ images', '2×2 grid with a fixed 4:3 cover-fit on all four cells. Container 320px wide × ~240px tall, 4px gap, each cell 158×118px. When there are more than four, the fourth cell gets a scrim and a "+N" count.') },
+    { say: "\"+12\" means there's more.", ring: [49.4, 48.3, 44, 17],
+      card: note('+N opens the full gallery', 'The chat shows a taste, not the album. The fourth cell carries the count, so the complete set is one tap away and the conversation stays light.') },
+    { img: PH + 'one.png', enter: 'fade', say: "Just one photo of the kitchen? It shows as it is.", ring: [4.4, 28.3, 66.8, 26],
+      card: note('One image', 'Renders at its native aspect ratio, no crop. Max 240px wide, max 320px tall, min 120px tall. The ratio is read from the image metadata at render time.') },
+    { img: PH + 'two.png', enter: 'fade', say: "Two photos sit side by side, the same size.", ring: [4.5, 32.9, 88.8, 17],
+      card: note('Two images', 'Fixed 4:3 cover-fit on both cells, uniform size. Crop logic: geometric centre crop.') },
+    { img: PH + 'three.png', enter: 'fade', say: "Three? One big, two small.", ring: [4.6, 31.6, 89, 25.9],
+      card: note('Three images', 'No fixed ratio: each cell crops to fill its own slot (cover-fit per cell, not 4:3). A hero-selection rule decides which photo fills the large cell.') },
+    { img: HD + 'gallery-room.png', tap: [35, 44.5], say: "I tap one, and the gallery opens right over the chat.", ring: [1, 23.5, 98, 57.2],
+      card: note('The gallery I designed', 'A full-screen viewer that belongs to Houzy: the room and count in the header ("Kitchen, 2 of 9"), arrows to move through it, and contact actions pinned below, so liking a photo leads straight to acting on it.') },
+    { img: PH + 'three.png', kind: 'aside', say: "That isn't what shipped.",
+      alert: { t: 'The limitation', b: 'A Houzy-native gallery needed room-level photo tags and build time the release didn\'t have.', s: 'The property page already had a gallery buyers knew.' } },
+    { img: PH + 'pdp-gallery.png', tap: [35, 44.5], say: "Tapping a photo opens Housing.com's own gallery, sorted by room.", ring: [3, 12.8, 94, 4.6],
+      card: note('The quick solve', 'We reused the property page\'s gallery as it is: the same room tabs and photos buyers already know from Housing.com. No new gallery to build, test or keep in sync.') },
+    { say: "And a cross takes me straight back to the chat.", ring: [4, 7.6, 14, 4.6],
+      card: note('A cross, not a back arrow', 'The only change to the Housing.com gallery: the back arrow became a cross. It closes the gallery instead of navigating away, so the buyer lands back in the conversation, the same rule as the property page inside Houzy.') },
+  ]},
+
+  // follow-ups: when a search can't run as asked, Houzy asks back with a short list instead of guessing
+  { img: FU + 'noresults.png', beats: [
+    { say: "\"Show me 3 BHK in Bandra West.\"", ring: [28.7, 15.4, 66.7, 5.4] },
+    { say: "Nothing in Bandra West right now…", ring: [4.5, 24.5, 84, 6],
+      card: note('No dead end', 'An empty answer is still an answer. Houzy says what it couldn\'t find in one line, then moves straight to what it can do.') },
+    { say: "…but three ways closer, each with a count.", ring: [8.5, 58.5, 85, 26.3],
+      card: note('Single-list follow-up', 'Each row changes one thing: nearby localities, one BHK up, one BHK down. The home count on every row tells the buyer the tap will never land on another empty result.') },
+    { say: "Or I just type something else.", ring: [9.2, 88.8, 83.4, 7.8],
+      card: pin('Hick\'s law', 'The more choices there are, the longer it takes to pick one.{ref} Three short options plus a free-text field keeps the follow-up quick to scan without boxing the buyer in.', 'W. E. Hick, "On the rate of gain of information" (1952).') },
+    { img: FU + 'single.png', enter: 'fade', say: "\"A 3BHK in Gurgaon.\" Which part of Gurgaon, though?", ring: [28.9, 18, 68.3, 7.9],
+      card: note('Did you mean one of these?', 'When a place name matches several things, Houzy asks once instead of guessing. Every row says what kind of match it is: locality, developer, city or landmark.') },
+    { say: "I tap the locality I meant.", ring: [9, 37.2, 84.8, 10.2],
+      card: note('One tap to answer', 'The whole row is the target, with a pressed state so the tap feels registered. The search then runs on the exact match, with no retyping.') },
+    { img: FU + 'multi.png', enter: 'fade', say: "\"Phase 4, 5, 6.\" Three places, all unclear.", ring: [28.8, 17.9, 65.8, 7.6],
+      card: note('Multiple-list follow-up', 'When a message names several places, each gets its own list. "1 of 2" pages through them one question at a time instead of stacking every list at once.') },
+    { say: "Or I type it my way, and send lights up.", ring: [9.5, 87.4, 82, 7.6],
+      card: note('Typing always wins', 'The field inside the follow-up stays live. As soon as the buyer types, send turns purple, and their own words replace the suggestions.') },
+  ]},
+
+  // ---------- Part 2 ----------
+  { raw: 'raw-part2' },
+
+  // 1 · zero results
+  { img: SR + 'noresults.png', beats: [
+    { say: "Back on search. \"No properties match your current filters.\"", ring: [3.5, 32.6, 73, 3.8] },
+    { say: "\"Widen your search with Houzy.\" Okay.", ring: [4, 37.3, 92, 15.8],
+      card: pin('Just-in-time help', 'Help lands best at the moment of struggle.{ref} Zero results is the strongest signal, so Houzy offers itself right where the empty list would be.', 'Nielsen Norman Group, "Contextual help" (2023).') },
+    { img: T + 'houzy-noresults.png', tap: [50, 47.3], say: "And it already knows my filters.", ring: [3, 17, 93, 9],
+      card: note('Context handover', 'Search passes its filters into the chat, so Houzy starts from where the buyer is stuck: "2BHK in Koramangala under ₹80L, ready to move…". The most recent signal wins, and context expires after 60 days.') },
+  ]},
+
+  // 2 · filter confusion
+  { img: SR + 'filterpanel.png', beats: [
+    { say: "Saket, Malviya Nagar, Panchsheel… I keep changing the filters.", ring: [6.5, 43.5, 93.5, 6.1] },
+    { img: SR + 'filters-nudge.png', tap: [8.7, 9.5], enter: 'fade', say: "Third change in a row. \"Need help narrowing it down?\"", ring: [0, 83.4, 100, 16.6],
+      card: note('Trigger: 3+ filter changes', 'Repeatedly changing filters is a sign the buyer can\'t express what they want in dropdowns. A sheet rises from the bottom of the results, without covering the listings.') },
+    { img: SR + 'houzy-filters.png', tap: [50, 94.3], say: "It sums up where I've landed and asks what to change.", ring: [4.5, 17.3, 90, 11.4],
+      card: note('Start from a summary', '"Here\'s where you\'ve landed: 3BHK in Saket, Malviya Nagar or Panchsheel, up to ₹3Cr, ready to move." Reflecting the filters back turns a dead end into a conversation.') },
+  ]},
+
+  // 3 · passive scrolling
+  { img: SR + 'scrolling-base.png', arrive: 'scroll', beats: [
+    { sheet: SR + 'scrolling-sheet.png', say: "Twenty listings in, I still haven't tapped one. \"Looking for something specific?\"", ring: [0, 83, 100, 17],
+      card: note('Trigger: passive scrolling', 'Twenty listings scrolled with no taps means the buyer is browsing without conviction. Houzy waits for that signal before it speaks up.') },
+    { img: SR + 'houzy-scrolling.png', tap: [50, 93.8], say: "\"Still scrolling?\" It recaps what I've been looking at.", ring: [5, 17.5, 90, 8.6],
+      card: note('Recap, then ask', '"You\'re at 3BHK in Saket or Malviya Nagar, up to ₹3Cr, ready to move. Tell me what\'s missing." The buyer never has to re-explain.') },
+  ]},
+
+  // 4 · too many results
+  { img: SR + 'toomany-base.png', beats: [
+    { sheet: SR + 'toomany-sheet.png', say: "Hundreds of matches. \"Too many options? I can help narrow down.\"", ring: [0, 83.3, 100, 16.7],
+      card: note('Trigger: too many results', 'When a search returns more than 200 listings, Houzy offers to narrow them down by what matters most.') },
+    { img: SR + 'houzy-toomany.png', tap: [50, 94], say: "\"Tell me what matters most to you.\" That's easier than another filter.", ring: [4.5, 17.8, 90, 11.3],
+      card: note('Trigger rules', '<ul><li>Zero results beats filter confusion, which beats passive scrolling.</li><li>One prompt per trigger per session, with a 2-minute cooldown.</li><li>Counts reset when locality, city or service changes.</li></ul>') },
+  ]},
+
+  // ---------- Part 3 ----------
+  { raw: 'raw-part3' },
+
+  { img: S + 'gal-shot2.png', beats: [
+    { say: "\"Can I see the bedrooms?\" It took me to the property's gallery…", ring: [3, 7, 94, 6] },
+    { say: "Wait. Why did it send me away? Are these even real?",
+      card: pin('Ambiguity aversion', 'People avoid options with missing information.{ref} In testing, buyers asked for photos up front, and the redirect plus the wording made some think the images were fake.', 'Daniel Ellsberg, "Risk, ambiguity and the Savage axioms" (1961).') },
+  ]},
+
+
+  { raw: 'raw-outcomes' },
+  { raw: 'raw-journey', chart: true },
+  { raw: 'raw-next' },
+  { raw: 'raw-end' },
+];
+
+// ---------- engine ----------
+const stage = document.getElementById('stage');
+let si = 0, bi = 0;
+const beatsOf = s => s.beats ? s.beats.length - 1 : s.chart ? 8 : Math.max(0, ...[...document.getElementById(s.raw).content.querySelectorAll('[data-beat]')].map(e => +e.dataset.beat));
+
+// a loose, hand-drawn loop that overshoots where it closes; varies a little each time
+function makeRing() {
+  const ring = el('div', 'ring'); ring.id = 'current-ring';
+  const j = () => (Math.random() - .5) * 5;
+  const d = `M ${10 + j()} ${58 + j()} C ${3 + j()} ${22 + j()}, ${38 + j()} ${3 + j()}, ${70 + j()} ${7 + j()} C ${97 + j()} ${12 + j()}, ${101 + j()} ${46 + j()}, ${92 + j()} ${71 + j()} C ${83 + j()} ${95 + j()}, ${38 + j()} ${101 + j()}, ${16 + j()} ${88 + j()} C ${3 + j()} ${80 + j()}, ${1 + j()} ${57 + j()}, ${15 + j()} ${38 + j()}`;
+  ring.innerHTML = `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path pathLength="1" d="${d}"/></svg>`;
+  return ring;
+}
+function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+
+function renderScene(s) {
+  const wide = !!s.wide;
+  const scene = el('div', wide ? 'wide' : 'scene' + (s.live ? ' has-live' : ''));
+  const narr = el('div', 'narr');
+  const side = el('div', 'side');
+  // narration: current + up to two previous lines
+  const said = s.beats.slice(0, bi + 1).map((b, i) => ({ b, i })).filter(x => x.b.say);
+  narr.appendChild(el('div', 'who', '<span class="avatar">P</span>Priya'));
+  said.slice(-3).forEach(({ b, i }) => {
+    const d = el('p', 'say' + (b.kind ? ' ' + b.kind : '') + (i < bi ? ' old' : ' enter'), b.say);
+    if (i === bi) d.id = 'current-say';
+    narr.appendChild(d);
+  });
+  // cards: latest two, newest last
+  const cards = s.beats.slice(0, bi + 1).map((b, i) => ({ c: b.card, i })).filter(x => x.c).slice(-2);
+  cards.forEach(({ c, i }) => {
+    const d = el('div', 'card ' + c.kind + (i < bi ? ' old' : ''), (c.kind === 'note' ? '<span class="lbl">Design decision</span>' : '') + '<b class="t">' + c.t + '</b>' + c.b);
+    side.appendChild(d);
+  });
+  let img = s.img || s.wide;
+  for (let k = 0; k <= bi; k++) if (s.beats[k].img) img = s.beats[k].img;
+
+  if (wide) {
+    scene.appendChild(narr);
+    const im = el('img', 'big'); im.src = img; im.alt = ''; scene.appendChild(im);
+    scene.appendChild(side);
+  } else {
+    const device = el('div', 'device');
+    const screen = el('div', 'screen' + (s.live ? ' live' : ''));
+    const im = el('img');
+    if (s.live) {
+      if (s.poster) { const pimg = el('img', 'poster'); pimg.src = s.poster; pimg.alt = ''; screen.appendChild(pimg); }
+    } else {
+      im.src = img; im.alt = 'Houzy screen'; screen.appendChild(im);
+      if (PADDED.has(img)) { screen.classList.add('padded'); const sb = el('img', 'sb'); sb.src = SR + 'statusbar.png'; sb.alt = ''; screen.appendChild(sb); }
+    }
+    // every phone shares one size; screenshots are cover-fitted into it
+
+    let ov = s.overlay; for (let k = 0; k <= bi; k++) if (s.beats[k].img) ov = s.beats[k].overlay || s.overlay;
+    if (s.beats[bi] && s.beats[bi].overlay) ov = s.beats[bi].overlay;
+    screen.dataset.ov = ov || '';
+    if (ov === 'prompts') screen.appendChild(promptRows());
+    if (ov === 'loading') screen.appendChild(loadingRow());
+    if (bi === 0 && s.arrive === 'scroll') {
+      screen.classList.add('arrive-scroll');
+      const g = el('div', 'gest swipe', '<svg class="cursor-ico" viewBox="0 0 24 24"><path d="M5 2.5v17.2l4.6-4.3 2.9 6.6 2.9-1.3-2.9-6.5 6.3-.3z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>');
+      g.style.setProperty('--y', '72%'); g.style.setProperty('--y2', '34%'); screen.appendChild(g);
+      setTimeout(() => g.remove(), 2000);
+    }
+    if (ov === 'shimmer') screen.appendChild(el('div', 'skeleton-shimmer'));
+    if (ov === 'pdp-scroll') screen.appendChild(pdpScene('pills', true));
+    if (ov && ov.indexOf('pdp-') === 0 && ov !== 'pdp-scroll') screen.appendChild(pdpScene(ov.slice(4), false));
+    if (ov === 'carousel') { const c = el('div', 'carousel'); const card = '<img class="c" src="' + HD + 'carousel-card.png" alt="">'; c.innerHTML = '<div class="track">' + card + card + card + '<img class="v" src="' + HD + 'carousel-viewmore.png" alt="View more"></div>'; screen.appendChild(c); }
+    const r = s.drive ? null : s.beats[bi].ring;
+    let sheet = null;
+    if (s.beats[bi] && s.beats[bi].sheet) {
+      sheet = el('div', 'sheet-up', '<img src="' + s.beats[bi].sheet + '" alt="">');
+      if (bi === 0 && s.arrive === 'scroll') sheet.style.setProperty('--d', '1.75s');
+      screen.appendChild(sheet);
+    }
+    if (r) { const ring = makeRing(); Object.assign(ring.style, { left: r[0] + '%', top: r[1] + '%', width: r[2] + '%', height: r[3] + '%' }); screen.appendChild(ring); }
+    // the arrow waits until the sheet has risen
+    if (r && sheet) { const ring = screen.querySelector('.ring'); ring.style.display = 'none'; sheet.addEventListener('animationend', () => { ring.style.display = ''; drawLink(); }); }
+    device.appendChild(screen);
+    scene.append(narr, device, side);
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('class', 'link'); scene.appendChild(svg);
+  }
+  return scene;
+}
+
+const STROKE = { coral: 'rgba(244,152,143,.3)', blue: 'rgba(140,179,236,.3)', green: 'rgba(175,210,185,.3)', yellow: 'rgba(255,211,109,.3)', yellowStrong: 'rgba(255,211,109,.4)', purple: 'rgba(194,169,236,.3)', pink: 'rgba(255,165,226,.3)' };
+const PROMPTS = {
+  r1: [['furnished', '2 BHK fully furnished properties for rent', 'green'], ['location', 'Show properties near me', 'coral'], ['bhk', '3 BHK properties between ₹2 - 2.5 Cr', 'blue'], ['trending', 'Show trending localities in my area', 'yellowStrong'], ['bhk', 'Buy 3 BHK in Gurgaon under 3 Cr', 'blue']],
+  r2: [['compare', 'Compare localities', 'coral'], ['review', 'Check locality reviews', 'yellow'], ['variant9', 'Show me under construction projects', 'purple'], ['price', 'Check locality price trends', 'pink'], ['bhk', 'Show project pictures of Opus', 'blue']],
+};
+const TYPING_STATUS_TEXTS = ['Thinking...', 'Finding the answers...', 'Searching properties...', 'Looking that up...', 'One sec...', 'Checking...'];
+function loadingRow() {
+  const box = el('div', 'loading-row', '<div class="loader-5"><span></span></div><span class="shimmer">' + TYPING_STATUS_TEXTS[0] + '</span>');
+  const t = box.querySelector('.shimmer'); let i = 0;
+  const iv = setInterval(() => { if (!box.isConnected) return clearInterval(iv); i = (i + 1) % TYPING_STATUS_TEXTS.length; t.textContent = TYPING_STATUS_TEXTS[i]; }, 1500);
+  return box;
+}
+const PD = 'houzy/chat/hd/pdp/';
+function pdpScene(state, animate) {
+  const box = el('div', 'pdps' + (animate ? ' anim' : ''));
+  const page = `<div class="pdps-track"><img src="${PD}page-a.png" alt=""><img src="${PD}page-b.png" alt=""></div><img class="pdps-head" src="${PD}header.png" alt="">`;
+  const sheet = animate
+    ? `<div class="pdps-sheet"><img class="s-compact" src="${PD}sheet-compact.png" alt=""><img class="s-pills" src="${PD}sheet-pills.png" alt=""></div>`
+      + '<svg class="drag" viewBox="0 0 24 24"><path d="M5 2.5v17.2l4.6-4.3 2.9 6.6 2.9-1.3-2.9-6.5 6.3-.3z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>'
+    : `<div class="pdps-sheet${state === 'pills' ? '' : ' up'}"><img src="${PD}sheet-${state}.png" alt=""></div>`;
+  box.innerHTML = page + sheet;
+  if (animate || state === 'pills') {
+    const icon = '<svg viewBox="0 0 16 16"><path d="M3 3v4.5a2.5 2.5 0 0 0 2.5 2.5H13m0 0-2.5-2.5M13 10l-2.5 2.5" fill="none" stroke="#767676" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const pills = ['What amenities are there?', 'Is parking available nearby?', 'Show project pictures', 'When is possession?'];
+    const wrap = el('div', 'pdps-pills', '<div class="row">' + pills.map((t, i) => '<span class="pp">' + (i === 0 ? icon : '') + t + '</span>').join('') + '</div>');
+    box.querySelector('.pdps-sheet').appendChild(wrap);
+    // scroll just far enough to reveal the last pill
+    setTimeout(() => { const row = wrap.querySelector('.row'); const extra = row.scrollWidth - wrap.clientWidth + wrap.clientWidth * .042; if (extra > 0) row.style.setProperty('--shift', -extra + 'px'); }, 0);
+  }
+  return box;
+}
+function promptRows() {
+  const box = el('div', 'prompts');
+  ['r1', 'r2'].forEach(r => {
+    const row = el('div', 'prow ' + r);
+    const html = PROMPTS[r].map(([i, t, c]) => `<span class="ppill" style="--b:${STROKE[c]}"><img src="houzy/chat/icons/${i}.svg" alt="">${t}</span>`).join('');
+    row.innerHTML = html + html; // two identical halves loop seamlessly at -50%
+    box.appendChild(row);
+  });
+  // 12px per second on a 360px-wide screen, scaled to the rendered screen
+  setTimeout(() => box.querySelectorAll('.prow').forEach(row => {
+    const scale = box.getBoundingClientRect().width / 360 || 1;
+    const dur = row.scrollWidth / 2 / (12 * scale);
+    if (!dur) return;
+    row.style.animationDuration = dur + 's';
+    // continue from where the drift was, so stepping through beats never jumps
+    row.style.animationDelay = -((performance.now() / 1000) % dur) + 's';
+  }), 0);
+  return box;
+}
+
+// one arrow, same shape every time: enters from the nearer side of the phone and lands on the target
+function drawLink() {
+  const svg = stage.querySelector('svg.link'), t = document.getElementById('current-ring'), phone = stage.querySelector('.screen');
+  if (!svg) return;
+  if (!t || !phone || t.style.display === 'none' || innerWidth <= 900) { svg.innerHTML = ''; svg.dataset.k = ''; return; }
+  const o = svg.getBoundingClientRect(), r = t.getBoundingClientRect(), p = phone.getBoundingClientRect();
+  const ty = r.top + r.height / 2 - o.top;
+  const fromRight = (r.left + r.width / 2) > (p.left + p.width / 2), dir = fromRight ? -1 : 1;
+  const tx = fromRight ? Math.min(r.right, p.right) - o.left + 6 : Math.max(r.left, p.left) - o.left - 6;
+  const sx = fromRight ? p.right - o.left + 58 : p.left - o.left - 58, sy = ty - 46;
+  const k = [sx, sy, tx, ty].map(Math.round).join(',');
+  if (svg.dataset.k === k) return;
+  const moved = svg.dataset.k && svg.querySelector('path');
+  svg.dataset.k = k;
+  const h = 12, a1 = [tx - dir * h, ty - h * .62], a2 = [tx - dir * h, ty + h * .62];
+  svg.innerHTML =
+    `<path d="M ${sx} ${sy} C ${sx + dir * 6} ${ty - 6}, ${tx - dir * 34} ${ty}, ${tx} ${ty}"/>` +
+    `<path class="head" d="M ${a1[0]} ${a1[1]} L ${tx} ${ty} L ${a2[0]} ${a2[1]}"/>`;
+  // draw in using each path's real length (Safari-safe); a repositioned arrow just appears, fully drawn
+  if (!moved && svg.animate && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    [...svg.querySelectorAll('path')].forEach((q, i) => {
+      const L = q.getTotalLength(); if (!L) return;
+      q.style.strokeDasharray = L;
+      const an = q.animate([{ strokeDashoffset: L }, { strokeDashoffset: 0 }], { duration: [420, 160][i], delay: [0, 400][i], easing: 'cubic-bezier(.5,0,.3,1)', fill: 'backwards' });
+      setTimeout(() => { try { an.finish(); } catch (e) {} q.style.strokeDasharray = 'none'; }, 800); // never leave it half-drawn
+    });
+  }
+}
+
+function render() {
+  const s = SLIDES[si];
+  document.body.classList.toggle('on-canvas', s.raw === 'raw-canvas');
+  const keep = lastSi === si && !s.raw && stage.querySelector('.scene, .wide');
+  if (!keep) stage.innerHTML = '';
+  if (s.raw) {
+    const wrap = el('div', 'raw'); wrap.appendChild(document.getElementById(s.raw).content.cloneNode(true)); stage.appendChild(wrap);
+    wrap.querySelectorAll('[data-beat]').forEach(e => e.classList.toggle('shown', bi >= +e.dataset.beat));
+    if (s.raw === 'raw-canvas') introDemo(wrap.querySelector('#intro-demo'));
+    if (s.raw === 'raw-canvas') { try { const q = qrcode(0, 'M'); q.addData('https://kaifmir.github.io/house-pdp/'); q.make(); wrap.querySelector('#qr').innerHTML = q.createSvgTag({ cellSize: 6, margin: 0, scalable: true }); } catch (e) {} }
+    if (s.raw === 'raw-end') wrap.querySelector('#footnotes').innerHTML = '<ol>' + REFS.map(r => '<li>' + r + '</li>').join('') + '</ol>';
+    if (s.chart) {
+      const pts = [...wrap.querySelectorAll('.pt')], n = Math.min(pts.length, bi + 1);
+      pts.forEach((p, i) => p.style.opacity = i < n ? 1 : .12);
+      const line = wrap.querySelector('#jline'); line.setAttribute('points', line.getAttribute('points').trim().split(/\s+/).slice(0, n).join(' '));
+      wrap.querySelectorAll('[data-beat]').forEach(e => e.classList.toggle('shown', n >= pts.length));
+    }
+  } else if (lastSi === si && stage.querySelector('.scene, .wide')) {
+    const cur = stage.firstElementChild, fresh = renderScene(s);
+    const lk = cur.querySelector('svg.link'); if (lk) lk.dataset.k = ''; // new beat: draw the arrow fresh
+    cur.querySelector('.narr').replaceWith(fresh.querySelector('.narr'));
+    cur.querySelector('.side').replaceWith(fresh.querySelector('.side'));
+    if (s.live) {
+      const screen = cur.querySelector('.screen'); screen.querySelector('.ring')?.remove();
+      const ring = fresh.querySelector('.ring'); if (ring) screen.appendChild(ring);
+      stillFor(screen);
+    } else {
+      const old = cur.querySelector('.screen, img.big'), nw = fresh.querySelector('.screen, img.big');
+      const oldSrc = old.querySelector ? (old.querySelector('img') || old).getAttribute('src') : null, newSrc = (nw.querySelector ? (nw.querySelector('img') || nw) : nw).getAttribute('src');
+      if (old.classList.contains('screen') && oldSrc === newSrc && old.dataset.ov === nw.dataset.ov) { old.querySelector('.ring')?.remove(); const ring = nw.querySelector('.ring'); if (ring) old.appendChild(ring); }
+      else {
+        const cb = s.beats[bi];
+        const forward = lastBi === bi - 1;
+        if (forward && old.classList.contains('screen') && (cb.tap || cb.swipe)) playGesture(old, nw, cb);
+        else old.replaceWith(nw);
+      }
+    }
+    requestAnimationFrame(drawLink); setTimeout(drawLink, 60);
+  } else {
+    stage.appendChild(renderScene(s));
+    const im = stage.querySelector('.screen img'); if (im) { im.complete ? drawLink() : im.addEventListener('load', drawLink); }
+    requestAnimationFrame(() => requestAnimationFrame(drawLink));
+  }
+  // a beat can stop the story: the phone dims and a tip card lands on top of it
+  const al = s.beats && s.beats[bi] && s.beats[bi].alert, scr = stage.querySelector('.screen');
+  stage.querySelectorAll('.alert-dim, .alert-card').forEach(e => e.remove());
+  stage.querySelector('.scene')?.classList.toggle('alerting', !!al);
+  if (scr && al) {
+    scr.appendChild(el('div', 'alert-dim'));
+    scr.parentElement.appendChild(el('div', 'alert-card', '<svg class="warn" viewBox="0 0 64 58" aria-hidden="true"><path d="M27.7 4.5a5 5 0 0 1 8.6 0l25.4 44a5 5 0 0 1-4.3 7.5H6.6a5 5 0 0 1-4.3-7.5z" fill="#ffc531"/><rect x="29" y="19" width="6" height="20" rx="3" fill="#171313"/><circle cx="32" cy="46" r="3.6" fill="#171313"/></svg><div><span class="eyebrow">#Limitation</span><h3>' + al.t + '</h3><p>' + al.b + '</p>' + (al.s ? '<p>' + al.s + '</p>' : '') + '</div>'));
+  }
+  document.getElementById('count').textContent = (si + 1) + ' / ' + SLIDES.length;
+  document.getElementById('bar').style.width = ((si + bi / (beatsOf(s) + 1)) / (SLIDES.length - 1) * 100) + '%';
+  document.getElementById('prev').disabled = si === 0 && bi === 0;
+  document.getElementById('next').disabled = si === SLIDES.length - 1 && bi >= beatsOf(s);
+  if (location.hash !== '#' + (si + 1)) history.replaceState(null, '', '#' + (si + 1));
+  lastSi = si; lastBi = bi;
+  scaleLive();
+  driveLive();
+  stage.querySelectorAll('.screen.live.blocked').forEach(stillFor);
+}
+let lastSi = -1, lastBi = -1, gesture = null;
+// a cursor glides to a spot and clicks (tap) or drags up (swipe), then the next screen takes over
+function playGesture(old, nw, b) {
+  if (gesture) { clearTimeout(gesture); gesture = null; }
+  old.querySelector('.ring')?.remove();
+  const svg = stage.querySelector('svg.link'); if (svg) { svg.innerHTML = ''; svg.dataset.k = ''; }
+  const [x, y] = b.tap || b.swipe;
+  const cur = el('div', 'gest ' + (b.tap ? 'tap' : 'swipe'),
+    '<span class="ripple"></span><svg class="cursor-ico" viewBox="0 0 24 24"><path d="M5 2.5v17.2l4.6-4.3 2.9 6.6 2.9-1.3-2.9-6.5 6.3-.3z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>');
+  cur.style.setProperty('--x', x + '%'); cur.style.setProperty('--y', y + '%');
+  if (b.swipe) cur.style.setProperty('--y2', (y - 38) + '%');
+  old.appendChild(cur);
+  const swap = () => {
+    gesture = null;
+    if (!old.isConnected) return;
+    nw.style.setProperty('--ox', x + '%'); nw.style.setProperty('--oy', y + '%');
+    if (!b.inplace) nw.classList.add(b.enter === 'fade' ? 'fade-in' : b.tap ? 'zoom-in' : 'scroll-in');
+    old.replaceWith(nw);
+    setTimeout(drawLink, 520);
+  };
+  gesture = setTimeout(swap, b.tap ? 950 : 1000);
+}
+// ---------- intro: the prototype plays a search and stops on the property cards ----------
+function introDemo(demo) {
+  const f = document.createElement('iframe');
+  f.src = PROTO; f.title = 'Houzy prototype'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+  demo.insertBefore(f, demo.querySelector('.tapper'));
+  const tap = demo.querySelector('.tapper'), cap = demo.parentElement.querySelector('.caption');
+  const fit = () => { if (!demo.isConnected) return removeEventListener('resize', fit); demo.style.setProperty('--s', demo.clientWidth / 375); };
+  fit(); addEventListener('resize', fit);
+  const alive = () => demo.isConnected;
+  const say = t => { cap.textContent = t; cap.classList.toggle('on', !!t); };
+  const point = async (target, d) => { // glide the cursor onto an element inside the frame, then press
+    const r = target.getBoundingClientRect(), s = demo.clientWidth / 375;
+    tap.style.transform = `translate(${(r.left + r.width / 2) * s}px, ${(r.top + r.height / 2) * s}px)`;
+    tap.classList.add('on'); await sleep(800);
+    tap.classList.remove('press'); void tap.offsetWidth; tap.classList.add('press'); await sleep(220);
+    target.click(); await sleep(300); tap.classList.remove('on');
+  };
+  const waitFor = async (fn, ms) => { for (let t = 0; t < ms; t += 250) { const v = fn(); if (v) return v; await sleep(250); if (!alive()) return null; } return null; };
+  async function play() {
+    let d; try { d = f.contentDocument; } catch (e) { return; }
+    if (!d || !alive()) return;
+    tap.style.transition = 'none'; tap.style.transform = 'translate(300px, 760px)'; void tap.offsetWidth; tap.style.transition = '';
+    demo.classList.add('ready'); say('');
+    await sleep(1400); if (!alive()) return;
+    const nav = await waitFor(() => [...d.querySelectorAll('.nav-item')].find(n => /Houzy/.test(n.textContent)), 4000);
+    if (!nav) return; await point(nav); await sleep(900); if (!alive()) return;
+    const i = d.getElementById('chat-input'); if (!i) return;
+    say('Searching in plain words');
+    for (const ch of '3 BHK in Gurgaon, ready to move') { // no focus(), so the arrow keys keep driving the story
+      if (!alive()) return; i.value += ch; i.dispatchEvent(new Event('input', { bubbles: true })); await sleep(45 + Math.random() * 50);
+    }
+    await sleep(400); const send = d.getElementById('chat-send-btn'); if (send) await point(send);
+    const card = await waitFor(() => d.querySelector('.property-card .property-card__title-block'), 15000);
+    if (!card) return; say('Matches arrive as cards'); // the demo rests here
+  }
+  f.addEventListener('load', () => play());
+}
+// ---------- driving the live prototype ----------
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const ACTIONS = {
+  async openChat(d, fast) {
+    const n = [...d.querySelectorAll('.nav-item')].find(n => /Houzy/.test(n.textContent));
+    if (n) n.click();
+    await sleep(fast ? 400 : 900);
+  },
+  async type(d, fast, text) {
+    const i = d.getElementById('chat-input'); if (!i) return;
+    for (const ch of text) { // no focus(), so the arrow keys keep driving the story
+      i.value += ch; i.dispatchEvent(new Event('input', { bubbles: true }));
+      if (!fast) await sleep(40 + Math.random() * 55);
+    }
+  },
+  async send(d) { const b = d.getElementById('chat-send-btn'); if (b) b.click(); await sleep(200); },
+};
+function liveFrame() { return LIVE[si] && SLIDES[si].live ? LIVE[si].f : null; }
+function frameReady(f) {
+  if (!f._ready) f._ready = new Promise(res => {
+    const go = () => setTimeout(res, f.classList.contains('ready') ? 100 : 900);
+    try { if (f.contentDocument && f.contentDocument.readyState === 'complete' && f.contentWindow.location.href.indexOf('proto') > -1) return go(); } catch (e) {}
+    f.addEventListener('load', go, { once: true });
+  });
+  return f._ready;
+}
+function driveLive() {
+  const s = SLIDES[si], f = liveFrame();
+  if (!s.drive || !f) return;
+  if (f._step === undefined) f._step = -1;
+  const target = bi;
+  if (f._step > target) { // going back: reload and replay quickly
+    f._ready = null; f._step = -1; f._chain = Promise.resolve(); f.src = f.src;
+  }
+  f._chain = (f._chain || Promise.resolve()).then(async () => {
+    await frameReady(f);
+    const pending = target - f._step;
+    for (let k = f._step + 1; k <= target; k++) {
+      const a = s.beats[k].act;
+      if (a) await ACTIONS[a[0]](f.contentDocument, pending > 1 && k < target, a[1]);
+      f._step = k;
+    }
+  });
+}
+// keep the ring glued to the live element as the prototype re-lays itself out
+function liveRing() {
+  const s = SLIDES[si], f = liveFrame();
+  if (!s || !s.drive || !f || f.parentElement.classList.contains('blocked')) return;
+  if (f.parentElement.style.visibility !== 'visible') return;
+  const screen = f.parentElement, sel = s.beats[bi] && s.beats[bi].ringSel;
+  let ring = document.getElementById('current-ring');
+  let d; try { d = f.contentDocument; } catch (e) {}
+  let target = null;
+  if (d && sel) {
+    const list = Array.isArray(sel) ? sel : [sel];
+    if (typeof list[1] === 'number') target = d.querySelectorAll(list[0])[list[1]];
+    else for (const q of list) { const e = d.querySelector(q); if (e && e.getBoundingClientRect().height) { target = e; break; } }
+  }
+  if (!target) { if (ring) ring.style.display = 'none'; drawLink(); return; }
+  const r = target.getBoundingClientRect(), pad = 4;
+  const x = Math.max(0, r.left - pad), y = Math.max(0, r.top - pad), w = Math.min(360, r.right + pad) - x, h = Math.min(696, r.bottom + pad) - y;
+  if (ring && ring.dataset.beat !== String(bi)) { ring.remove(); ring = null; }
+  if (!ring) { ring = makeRing(); ring.dataset.beat = bi; screen.appendChild(ring); }
+  Object.assign(ring.style, { display: '', left: (x / 3.6) + '%', top: (y / 6.96) + '%', width: (w / 3.6) + '%', height: (h / 6.96) + '%' });
+  drawLink();
+}
+setInterval(liveRing, 250);
+// ---------- persistent live prototypes: loaded once, kept alive, laid over the phone ----------
+const liveLayer = document.createElement('div'); liveLayer.id = 'live-layer'; document.body.appendChild(liveLayer);
+const LIVE = {};
+function liveFor(idx) {
+  const s = SLIDES[idx];
+  if (!LIVE[idx]) {
+    const wrap = el('div', 'livewrap'), f = el('iframe');
+    f.src = s.live; f.title = 'Live Housing.com prototype with Houzy';
+    f.addEventListener('load', () => { f.classList.add('ready'); if (+idx === si) placeLive(); });
+    wrap.appendChild(f); liveLayer.appendChild(wrap);
+    LIVE[idx] = { wrap, f };
+    // if the prototype can't be reached here (e.g. the page was opened as a file), fall back to stills
+    setTimeout(() => { let ok = false; try { ok = !!(f.contentDocument && f.contentDocument.body && f.contentDocument.body.childElementCount); } catch (e) {}
+      if (!ok) { wrap.classList.add('blocked'); const sc = stage.querySelector('.screen.live'); if (sc && si === idx) { sc.classList.add('blocked'); stillFor(sc); } } }, 4000);
+  }
+  return LIVE[idx];
+}
+function placeLive() {
+  Object.keys(LIVE).forEach(k => {
+    const o = LIVE[k], on = +k === si && SLIDES[si].live, sc = on && stage.querySelector('.screen.live');
+    if (!sc) { o.wrap.style.visibility = 'hidden'; return; }
+    if (o.wrap.classList.contains('blocked')) { sc.classList.add('blocked'); stillFor(sc); return; }
+    const r = sc.getBoundingClientRect();
+    Object.assign(o.wrap.style, { visibility: 'visible', left: (r.left + scrollX) + 'px', top: (r.top + scrollY) + 'px', width: r.width + 'px', height: r.height + 'px' });
+    if (r.width) o.f.style.transform = 'scale(' + (r.width / 360) + ')';
+    if (!SLIDES[si].drive) { // static rings ride on top of the live frame
+      o.wrap.querySelectorAll('.ring').forEach(x => x.remove());
+      const ring = sc.querySelector('.ring'); if (ring) o.wrap.appendChild(ring);
+    }
+  });
+  drawLink();
+}
+new ResizeObserver(placeLive).observe(stage);
+addEventListener('scroll', placeLive, { passive: true });
+function stillFor(screen) {
+  const s = SLIDES[si]; if (!s.live || !screen.classList.contains('blocked')) return;
+  let src = s.poster; for (let k = 0; k <= bi; k++) if (s.beats[k] && s.beats[k].still) src = s.beats[k].still;
+  const p = screen.querySelector('img.poster'); if (p && src && p.getAttribute('src') !== src) p.src = src;
+}
+function scaleLive() { if (SLIDES[si].live) liveFor(si); placeLive(); requestAnimationFrame(placeLive); setTimeout(placeLive, 120); }
+addEventListener('resize', scaleLive);
+function next() { if (gesture) { clearTimeout(gesture); gesture = null; } if (bi < beatsOf(SLIDES[si])) bi++; else if (si < SLIDES.length - 1) { si++; bi = 0; } render(); }
+function prev() { if (gesture) { clearTimeout(gesture); gesture = null; } if (bi > 0) bi--; else if (si > 0) { si--; bi = beatsOf(SLIDES[si]); } render(); }
+function fromHash() { const m = location.hash.match(/^#(\d+)$/); if (m) { si = Math.min(SLIDES.length - 1, Math.max(0, +m[1] - 1)); bi = 0; } }
+
+document.getElementById('next').addEventListener('click', next);
+document.getElementById('prev').addEventListener('click', prev);
+document.addEventListener('keydown', e => {
+  if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); next(); }
+  if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+});
+stage.addEventListener('click', e => { if (!e.target.closest('a,button')) next(); });
+addEventListener('resize', drawLink);
+addEventListener('hashchange', () => { fromHash(); render(); });
+// footnote numbers are assigned as slides are defined, in reading order
+fromHash(); render();
+// warm up every live prototype in the background so it's ready before its slide
+setTimeout(() => SLIDES.forEach((s, i) => { if (s.live) liveFor(i); }), 200);
+// preload every screen
+SLIDES.forEach(s => [s.img, s.wide, ...(s.beats || []).map(b => b.img)].filter(Boolean).forEach(src => { const i = new Image(); i.src = src; }));
+</script>
+</body>
+</html>
