@@ -995,9 +995,16 @@
   /* text follows the grid: headings and paragraphs run the full width of their container */
   .head, .sol-sec .wide > .head, .theme-head, .chapter .h2, .thread, .cj-note, .stage-band .sub,
   .hero .intro, .pdp-note, .sc-b > p, .sc-cmp p, .quote, .q.q-full > .reveal:first-child { max-width: none; }
+  /* view switch: the same case study as slides or as one long read */
+  .mode { position: fixed; left: 22px; top: 22px; z-index: 46; display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.88); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 0 0 1px #e3e3e3, 0 6px 18px rgba(0,0,0,.05); font-size: 13px; font-weight: 500; line-height: 1; }
+  .mode a { padding: 8px 13px; border-radius: 999px; color: #1d1d1f; text-decoration: none; transition: background .2s, color .2s; }
+  .mode a:hover { background: rgba(0,0,0,.05); }
+  .mode a[aria-current] { background: #1d1d1f; color: #fff; }
+  @media (max-width: 899px) { .mode { top: auto; bottom: 16px; left: 16px; } }
 </style>
 </head>
 <body>
+<nav class="mode" aria-label="View"><a href="home-buying-v2.html">Slides</a><a href="home-buying.html" aria-current="page">Story</a></nav>
 
 <div class="progress" id="progress" aria-hidden="true"></div>
 <nav class="chap" aria-label="Chapters"><button class="chap-btn" type="button" aria-expanded="false"><span class="chap-now">Overview</span><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><ol><li><a href="#why"><i></i><span>Overview</span></a></li><li><a href="#current"><i></i><span>Current journey</span></a></li><li><a href="#landscape"><i></i><span>Themes on the journey</span></a></li><li><a href="#t1"><i></i><span>#1 Renters</span></a></li><li><a href="#t2"><i></i><span>#2 Hotspots</span></a></li><li><a href="#t3"><i></i><span>#3 Trust</span></a></li><li><a href="#t4"><i></i><span>#4 Lived experience</span></a></li><li><a href="#t5"><i></i><span>#5 Buyers loop</span></a></li><li><a href="#t6"><i></i><span>#6 Lead quality</span></a></li><li><a href="#t7"><i></i><span>#7 Investors</span></a></li><li><a href="#results"><i></i><span>Results</span></a></li><li><a href="#reflect"><i></i><span>Reflection</span></a></li></ol></nav>
