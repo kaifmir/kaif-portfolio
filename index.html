@@ -343,25 +343,25 @@
   /* Hover (matches original): the whole folder tilts 2° clockwise with a springy settle; contents stay still */
   .case:hover { transform: rotate(2deg); }
   .case .chip { align-self: flex-start; background: #fff; color: var(--c); border-radius: 90px; padding: 8px 17px; font-family: "Playfair Display", var(--serif); font-style: italic; font-weight: 600; font-size: 20px; line-height: 24px; letter-spacing: -.04em; }
-  .case h3 { margin-top: 30px; max-width: 82%; font-size: 26px; line-height: 35px; letter-spacing: -.03em; font-weight: 400; }
-  .case h3 b { font-weight: 800; }
+  .case h3 { margin-top: 30px; max-width: 78%; font-size: 28px; line-height: 34px; letter-spacing: -.03em; font-weight: 700; text-wrap: balance; }
+  .case .lede { margin-top: 12px; max-width: 78%; font-size: 18px; line-height: 26px; letter-spacing: -.01em; font-weight: 400; color: rgba(255,255,255,.78); text-wrap: pretty; }
   .case small { display: block; margin-top: 18px; font-size: 14px; line-height: 16.8px; font-weight: 500; letter-spacing: .15em; color: rgba(255,255,255,.5); }
   .case .arrow { position: absolute; top: 97px; right: 32px; width: 56px; height: 56px; }
-  .case .shot { margin-top: 28px; flex: 1; min-height: 0; height: auto; background: rgba(255,255,255,.96); border-radius: 32px 32px 0 0; overflow: hidden; display: flex; justify-content: center; align-items: flex-end; gap: 18px; }
+  .case .shot { margin-top: 28px; flex: 1; min-height: 0; height: auto; background: none; border-radius: 32px 32px 0 0; overflow: hidden; display: flex; justify-content: center; align-items: flex-end; gap: 18px; }
   .case .shot.img { align-items: flex-start; }
   .case .shot.img { align-items: center; padding: 18px 10px 0; }
   .case .shot.img img { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
   .case .shot.img.bare { background: #2c2c2c; padding: 0; }
   .case .shot.img.bare img { object-fit: cover; object-position: left top; }
   /* hand-built phone mockups (same frame as the case study hero), rising from the folder panel */
-  .case .shot.img.sa-cover { background: #f9f9f9; padding: 34px 0 0; align-items: flex-end; }
+  .case .shot.img.sa-cover { background: none; padding: 4px 0 0; align-items: flex-end; }
   .case .shot.img.sa-cover img { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
   .case .shot.img.hb-cover { padding: 0; background: #222; }
   .case .shot.img.hb-cover img { object-fit: cover; object-position: center 40%; }
   .mock.houzy-m { aspect-ratio: 678 / 1318; padding: 0; background: none; box-shadow: none; border-radius: 0; }
   .mock.houzy-m::before, .mock.houzy-m::after, .mock.houzy-m .cam { display: none; }
   .mock.houzy-m img { border-radius: 18px; border: 1px solid var(--line, #e7e7e7); box-shadow: 0 20px 36px -16px rgba(0,0,0,.35); }
-  .case .shot.mocks { align-items: flex-start; padding-top: 26px; gap: 22px; }
+  .case .shot.mocks { align-items: flex-start; padding-top: 4px; gap: 22px; }
   .mock { position: relative; flex: none; width: 168px; aspect-ratio: 720 / 1560; padding: 7px; border-radius: 32px; background: linear-gradient(160deg, #2b2b2e, #0d0d0f 55%, #1d1d20); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.14), inset 0 0 0 3.5px #050506, 0 24px 40px -14px rgba(0,0,0,.5); box-sizing: content-box; }
   .mock::before, .mock::after { content: ""; position: absolute; right: -3px; width: 3px; border-radius: 0 3px 3px 0; background: #1a1a1c; }
   .mock::before { top: 22%; height: 9%; } .mock::after { top: 34%; height: 15%; }
@@ -371,7 +371,7 @@
   .phone { width: 110px; height: 190px; border-radius: 20px 20px 0 0; border: 6px solid #111; border-bottom: 0; background: var(--g); position: relative; }
   .phone:nth-child(2) { height: 220px; }
   .phone::before { content: ""; position: absolute; inset: 18px 12px auto; height: 9px; border-radius: 6px; background: rgba(255,255,255,.6); box-shadow: 0 20px 0 rgba(255,255,255,.35), 0 40px 0 rgba(255,255,255,.35), 0 60px 0 rgba(255,255,255,.2); }
-  @media (max-width: 860px) { .cases { grid-template-columns: minmax(0, 1fr); gap: 20px; width: 100%; left: auto; translate: none; } .case { aspect-ratio: auto; padding: 22px 22px 0; } .case .shot { flex: none; height: 260px; } .case h3 { max-width: 86%; } .case h3 { font-size: 22px; line-height: 30px; max-width: 78%; } .case .arrow { width: 40px; height: 40px; top: 90px; right: 22px; } .case { padding: 22px 22px 0; } }
+  @media (max-width: 860px) { .cases { grid-template-columns: minmax(0, 1fr); gap: 20px; width: 100%; left: auto; translate: none; } .case { aspect-ratio: auto; padding: 22px 22px 0; } .case .shot { flex: none; height: 260px; } .case h3 { max-width: 86%; } .case h3 { font-size: 22px; line-height: 28px; max-width: 78%; } .case .lede { font-size: 16px; line-height: 23px; max-width: 86%; } .case .arrow { width: 40px; height: 40px; top: 90px; right: 22px; } .case { padding: 22px 22px 0; } }
 
   /* ---------- Typography — mirrors the original's type scale ----------
      Sans  (Figtree)          ≈ Spotify Mix: Regular 400 · Medium 500 · Bold 700 · Extrabold 800
@@ -521,31 +521,38 @@
       <a href="case-studies/home-buying-v2.html" class="case reveal" style="--g:linear-gradient(165deg,#5289f3 0%,#4a76f3 60%,#5a6cf0 100%);--g1:#5289f3;--c:#3b6de6">
         <span class="chip">Home Buying Research</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M7 17L17 7M8 7h9v9"/></svg>
-        <h3><b>From Research to Roadmap</b>: Home buying insights behind <b>trust signals</b> and <b>hotspots</b>, lifting leads by <b>up to 2%</b></h3>
+        <h3>Rethinking home buying experience at Housing.com</h3>
+        <p class="lede">Turned home buyer research into trust signals and hotspots that lifted leads by up to 2%</p>
         <small>RESEARCH · PRIORITISATION · SHIPPED DESIGN</small>
-        <div class="shot img hb-cover"><img src="case-studies/home-buying/workshop.jpg?v=1" alt="Cross-functional workshop on mapping the home buying experience" width="758" height="657" loading="lazy"></div>
+        <div class="shot mocks">
+          <div class="mock houzy-m"><span class="cam" aria-hidden="true"></span><img src="case-studies/home-buying/hsp/home-hotspots.png?v=1" alt="Housing.com home with the new Hotspots nearby section" width="360" height="800" loading="lazy" style="object-position: top"></div>
+          <div class="mock houzy-m"><span class="cam" aria-hidden="true"></span><img src="case-studies/home-buying/rfe/m-srp.jpg?v=1" alt="Search results with Verified and RERA trust tags on property cards" width="360" height="1405" loading="lazy" style="object-position: top"></div>
+        </div>
       </a>
       <a href="case-studies/houzy-story.html" class="case reveal" style="--g:linear-gradient(165deg,#2b2620 0%,#1f1b16 55%,#15120e 100%);--g1:#2b2620;--c:#5e23dc">
         <span class="chip">Designing Houzy</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M7 17L17 7M8 7h9v9"/></svg>
-        <h3><b>Designing Houzy</b>: Building <b>India's first AI-native home search</b></h3>
+        <h3>Houzy - AI Home Search by Housing.com</h3>
+        <p class="lede">Designed India's first AI-native home search, told as an interactive story</p>
         <small>INTERACTIVE STORY · CASE STUDY</small>
         <div class="shot mocks">
-          <div class="mock houzy-m"><span class="cam" aria-hidden="true"></span><img src="case-studies/houzy/chat/hd/photos/grid.png?v=1" alt="Houzy answering a request for bedroom photos with a 2×2 grid and a +12 count" width="774" height="1501" loading="lazy"></div>
-          <div class="mock houzy-m"><span class="cam" aria-hidden="true"></span><img src="case-studies/houzy/chat/hd/follow/single.png?v=1" alt="Houzy asking Did you mean one of these? with a list of matching localities" width="562" height="1042" loading="lazy"></div>
+          <div class="mock houzy-m"><span class="cam" aria-hidden="true"></span><img src="case-studies/houzy/chat/hd/photos/grid-rooms.png?v=1" alt="Houzy answering a request for bedroom photos with a 2×2 grid and a +12 count" width="774" height="1501" loading="lazy"></div>
+          <div class="mock houzy-m"><span class="cam" aria-hidden="true"></span><img src="case-studies/houzy/chat/hd/follow/single-v2.png?v=1" alt="Houzy asking Did you mean one of these? with a list of matching localities" width="360" height="696" loading="lazy"></div>
         </div>
       </a>
       <a href="case-studies/bricks.html" class="case reveal" style="--g:linear-gradient(165deg,#c3168f 0%,#a20f8c 55%,#8c1196 100%);--g1:#c3168f;--c:#ae0986">
         <span class="chip">Bricks Design System</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M7 17L17 7M8 7h9v9"/></svg>
-        <h3><b>1.7× Faster Shipping</b>: Moving <b>Bricks</b> into GIT so designers prototype on the real system</h3>
+        <h3>Bricks - Housing.com's Design System</h3>
+        <p class="lede">Moved Bricks into Git so designers prototype on the real system and ship 1.7× faster</p>
         <small>DESIGN SYSTEMS · CASE STUDY</small>
         <div class="shot img bare"><img src="assets/bricks-tokens.jpg" alt="Bricks colour tokens in Figma: collections, groups and semantic surface and border tokens" loading="lazy"></div>
       </a>
       <a href="case-studies/poc.html" class="case reveal" style="--g:linear-gradient(165deg,#7f3fea 0%,#7a2bd8 55%,#8a1fc6 100%);--g1:#7f3fea;--c:#6a2bd9">
         <span class="chip">Pay on Credit</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M7 17L17 7M8 7h9v9"/></svg>
-        <h3><b>29% Fewer Drop-offs</b>, <b>8% Lift in Completion</b>: Redesigning <b>Pay on Credit</b> for 20,000+ daily users</h3>
+        <h3>Pay on Credit by Housing.com</h3>
+        <p class="lede">Redesigned credit card payments for 20,000+ daily users, cutting drop-offs by 29%</p>
         <small>UX DESIGN · CASE STUDY</small>
         <div class="shot mocks">
           <div class="mock"><span class="cam" aria-hidden="true"></span><img src="case-studies/poc/hero-1.jpg?v=1" alt="Redesigned Pay on Credit landing with the 100% cashback offer up top" width="720" height="1560" loading="lazy"></div>
@@ -555,7 +562,8 @@
       <a href="case-studies/houzy.html" class="case reveal" style="--g:linear-gradient(165deg,#6a5cf0 0%,#8a4fe0 55%,#b45fd6 100%);--g1:#6a5cf0;--c:#6a4fe0">
         <span class="chip">Houzy</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M7 17L17 7M8 7h9v9"/></svg>
-        <h3><b>3% Adoption</b>, <b>+0.67% Leads</b>: Designing <b>India's first conversational AI</b> for property search</h3>
+        <h3>Houzy - Conversational AI for Property Search</h3>
+        <p class="lede">Designed India's first conversational AI for home search, reaching 3% adoption</p>
         <small>CONVERSATIONAL AI · CASE STUDY</small>
         <div class="shot mocks">
           <div class="mock houzy-m"><span class="cam" aria-hidden="true"></span><img src="case-studies/houzy/cover-1.jpg?v=1" alt="Houzy's first screen with suggested prompts" width="678" height="1318" loading="lazy"></div>
@@ -565,16 +573,18 @@
       <a href="case-studies/super-app.html" class="case reveal" style="--g:linear-gradient(165deg,#14c35e 0%,#22a98a 55%,#3f86d6 100%);--g1:#14c35e;--c:#12a155">
         <span class="chip">Super App</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M7 17L17 7M8 7h9v9"/></svg>
-        <h3><b>One App</b> for the <b>Entire Sales Life Cycle</b>: Co-creating a <b>Super App</b> with channel leaders, engineers &amp; business teams</h3>
+        <h3>Super App - One App for Insurance Sales</h3>
+        <p class="lede">Co-created one app for the entire sales life cycle with channel leaders and engineers</p>
         <small>SERVICE DESIGN · CASE STUDY</small>
-        <div class="shot img sa-cover"><img src="case-studies/super-app/cover.jpg?v=1" alt="Super App home screen with a Key actions for you nudge: make ₹3.5k per policy" width="1200" height="715" loading="lazy"></div>
+        <div class="shot img sa-cover"><img src="case-studies/super-app/cover-clear.png?v=1" alt="Super App home screen with a Key actions for you nudge: make ₹3.5k per policy" width="1200" height="715" loading="lazy"></div>
       </a>
       <a href="case-studies/claim.html" class="case reveal" style="--g:linear-gradient(165deg,#c3168f 0%,#a20f8c 55%,#8c1196 100%);--g1:#c3168f;--c:#ae0986">
         <span class="chip">Claim Centre</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M7 17L17 7M8 7h9v9"/></svg>
-        <h3><b>60% Self-Served Claims</b>, <b>45% Lower Ops Costs</b>: Designing an emotion-driven <b>Claim Centre</b>, with checks cut from 5 days to 5 mins</h3>
+        <h3>Claim Centre - Self-Serve Insurance Claims</h3>
+        <p class="lede">Designed an emotion-driven claim journey where 60% of claims are now self-served</p>
         <small>UX DESIGN · CASE STUDY</small>
-        <div class="shot img sa-cover"><img src="case-studies/claim/cover.jpg?v=3" alt="Claim Centre screens: initiate claims and verify your information" width="920" height="982" loading="lazy"></div>
+        <div class="shot img sa-cover"><img src="case-studies/claim/cover-clear.png?v=1" alt="Claim Centre screens: initiate claims and verify your information" width="878" height="922" loading="lazy"></div>
       </a>
     </div>
   </div>
