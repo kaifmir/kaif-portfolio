@@ -1038,6 +1038,22 @@
   .steplist li { font-size: 30px; line-height: 1.28; font-weight: 500; letter-spacing: -.03em; color: var(--g3); transition: color .45s ease; }
   .steplist li span { display: inline-block; min-width: 2.2em; font-size: .52em; vertical-align: .38em; }
   .steplist li.past { color: var(--g2); } .steplist li.now { color: var(--dk); }
+  /* "Up next" block on the closing slide, same look as the case study pages */
+  .nx { display: grid; justify-items: center; width: 100%; margin-top: 6px; font-family: "Figtree", system-ui, sans-serif; }
+  .nx-tag { background: #e4ff3a; color: var(--ink); font-family: "Playfair Display", Georgia, serif; font-style: italic; font-weight: 600; font-size: 18px; line-height: 22px; letter-spacing: -.03em; padding: 6px 16px; border-radius: 999px; }
+  .nx-folder { position: relative; display: block; width: min(560px, 100%); margin-top: 58px; padding: 24px 28px 26px; color: #fff; text-align: left; text-decoration: none; background: linear-gradient(165deg,#2b2620 0%,#1f1b16 55%,#15120e 100%); border-radius: 0 40px 40px 40px; transition: transform .5s cubic-bezier(.34,1.56,.64,1); }
+  .nx-folder::before { content: ""; position: absolute; left: 0; top: -38px; width: calc(44% + 28px); height: 40px; background: #2b2620; border-radius: 26px 0 0 0; clip-path: polygon(0 0, 78% 0, 100% 100%, 0 100%); }
+  .nx-folder:hover { transform: rotate(2deg); }
+  .nx-chip { display: inline-block; background: #fff; color: #5e23dc; border-radius: 90px; padding: 6px 15px; font-family: "Playfair Display", Georgia, serif; font-style: italic; font-weight: 600; font-size: 18px; line-height: 22px; letter-spacing: -.04em; }
+  .nx-folder h3 { margin: 20px 0 0; font-size: 24px; line-height: 30px; font-weight: 700; letter-spacing: -.03em; }
+  .nx-folder p { margin: 8px 0 0; font-size: 16px; line-height: 23px; color: rgba(255,255,255,.78); }
+  .nx-folder small { display: block; margin-top: 14px; font-size: 12px; font-weight: 500; letter-spacing: .15em; color: rgba(255,255,255,.5); }
+  .nx-ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+  .nx-btn { display: inline-flex; align-items: center; gap: 12px; padding: 10px 24px; border-radius: 14px; font-size: 13px; line-height: 26px; font-weight: 700; letter-spacing: .1em; color: var(--ink); text-decoration: none; border: 1.5px solid var(--ink); transition: background .25s, color .25s; }
+  .nx-btn svg { width: 15px; transition: transform .25s; }
+  .nx-btn:hover svg { transform: translate(3px,-3px); }
+  .nx-btn.solid { background: var(--ink); color: #fff; }
+  .nx-btn:not(.solid):hover { background: var(--ink); color: #fff; }
   .end { display: flex; gap: 14px; justify-content: center; margin: 10px 0 0; }
   .end a { font-size: 15px; font-weight: 500; text-decoration: none; color: var(--dk); border: 1px solid var(--g3); border-radius: 999px; padding: 12px 22px; }
   .end a:first-child, .end a:hover { background: var(--dk); color: #fff; border-color: var(--dk); }
@@ -2333,7 +2349,20 @@
         <figcaption><i class="s"></i>Solved <i class="o"></i>Open &middot; tap a theme to jump to it</figcaption>
       </figure></div></div></div></section>
 <section class="slide stepslide" data-chap="reflect"><div class="sl-in"><div class="sl-body"><p class="lbl" data-k="rl">Looking back</p><h2 class="st " data-k="rs">What I&#8217;d do differently.</h2><ol class="steplist"><li><span>01</span>Measure decisions, not just leads.</li><li><span>02</span>Pair every quick win with one long bet.</li><li><span>03</span>Check data feasibility before scoring effort.</li><li><span>04</span>Size every theme with numbers before the workshop.</li></ol></div></div></section>
-<section class="slide title" data-chap="reflect"><div class="sl-in"><div class="sl-body"><img class="ava sm" src="../assets/memoji.png?v=2" alt="" data-k="ava"><h2 class="st " data-k="rs">Thank you.</h2><p class="end"><a href="../index.html#work">All work &rarr;</a></p></div></div></section>
+<section class="slide title" data-chap="reflect"><div class="sl-in"><div class="sl-body"><img class="ava sm" src="../assets/memoji.png?v=2" alt="" data-k="ava"><h2 class="st " data-k="rs">Thank you.</h2>
+<div class="nx">
+  <span class="nx-tag">Up next</span>
+  <a class="nx-folder" href="houzy-story.html">
+    <span class="nx-chip">Designing Houzy</span>
+    <h3>Houzy - AI Home Search by Housing.com</h3>
+    <p>Designed India's first AI-native home search, told as an interactive story</p>
+    <small>INTERACTIVE STORY · CASE STUDY</small>
+  </a>
+  <div class="nx-ctas">
+    <a class="nx-btn" href="../index.html#work">ALL WORK</a>
+    <a class="nx-btn solid" href="../index.html#contact">SEND ME A MESSAGE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+  </div>
+</div></div></div></section>
 </div></main>
 <script>
   const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { threshold: .12 });
