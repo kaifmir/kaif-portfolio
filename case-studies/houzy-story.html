@@ -8,6 +8,7 @@
 <link rel="icon" type="image/png" href="../assets/favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400&family=Rubik:wght@400;500&family=Playfair+Display:ital,wght@1,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 <style>
   :root {
@@ -172,16 +173,47 @@
   @keyframes typing-shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
   /* animated starter prompts on the first-open screen, matching the live prototype
      (Rubik 14px, 40px pills, 12px gaps, both rows drift left at 12px/s on a 360px screen) */
-  .prompts { position: absolute; left: 0; right: 0; top: 49.3%; height: 14.6%; background: #f7f7f7; overflow: hidden; }
+  .prompts { position: absolute; left: 0; right: 0; top: 48.3%; height: 15.6%; background: #f7f7f7; overflow: hidden; }   /* starts above the screenshot's own pill row so none of it peeks out */
   .prompts::before, .prompts::after { content: ""; position: absolute; top: 0; bottom: 0; width: 6.67cqw; z-index: 2; pointer-events: none; }
   .prompts::before { left: 0; background: linear-gradient(to right, #f7f7f7, rgba(247,247,247,0)); }
   .prompts::after { right: 0; background: linear-gradient(to left, #f7f7f7, rgba(247,247,247,0)); }
   .prow { position: absolute; left: 0; display: flex; width: max-content; will-change: transform; animation: drift 60s linear infinite; }
-  .prow.r1 { top: 1.3cqw; } .prow.r2 { top: 15.2cqw; }
+  .prow.r1 { top: 3.23cqw; } .prow.r2 { top: 17.13cqw; }
   .ppill { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 2.22cqw; height: 11.11cqw; margin-right: 3.33cqw; padding: 0 4.44cqw; background: linear-gradient(to bottom, #fff 0%, #fafafa 100%); border: 1px solid var(--b); border-radius: 6.67cqw; font: 400 3.89cqw/1 "Rubik", system-ui, sans-serif; color: #656565; white-space: nowrap; }
   .ppill img { width: 4.44cqw; height: 4.44cqw; }
   @keyframes drift { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
   @media (prefers-reduced-motion: reduce) { .prow { animation: none !important; } }
+  /* lightbox mode: the hero's photo strip, and the full-screen gallery laid over the phone */
+  .lbx-hero { max-width: 980px; }
+  .lbx-strip { width: min(1100px, 92vw); margin-top: 34px; overflow: hidden; -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent); }
+  .lbx-belt { display: flex; gap: 14px; width: max-content; animation: lbx-drift 38s linear infinite; }
+  .lbx-belt img { height: 150px; width: auto; border-radius: 14px; display: block; }
+  .chap .lbx-credit { margin-top: 14px; font-size: 11px; line-height: 1.4; color: #6e6e73; }
+  @keyframes lbx-drift { to { transform: translateX(-50%); } }
+  /* Airbnb-style viewer: dark, centred room + count, rounded photos inset from the edges */
+  .scene.arrive.from-strip:not(.has-live) .screen { animation: lbx-in .5s cubic-bezier(.2,.7,.2,1) both; }   /* coming from the photo strip: no rise, the photo flies in instead */
+  @keyframes lbx-in { from { opacity: 0; } to { opacity: 1; } }
+  .screen.dark { background: #fff !important; }
+  .screen.dark > img:not(.sb) { visibility: hidden; }
+  .lbx { position: absolute; inset: 0; z-index: 4; background: #fff; font-family: "Rubik", system-ui, sans-serif; color: #222; }
+  .lbx-sb { display: flex; justify-content: space-between; align-items: center; height: 7.6%; padding: 0 5cqw; font-size: 3.9cqw; }
+  .lbx-sb svg { height: 3.6cqw; width: auto; margin-left: 1.2cqw; }
+  .lbx-hd { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 1.5cqw 3.3cqw 0; }
+  .lbx-hd .ic { width: 9cqw; height: 9cqw; display: grid; place-items: center; }
+  .lbx-hd .ic svg { width: 5cqw; height: 5cqw; }
+  .lbx-hd .end { justify-self: end; display: flex; }
+  .lbx-ttl { text-align: center; }
+  .lbx-room { display: block; font-size: 4.2cqw; font-weight: 500; line-height: 1.25; transition: opacity .25s; }
+  .lbx-room.swap { opacity: 0; }
+  .lbx-n { display: block; margin-top: .4cqw; font-size: 3.3cqw; color: #656565; font-variant-numeric: tabular-nums; }
+  .lbx-x { width: 5cqw; height: 5cqw; }
+  .lbx-view { position: absolute; left: 0; right: 0; top: 24%; height: 50%; overflow: hidden; touch-action: pan-y; cursor: grab; }
+  .lbx-track { display: flex; gap: 3.3cqw; height: 100%; padding: 0 4.4cqw; transition: transform .45s cubic-bezier(.2,.7,.2,1); }
+  .lbx-track img { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; border-radius: 3.3cqw; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+  .lbx-cta { position: absolute; left: 6.7cqw; right: 6.7cqw; bottom: 9cqw; height: 12.2cqw; border-radius: 2.2cqw; background: #5e23dc; color: #fff; display: flex; align-items: center; justify-content: center; gap: 2cqw; font-size: 3.9cqw; font-weight: 500; }
+  .lbx-cta svg { width: 4.2cqw; height: 4.2cqw; }
+  .lbx-fly { position: fixed; z-index: 60; object-fit: cover; pointer-events: none; }
+  @media (prefers-reduced-motion: reduce) { .lbx-belt { animation: none; } .lbx-track { transition: none; } }
   /* hand-drawn pencil callouts */
   :root { --pencil: #e5533d; }
   .ring { position: absolute; pointer-events: none; z-index: 3; }
@@ -332,6 +364,352 @@
     .foot ol { columns: 1; }
     .hint { display: none; }
   }
+
+
+  /* intro canvas stays light: a softer lift for the phone on the cream canvas */
+  /* same light backdrop as the home buying slides: white with the soft violet / lime / blush glows */
+  .canvas { background-color: #fff; background-image:
+      radial-gradient(35vmax 35vmax at 13vmax 5vmax, rgba(94,35,220,.09), rgba(94,35,220,0)),
+      radial-gradient(35vmax 35vmax at calc(100% - 9vmax) calc(100% - 1vmax), rgba(228,255,58,.19), rgba(228,255,58,0)),
+      radial-gradient(25vmax 25vmax at 55vmax 45vmax, rgba(255,184,214,.08), rgba(255,184,214,0));
+    background-size: auto; }
+  body.on-canvas { background: #fff; }
+  .canvas .demo { box-shadow: 0 30px 70px rgba(23,19,19,.18) !important; }
+  /* phone frame: no bezel, just a hairline rim in a soft blue → violet → rose → gold gradient, like the deck */
+  :root { --rim: linear-gradient(165deg, #4f6fe8 0%, #8d68dc 30%, #d77fae 62%, #d9b47a 100%); }
+  .screen, .demo { box-shadow: 0 30px 80px rgba(0,0,0,.55) !important; }
+  .screen::after, .demo::after, .livewrap::after { content: ""; position: absolute; inset: 0; z-index: 9; border-radius: inherit; padding: 1.5px; background: var(--rim);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+
+  /* intro phone: room to breathe, a status bar above the app, no Figma selection chrome */
+  .demo { height: min(calc(100vh - 300px), 640px); }
+  .demo-sb { position: absolute; left: 0; right: 0; top: 0; z-index: 4; height: calc(44px * var(--s, 1)); display: flex; align-items: center; justify-content: space-between; padding: 0 calc(26px * var(--s, 1)) 0 calc(30px * var(--s, 1)); background: #fff; color: #111; font: 600 calc(15px * var(--s, 1))/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif; letter-spacing: -.01em; }
+  .demo-sb span { display: inline-flex; align-items: center; gap: calc(5px * var(--s, 1)); }
+  .demo-sb svg { height: calc(11px * var(--s, 1)); width: auto; fill: currentColor; display: block; }
+  .demo-sb svg:last-child { height: calc(12px * var(--s, 1)); }
+  .demo iframe { top: calc(44px * var(--s, 1)); height: 768px; }
+  .demo .poster { top: calc(44px * var(--s, 1)); height: calc(100% - 44px * var(--s, 1)); }
+  .fig-sel, .fig-size { display: none !important; }
+  .fig-name { top: -30px; }
+  @media (max-width: 900px) { .demo { height: auto; } }
+
+  /* ===== typography, after the Figma deck =====
+     one neo-grotesk (Inter, standing in for the deck's sans) set light-to-regular; hierarchy from size and grey,
+     not weight or italics; sentence case everywhere, small labels plain or in quiet dark pills */
+  body { font-family: "Inter", system-ui, sans-serif; letter-spacing: -.011em; }
+  .canvas h1, .title-card h1 { font-weight: 400; font-size: clamp(44px, 4.6vw, 68px); line-height: 1.04; letter-spacing: -.035em; }
+  .chap h2 { font-weight: 400; font-size: clamp(30px, 3.4vw, 48px); line-height: 1.08; letter-spacing: -.03em; }
+  .canvas h1 em, .title-card h1 em, .chap h2 em { font-family: inherit; font-style: normal; font-weight: inherit; letter-spacing: inherit; }
+  .canvas h1 em { color: rgba(23,19,19,.42); }
+  .chap h2 em, .title-card h1 em { color: rgba(255,255,255,.5); }
+  .canvas .lede, .title-card p, .chap p { font-size: 18px; line-height: 1.5; font-weight: 400; letter-spacing: -.01em; }
+  .canvas .lede { color: rgba(23,19,19,.6); }
+  .chap p, .title-card p { color: rgba(255,255,255,.62); }
+  .kicker, .canvas .kicker, .top a, .count, .who, .card.note .lbl, .alert-card .eyebrow { text-transform: none; letter-spacing: -.005em; font-weight: 500; font-size: 13px; }
+  .canvas .kicker { color: rgba(23,19,19,.5); }
+  .tag { font-family: inherit; font-style: normal; font-weight: 400; font-size: 14px; letter-spacing: -.005em; background: rgba(255,255,255,.1); color: #fff; padding: 7px 14px; }
+  .canvas .meta span, .qr-card b { font-weight: 500; letter-spacing: -.01em; }
+  .say { font-weight: 400; letter-spacing: -.015em; }
+  .card b.t { font-weight: 500; letter-spacing: -.015em; }
+  .card { font-weight: 400; }
+  .card.note .lbl { background: var(--ink); color: #fff; font-size: 12px; padding: 4px 10px; }
+  .stat .n { font-weight: 400; letter-spacing: -.03em; }
+  .learn b, .cta { font-weight: 500; }
+  .intro-logos { display: inline-flex; align-items: center; gap: 14px; justify-self: start; }
+  .intro-logos > img { width: 44px; height: 44px; border-radius: 50%; }
+  .intro-logos .lg-div { width: 1px; height: 32px; background: #e1e2e8; }   /* stroke/primary */
+  .intro-logos .lg3d { width: 52px; height: 52px; display: block; overflow: visible; filter: drop-shadow(0 6px 10px rgba(23,19,19,.14)); }
+  .demo { height: min(calc(100vh - 230px), 700px); }
+  .canvas h1 { margin-top: -4px; }
+  .canvas h1 { max-width: 12ch; }
+
+  /* ===== Apple typography =====
+     SF Pro (system on Apple devices; Inter elsewhere). Headlines semibold with Apple's size-specific tracking;
+     hierarchy by colour: #1d1d1f ink, #6e6e73 secondary, #86868b tertiary (light) / #f5f5f7, #a1a1a6, #86868b (dark). */
+  body { --sf-d: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Icons", "Helvetica Neue", "Inter", Helvetica, Arial, sans-serif;
+    --sf-t: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", "Inter", Helvetica, Arial, sans-serif;
+    font-family: var(--sf-t); letter-spacing: -.022em; }
+  .canvas h1, .title-card h1, .chap h2, .stat .n { font-family: var(--sf-d); }
+  .canvas h1, .title-card h1 { font-size: 56px; line-height: 1.07143; font-weight: 600; letter-spacing: -.005em; color: #1d1d1f; max-width: 11ch; }
+  .canvas h1 em { color: #86868b; }
+  .chap h2 { font-size: 48px; line-height: 1.08349; font-weight: 600; letter-spacing: -.003em; color: #f5f5f7; }
+  .chap h2 em, .title-card h1 em { color: #86868b; }
+  .canvas .lede { font-size: 21px; line-height: 1.381; font-weight: 400; letter-spacing: .011em; color: #6e6e73; max-width: 460px; }
+  .chap p, .title-card p { font-size: 21px; line-height: 1.381; font-weight: 400; letter-spacing: .011em; color: #a1a1a6; }
+  .kicker, .canvas .kicker, .top a, .count, .who, .hint, .canvas .begin, .fig-name { font-size: 12px; line-height: 1.33; font-weight: 600; letter-spacing: -.01em; text-transform: none; }
+  .canvas .begin, .fig-name { color: #86868b; }
+  .tag, .card.note .lbl { font-size: 14px; line-height: 1.29; font-weight: 600; letter-spacing: -.016em; }
+  .card.note .lbl { font-size: 12px; }
+  .qr-card b { font-size: 17px; line-height: 1.24; font-weight: 600; letter-spacing: -.022em; color: #1d1d1f; }
+  .qr-card span { font-size: 14px; line-height: 1.43; letter-spacing: -.016em; color: #6e6e73; }
+  .say { font-size: 17px; line-height: 1.47; font-weight: 400; letter-spacing: -.022em; }
+  .say.old, .say.aside { font-size: 14px; line-height: 1.43; letter-spacing: -.016em; }
+  .card { font-size: 14px; line-height: 1.43; font-weight: 400; letter-spacing: -.016em; }
+  .card b.t { font-size: 17px; line-height: 1.24; font-weight: 600; letter-spacing: -.022em; }
+  .stat .n { font-size: 40px; line-height: 1.1; font-weight: 600; letter-spacing: 0; }
+  .stat span { font-size: 12px; line-height: 1.33; }
+  .learn { font-size: 14px; line-height: 1.43; } .learn b { font-size: 17px; font-weight: 600; }
+  .cta { font-size: 14px; font-weight: 600; }
+  .canvas .intro { gap: 22px; }
+  /* auto animate between phone scenes: the outgoing screen dissolves over the incoming one */
+  .screen-xfade { position: absolute; inset: 0; z-index: 8; pointer-events: none; animation: scene-out .6s cubic-bezier(.4,0,.2,1) forwards; }
+  .screen-xfade > img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  /* meet Priya */
+  .meet { gap: 22px; }
+  .meet h2 { order: -1; }
+  .priya-ava { width: 168px; height: 168px; border-radius: 50%; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+  .meet p { max-width: 600px; }
+  .meet-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .meet-tags span { font-size: 14px; font-weight: 600; letter-spacing: -.016em; color: #f5f5f7; background: rgba(255,255,255,.1); border-radius: 999px; padding: 8px 14px; }
+  .raw.arrive .meet .priya-ava { animation: phone-rise .9s cubic-bezier(.2,.7,.2,1) .1s both; }
+  .who img.avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: none; transition: opacity .2s; }
+  .ava-fly { position: fixed; z-index: 60; border-radius: 50%; transform-origin: 0 0; pointer-events: none; box-shadow: 0 20px 50px rgba(0,0,0,.4); }
+  /* intro canvas in black, like the Figma deck's title slides */
+  .canvas { background: #000 !important; background-image: none !important; color: #f5f5f7; }
+  body.on-canvas { background: #000; }
+  .raw .canvas { color: #f5f5f7; }
+  .canvas h1 { color: #f5f5f7 !important; }
+  .canvas h1 em { color: #86868b !important; }
+  .canvas .lede { color: #a1a1a6 !important; }
+  .canvas .begin, .fig-name { color: #86868b !important; }
+  .canvas .begin kbd { background: #f5f5f7; color: #1d1d1f; }
+  .canvas .demo { box-shadow: 0 30px 80px rgba(0,0,0,.6) !important; }
+  .intro-logos .lg-div { background: #424245 !important; }
+  .qr-card { border-color: transparent; }
+  .fig-frame .caption { background: #f5f5f7; color: #1d1d1f; }
+  body.on-canvas .top a, body.on-canvas .count, body.on-canvas .hint { color: #86868b; }
+  body.on-canvas .controls button { border-color: rgba(255,255,255,.2); background: transparent; color: #f5f5f7; }
+  body.on-canvas .controls button:disabled { background: transparent; color: #f5f5f7; }
+  /* intro headline on two lines: "Designing conversations / for Houzy" */
+  @media (min-width: 901px) { .canvas { grid-template-columns: minmax(0, 700px) auto; } .canvas h1 { max-width: none !important; white-space: nowrap; } .canvas .lede { max-width: 520px; } }
+  /* intro: AI glow on black — slow-drifting violet, blue and rose auras, like a model thinking */
+  .canvas { isolation: isolate; overflow: hidden; }
+  .canvas::before, .canvas::after { content: ""; position: absolute; z-index: 0; pointer-events: none; border-radius: 50%; filter: blur(70px); will-change: transform; }
+  .canvas::before { width: 62vmax; height: 62vmax; left: -18vmax; top: -26vmax;
+    background: radial-gradient(closest-side, rgba(124,77,255,.28), rgba(94,35,220,.09) 55%, transparent); animation: aura1 18s ease-in-out infinite alternate; }
+  .canvas::after { width: 64vmax; height: 64vmax; right: -14vmax; bottom: -30vmax;
+    background: radial-gradient(closest-side, rgba(56,132,255,.26), rgba(232,93,179,.15) 50%, transparent); animation: aura2 22s ease-in-out infinite alternate; }
+  .canvas > * { position: relative; z-index: 1; }
+  .canvas > .cursor-layer { position: absolute; z-index: 5; }
+  @keyframes aura1 { to { transform: translate(14vmax, 8vmax) scale(1.12); } }
+  @keyframes aura2 { to { transform: translate(-12vmax, -10vmax) scale(1.1); } }
+  @media (prefers-reduced-motion: reduce) { .canvas::before, .canvas::after { animation: none; } }
+  /* bigger logos, no divider */
+  .intro-logos { gap: 18px; }
+  .intro-logos .lg3d { width: 76px; height: 76px; }
+  /* keyboard rise */
+  .kb-rise { position: absolute; inset: 0; z-index: 9; pointer-events: none; background: transparent; }
+  .kb-rise > img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .kb-under { z-index: 3; }
+  /* chapter cue: an arrow up that becomes the next screen's name */
+  .lp-cue { position: relative; height: 56px; width: 100%; display: grid; place-items: center; margin-top: 6px; }
+  .lp-cue > * { grid-area: 1 / 1; }
+  .lp-arw { width: 18px; color: #a1a1a6; transition: opacity .5s cubic-bezier(.2,.7,.2,1), transform .6s cubic-bezier(.2,.7,.2,1) !important; }
+  .lp-arw svg { width: 100%; display: block; }
+  .lp-arw:not(.shown) { transform: translateY(14px); }
+  .lp-arw.shown { animation: arw-bob 1.6s ease-in-out .6s infinite; }
+  @keyframes arw-bob { 50% { transform: translateY(-5px); } }
+  .lp-cue:has(.lp-txt.shown) .lp-arw { opacity: 0 !important; animation: none; transform: translateY(-10px); }
+  .lp-txt { font-size: 21px; line-height: 1.2; font-weight: 600; letter-spacing: .011em; color: #f5f5f7; transition: opacity .55s cubic-bezier(.2,.7,.2,1) .1s, transform .6s cubic-bezier(.2,.7,.2,1) .1s !important; }
+  .lp-txt:not(.shown) { transform: translateY(10px); }
+  .sec-lbl { align-self: flex-end; margin: 0 0 14px; font-size: 14px; line-height: 1.29; font-weight: 600; letter-spacing: -.016em; color: #86868b; }
+  .lbl-fly { position: fixed; z-index: 60; transform-origin: 0 0; pointer-events: none; font-weight: 600; letter-spacing: -.016em; line-height: 1.2; white-space: nowrap; }
+  /* research: preference breakdown */
+  .research { gap: 22px; }
+  .pref { width: min(720px, 100%); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 22px; padding: 26px 28px 10px; text-align: left; }
+  .pref-h { font-size: 21px; font-weight: 600; letter-spacing: .011em; color: #f5f5f7; margin-bottom: 16px; }
+  .pref-row { display: grid; grid-template-columns: 1fr auto; align-items: baseline; row-gap: 10px; padding-bottom: 18px; }
+  .pref-row span { font-size: 17px; color: #f5f5f7; letter-spacing: -.022em; }
+  .pref-row b { font-size: 21px; font-weight: 600; color: #f5f5f7; letter-spacing: .011em; }
+  .pref-row b small { font-size: 14px; font-weight: 400; color: #86868b; margin-left: 4px; }
+  .pref-row i { grid-column: 1 / -1; height: 8px; border-radius: 99px; background: linear-gradient(90deg, var(--c) var(--w), rgba(255,255,255,.1) var(--w)); }
+  .raw.arrive .pref-row i { animation: bar-fill 1.2s cubic-bezier(.2,.7,.2,1) .5s both; }
+  .raw.arrive .pref-row:nth-child(3) i { animation-delay: .62s; } .raw.arrive .pref-row:nth-child(4) i { animation-delay: .74s; }
+  @property --w { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+  @keyframes bar-fill { from { --w: 0%; } }
+  .research > p:last-child { max-width: 620px; }
+  /* Part 1 cue, after the Figma deck: the title steps back to grey, a ↓ drops in beneath it, and the next idea lands below */
+  .chap:has(.lp-cue) { grid-template-rows: auto auto auto; }
+  .chap:has(.lp-cue) > p, .chap > .lp-cue { grid-row: 3; grid-column: 1; }
+  .chap > .lp-cue { height: auto; margin: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; align-self: start; pointer-events: none; }
+  .chap:has(.lp-cue) > p { transition: opacity .45s cubic-bezier(.4,0,.2,1); }
+  .chap:has(.lp-arw.shown) > p { opacity: 0 !important; }   /* wins over the arrival fade-in when coming back to this beat */
+  .chap:has(.lp-cue) h2, .chap:has(.lp-cue) h2 em { transition: color .6s cubic-bezier(.2,.7,.2,1); }
+  .chap:has(.lp-arw.shown) h2, .chap:has(.lp-arw.shown) h2 em { color: #6e6e73; }
+  .lp-arw, .lp-arw.shown { animation: none !important; }
+  .lp-arw { width: 14px; color: #f5f5f7; transition: opacity .5s cubic-bezier(.2,.7,.2,1) .15s, transform .6s cubic-bezier(.2,.7,.2,1) .15s !important; }
+  .lp-arw:not(.shown) { transform: translateY(-10px); }
+  .lp-cue:has(.lp-txt.shown) .lp-arw { opacity: 1 !important; transform: none; }
+  .lp-txt { font-size: 40px; line-height: 1.1; letter-spacing: 0; transition: opacity .6s cubic-bezier(.2,.7,.2,1) .35s, transform .7s cubic-bezier(.2,.7,.2,1) .35s !important; }
+  .lp-txt:not(.shown) { transform: translateY(16px); }
+  .screen > img.fitw { object-fit: contain; object-position: top center; }
+  .screen-xfade.hero-under { z-index: 0; animation: none; }
+  .screen.padded .pdps { top: 9.39cqw; }
+  /* listing scenarios: each card slides in from the right edge and lands over the card on screen; earlier ones settle back */
+  .cases { position: absolute; left: 4.4%; top: 19.5%; width: 72.7%; z-index: 4; pointer-events: none; }
+  .screen .case { position: absolute; left: 0; top: 0; width: 100%; height: auto; object-fit: initial; border-radius: 4.4cqw; background: #fff;
+    box-shadow: 0 1px 0 rgba(0,0,0,.04), -12px 18px 40px -18px rgba(0,0,0,.35); transform: translateX(160%); transition: transform .75s cubic-bezier(.32,.72,0,1), filter .6s; }
+  .screen .case.in { transform: none; }
+  .screen .case.back { filter: blur(3px) brightness(.92); }
+  /* the chat's own card row behind the stack blurs out once the first scenario lands */
+  .cases-blur { position: absolute; left: 0; right: 0; top: 18.6%; height: 64%; z-index: 3; pointer-events: none; opacity: 0;
+    -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); background: rgba(247,247,248,.25); transition: opacity .6s cubic-bezier(.2,.7,.2,1); }
+  .cases-blur.on { opacity: 1; }
+  /* chat reply arriving */
+  .chat-cov { position: absolute; z-index: 5; pointer-events: none; }
+  .chat-cov.tile { overflow: hidden; }
+  .chat-sk { position: absolute; inset: 0; border-radius: 2.2cqw; background: linear-gradient(100deg, #e6e6ea 30%, #f1f1f4 50%, #e6e6ea 70%) 0 0 / 220% 100%; animation: skel 1.3s ease-in-out infinite; }
+  /* limitation: a card in the side column, in the story's card style; the phone dims behind it */
+  .side .alert-card { position: static; display: block; width: auto; border: 0; border-radius: 18px; padding: 18px 20px; box-shadow: 0 0 0 1.5px #ffd60a, 0 14px 40px rgba(0,0,0,.4); animation: card-rise .8s cubic-bezier(.2,.7,.2,1) both; }
+  .side .alert-card .lbl.lim { display: inline-flex; align-items: center; gap: 6px; background: #ffd60a; color: #1d1d1f; }
+  .side .alert-card .lbl.lim svg { width: 13px; height: 12px; color: #1d1d1f; }
+  .side .alert-card p { margin: 0; font-size: 14px; line-height: 1.43; color: rgba(29,29,31,.72); }
+  .side .alert-card p + p { margin-top: 8px; }
+  .side .alert-card .al-s { color: #1d1d1f; font-weight: 600; }
+  .screen .alert-dim { background: rgba(0,0,0,.42); }
+  .scene.alerting .side { opacity: 1 !important; }
+  .scene.alerting .side .card:not(.alert-card) { opacity: .25; }
+  /* the shipped Housing.com gallery, live */
+  .pg { position: absolute; inset: 0; z-index: 4; background: #fff; display: flex; flex-direction: column; font-family: "Rubik", system-ui, sans-serif; color: #222; }
+  .pg-sb { flex: none; height: 9.4cqw; display: flex; justify-content: space-between; align-items: center; padding: 0 5cqw; font-size: 3.9cqw; color: #222; }
+  .pg-sb span:last-child { font-size: 3cqw; letter-spacing: .6cqw; }
+  .pg-hd { flex: none; display: flex; align-items: center; gap: 4cqw; padding: 2cqw 4.5cqw 3cqw; }
+  .pg-hd b { flex: 1; font-size: 4.7cqw; font-weight: 500; }
+  .pg-hd svg { width: 6cqw; height: 6cqw; display: block; }
+  .pg-ic { display: flex; gap: 4.5cqw; }
+  .pg-tabs { flex: none; position: relative; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,.06); padding: 0 3.5cqw; }
+  .pg-row { display: flex; gap: 5cqw; white-space: nowrap; font-size: 3.7cqw; font-weight: 500; color: #434343; padding-bottom: 2.8cqw; }
+  .pg-tab.on { color: #5e23dc; }
+  .pg-ul { position: absolute; bottom: 0; height: .8cqw; border-radius: 1cqw; background: #5e23dc; transition: left .35s cubic-bezier(.32,.72,0,1), width .35s cubic-bezier(.32,.72,0,1); }
+  .pg-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; background: #f4f4f6; }
+  .pg-scroll::-webkit-scrollbar { display: none; }
+  .pg-sec { padding: 4cqw 3.5cqw 1cqw; }
+  .pg-sec h4 { font-size: 4.6cqw; font-weight: 500; margin: 0 0 3.5cqw; }
+  .pg-sec figure { position: relative; margin: 0 0 3.2cqw; border-radius: 3.2cqw; overflow: hidden; aspect-ratio: 4 / 3; background: #e6e6ea; }
+  .screen .pg-sec figure img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pg-sec figure span { position: absolute; left: 2.6cqw; top: 2.6cqw; background: rgba(255,255,255,.92); color: #222; font-size: 2.9cqw; padding: .8cqw 2.4cqw; border-radius: 99px; }
+  .screen .alert-dim { display: none; }   /* the limitation card carries the point; the phone stays clear */
+  .pg-cta { flex: none; padding: 3cqw 4cqw 4.5cqw; background: #fff; box-shadow: 0 -4px 14px rgba(0,0,0,.08); }
+  .pg-cta span { display: flex; align-items: center; justify-content: center; gap: 2cqw; height: 11.5cqw; border-radius: 2.6cqw; background: #5e23dc; color: #fff; font-size: 4cqw; font-weight: 500; }
+  .pg-cta svg { width: 4.4cqw; height: 4.4cqw; }
+  /* follow-up sheet for "nothing found", matched to the shared follow-up screens (16px inset, 69px rows, 53px composer on a 360 screen) */
+  .fu { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; background: linear-gradient(rgba(247,247,247,0), #f7f7f7 2.5cqw); font-family: "Rubik", system-ui, sans-serif; color: #222; }
+  .fu-sheet { position: absolute; left: 4.4cqw; right: 4.4cqw; bottom: 4.4cqw; background: #fff; border-radius: 4.4cqw; padding: 4.4cqw 0 4.7cqw; box-shadow: 0 0 0 1px #e8e8ea; }
+  .fu-hd { height: 6.7cqw; margin: 0 0 5cqw; display: flex; align-items: center; justify-content: space-between; padding: 0 4.7cqw; }
+  .fu-hd b { font-size: 4.2cqw; font-weight: 500; }
+  .fu-hd svg { width: 5.6cqw; height: 5.6cqw; color: #222; display: block; }
+  .fu-rows { padding: 0 4.7cqw; }
+  .fu-row { height: 19.2cqw; display: flex; align-items: center; justify-content: space-between; padding: 0 4.4cqw; border-radius: 2.8cqw; position: relative; }
+  .fu-row + .fu-row::before { content: ""; position: absolute; left: 4.4cqw; right: 0; top: 0; height: 1px; background: #ececec; }
+  .fu-row b { display: block; font-size: 4.2cqw; font-weight: 400; color: #222; margin-bottom: 1.4cqw; }
+  .fu-row span { display: flex; align-items: center; gap: 2cqw; font-size: 3.6cqw; color: #767676; }
+  .fu-row span i { width: 1px; height: 3.6cqw; background: #d6d6d6; }
+  .fu-row > svg { width: 5.4cqw; height: 5.4cqw; color: #434343; flex: none; }
+  .fu-in { margin: 3.9cqw 4.7cqw 0; height: 14.7cqw; display: flex; align-items: center; justify-content: space-between; padding: 0 2.6cqw 0 4.4cqw; border: 1px solid #e3e3e3; border-radius: 3.4cqw; }
+  .fu-in span { font-size: 4.2cqw; color: #8a8a8a; }
+  .fu-in i { width: 8.9cqw; height: 8.9cqw; border-radius: 50%; display: grid; place-items: center; background: #b8b8bb; color: #fff; }
+  .fu-in i svg { width: 4.6cqw; height: 4.6cqw; }
+  .fu-kinds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: min(860px, 92vw); margin-top: 18px; text-align: left; }
+  .fu-kinds > div { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 18px; padding: 18px 20px; }
+  .fu-kinds b { display: block; font-size: 17px; font-weight: 600; color: #f5f5f7; letter-spacing: -.022em; margin-bottom: 6px; }
+  .fu-kinds span { font-size: 14px; line-height: 1.43; color: #a1a1a6; }
+  .fu-kinds.shown > div { animation: card-rise .8s cubic-bezier(.2,.7,.2,1) both; }
+  .fu-kinds.shown > div:nth-child(2) { animation-delay: .08s; } .fu-kinds.shown > div:nth-child(3) { animation-delay: .16s; }
+  @media (max-width: 900px) { .fu-kinds { grid-template-columns: 1fr; } }
+  /* touchpoint use case: Priya's moment on the left, the touchpoint sliding in from the right */
+  .uc { width: min(1100px, 100%); display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 72px; text-align: left; }
+  .uc-txt { display: grid; gap: 18px; justify-items: start; max-width: 520px; }
+  .uc .who { align-self: auto; margin: 0; }
+  .uc-h { margin: 0; font-family: var(--sf-d); font-size: 44px; line-height: 1.1; font-weight: 600; letter-spacing: -.003em; color: #f5f5f7; }
+  .uc-p { margin: 0; font-size: 19px; line-height: 1.42; color: #a1a1a6; letter-spacing: .005em; }
+  .uc-ph { position: relative; height: min(calc(100vh - 170px), 640px); aspect-ratio: 360 / 696; border-radius: 34px; overflow: hidden; background: #fff; box-shadow: 0 30px 80px rgba(0,0,0,.55); }
+  .uc-ph::after { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; background: var(--rim); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+  .uc-ph img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  .raw.arrive .uc-ph { animation: uc-slide 1s cubic-bezier(.22,.8,.2,1) .15s both; }
+  @keyframes uc-slide { from { transform: translateX(calc(50vw + 60%)); } to { transform: none; } }
+  .raw.arrive .uc-txt > * { animation: dissolve .7s cubic-bezier(.2,.7,.2,1) both; }
+  .raw.arrive .uc-txt > *:nth-child(2) { animation-delay: .08s; } .raw.arrive .uc-txt > *:nth-child(3) { animation-delay: .16s; } .raw.arrive .uc-txt > *:nth-child(4) { animation-delay: .24s; }
+  @media (max-width: 900px) { .uc { grid-template-columns: 1fr; gap: 28px; justify-items: center; } .uc-h { font-size: 28px; } .uc-ph { height: 60vh; } }
+  /* touchpoint scenes: Priya's moment and the callouts on the left, the screen sliding in on the right */
+  .scene.uc-scene { --phone-w: min(calc((100vh - 150px) * 360 / 696), 390px); height: auto; align-self: center; width: min(1040px, 100%); grid-template-columns: minmax(0, 1fr) var(--phone-w); grid-template-rows: auto auto; grid-template-areas: "narr device" "side device"; column-gap: 96px; row-gap: 24px; align-content: center; justify-content: center; }
+  .uc-scene .narr { grid-area: narr; align-items: flex-start; align-self: end; gap: 16px; }
+  .uc-scene .device { grid-area: device; grid-row: 1 / span 2; }
+  .uc-scene .side { grid-area: side; align-self: start; max-width: 520px; }
+  .uc-scene .side .card.old { display: none; }
+  .uc-scene .who, .uc-scene .uc-tag { align-self: flex-start; margin: 0; }
+  .uc-scene .say { max-width: 560px; background: none; box-shadow: none; padding: 0; color: #f5f5f7; font-family: var(--sf-d); font-size: 40px; line-height: 1.12; font-weight: 600; letter-spacing: -.003em; border-radius: 0; }
+  .uc-scene .say.old { display: none; }
+  .uc-scene .say.aside { border: 0; font-style: normal; color: #a1a1a6; }
+  .uc-scene .uc-p { margin: 0; max-width: 520px; font-size: 19px; line-height: 1.42; color: #a1a1a6; }
+  .uc-scene .sec-lbl { display: none; }
+  .scene.uc-scene.arrive:not(.has-live) .screen { animation: uc-slide 1s cubic-bezier(.22,.8,.2,1) .1s both; }
+  @media (max-width: 900px) { .scene.uc-scene { grid-template-columns: 1fr; grid-template-areas: "narr" "device" "side"; } .uc-scene .device { grid-row: auto; } .uc-scene .say { font-size: 26px; } }
+  /* a build-step that hasn't been reached stays hidden, even while the slide's arrival animation plays */
+  .raw [data-beat]:not(.shown) { opacity: 0 !important; animation: none !important; }
+  .no-rim .screen::after { display: none; }
+  .no-rim .screen { box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 30px 80px rgba(0,0,0,.55) !important; }
+  /* touchpoints: fixed header left, phone centre, minimal call-outs beside it */
+  .scene.uc-scene { width: min(1240px, 100%); grid-template-columns: minmax(0, 1fr) var(--phone-w) minmax(0, 300px); grid-template-rows: auto; grid-template-areas: "narr device side"; column-gap: 64px; align-items: center; }
+  .uc-scene .narr { align-self: center; }
+  .uc-scene .device { grid-row: auto; }
+  .uc-scene .side { align-self: center; max-width: 300px; }
+  .uc-scene .narr .say { display: none !important; }
+  .uc-scene .uc-h { margin: 0; max-width: 520px; color: #f5f5f7; font-family: var(--sf-d); font-size: 38px; line-height: 1.12; font-weight: 600; letter-spacing: -.003em; }
+  .uc-scene .card.callout { background: rgba(255,255,255,.08); color: #f5f5f7; box-shadow: none; border: 1px solid rgba(255,255,255,.12); font-size: 15px; line-height: 1.45; padding: 14px 16px; }
+  .uc-scene .card.callout.old { display: none; }
+  /* live tooltip over the Houzy tab */
+  .tt { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 4; pointer-events: none; }
+  .tt-b { position: absolute; left: 19.4%; top: 81.5%; width: 67.2%; height: 6.04%; box-sizing: border-box; display: flex; align-items: center; gap: 2.4cqw; background: #171717; color: #fff; font-family: "Rubik", system-ui, sans-serif; font-size: 4.2cqw; font-weight: 400; padding: 0 3.8cqw 0 4cqw; border-radius: 2.8cqw; white-space: nowrap; transform-origin: 75% 100%; box-shadow: 0 4px 14px rgba(0,0,0,.25);
+    animation: tt-in .55s cubic-bezier(.2,.9,.3,1.2) 1.1s both, tt-bob 2.6s ease-in-out 1.8s infinite; }   /* measured from the shipped tooltip: 242 x 42 at (70, 567) on a 360 x 696 screen */
+  .tt-b svg { width: 4.6cqw; height: 4.6cqw; flex: none; } .tt-b i { font-style: normal; font-size: 5.4cqw; line-height: 1; opacity: .85; margin-left: auto; }
+  .tt-c { position: absolute; right: 24.6%; top: 86.4%; width: 2.8cqw; height: 2.8cqw; background: #1d1d1f; transform: rotate(45deg); animation: tt-in-c .55s ease 1.1s both, tt-bob 2.6s ease-in-out 1.8s infinite; }
+  .tt-pulse { position: absolute; right: 20.2%; bottom: 2.6%; width: 9cqw; height: 9cqw; border-radius: 50%; background: rgba(94,35,220,.25); animation: tt-ping 1.8s ease-out 1.6s infinite both; }
+  @keyframes tt-in { from { opacity: 0; transform: translateY(3cqw) scale(.9); } to { opacity: 1; transform: none; } }
+  @keyframes tt-bob { 50% { translate: 0 -1.2cqw; } }
+  @keyframes tt-ping { 0% { transform: scale(.6); opacity: .9; } 80%, 100% { transform: scale(1.7); opacity: 0; } }
+  .tt-c { transform: rotate(45deg); } @keyframes tt-in-c { from { opacity: 0; } to { opacity: 1; } }
+  @media (max-width: 900px) { .scene.uc-scene { grid-template-columns: 1fr; grid-template-areas: "narr" "device" "side"; } }
+  .narr > .swap-in { animation: dissolve .6s cubic-bezier(.2,.7,.2,1) both; }
+  .screen-push { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: inherit; background: #fff; }
+  .screen-push > img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .screen > img:not(.sb) { position: relative; }
+  /* thank you */
+  .thanks { gap: 20px; }
+  .ava-thanks { width: 72px; height: 72px; border-radius: 50%; }
+  .next-cs { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 4px 18px; text-align: left; text-decoration: none; color: #1d1d1f; background: #f5f5f7; border-radius: 20px; padding: 20px 24px; width: min(560px, 92vw); margin-top: 10px; transition: transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s; }
+  .next-cs span { grid-column: 1 / 3; font-size: 12px; font-weight: 600; letter-spacing: -.01em; color: #6e6e73; }
+  .next-cs b { grid-column: 1 / 3; font-family: var(--sf-d); font-size: 24px; line-height: 1.15; font-weight: 600; letter-spacing: 0; }
+  .next-cs i { grid-column: 3; grid-row: 1 / 3; font-style: normal; font-size: 24px; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; background: #1d1d1f; color: #fff; transition: transform .3s; }
+  .next-cs:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,.4); } .next-cs:hover i { transform: translateX(4px); }
+  .thanks .foot { margin-top: 26px; }
+  /* ===== motion, after the Figma deck =====
+     text: lines emerge from under the line above and dissolve in place; earlier lines step back smoothly
+     cards: rise from below at full presence and settle; the previous card steps back
+     scenes: the old scene dissolves where it stands, the new one fades in and its phone rises */
+  .say { transition: opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1), font-size .55s cubic-bezier(.2,.7,.2,1), line-height .55s cubic-bezier(.2,.7,.2,1), padding .55s cubic-bezier(.2,.7,.2,1); }
+  .say.enter, .say.emerge { animation: emerge .7s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes emerge { 0% { opacity: 0; transform: translateY(-55%) scale(.96); } 20% { opacity: 0; } 100% { opacity: 1; transform: none; } }
+  .narr .say { position: relative; z-index: 1; } .narr .say.emerge { z-index: 0; }
+  .card { animation: none; transition: opacity .55s cubic-bezier(.2,.7,.2,1); }
+  .card.rise { animation: card-rise .8s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes card-rise { 0% { opacity: 0; transform: translateY(70px); } 30% { opacity: 1; } 100% { opacity: 1; transform: none; } }
+  .card.old { animation: none; }
+  .leave { position: absolute !important; margin: 0 !important; pointer-events: none; animation: leave .45s cubic-bezier(.4,0,.2,1) forwards !important; }
+  @keyframes leave { to { opacity: 0; transform: translateY(-18px); } }
+  .scene-out { position: absolute !important; pointer-events: none; animation: scene-out .38s cubic-bezier(.4,0,.2,1) forwards; }
+  @keyframes scene-out { to { opacity: 0; } }
+  .arrive .narr > *, .arrive.wide > .narr > * { animation: dissolve .7s cubic-bezier(.2,.7,.2,1) both; }
+  .arrive .narr > *:nth-child(2) { animation-delay: .08s; } .arrive .narr > *:nth-child(3) { animation-delay: .16s; } .arrive .narr > *:nth-child(4) { animation-delay: .24s; }
+  @keyframes dissolve { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .arrive:not(.has-live) .screen, .arrive img.big { animation: phone-rise .9s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes phone-rise { from { transform: translateY(110px); opacity: 0; } 35% { opacity: 1; } to { transform: none; opacity: 1; } }
+  .arrive .side .card { animation: card-rise .9s cubic-bezier(.2,.7,.2,1) .18s both; }
+  .raw.arrive .chap > *, .raw.arrive .canvas .intro > * { animation: dissolve .75s cubic-bezier(.2,.7,.2,1) both; }
+  .raw.arrive .chap > *:nth-child(2), .raw.arrive .canvas .intro > *:nth-child(2) { animation-delay: .1s; }
+  .raw.arrive .chap > *:nth-child(3), .raw.arrive .canvas .intro > *:nth-child(3) { animation-delay: .2s; }
+  .raw.arrive .chap > *:nth-child(n+4), .raw.arrive .canvas .intro > *:nth-child(n+4) { animation-delay: .3s; }
+  @media (prefers-reduced-motion: reduce) { .say.enter, .say.emerge, .card.rise, .arrive *, .raw.arrive * { animation: none !important; } }
+
 </style>
 </head>
 <body>
@@ -349,10 +727,9 @@
 <template id="raw-canvas">
   <div class="canvas">
     <div class="intro">
-      <span class="kicker">Case study · Housing.com · 2026</span>
-      <h1>Designing <em>Houzy</em></h1>
-      <p class="lede">The psychology behind India's first conversational AI for property search: 11 principles, told through the eyes of one buyer.</p>
-      <div class="meta"><span>9 min story</span><span>Narrated by Priya, a buyer persona</span></div>
+      <div class="intro-logos"><svg class="lg3d" viewBox="0 0 64 64" role="img" aria-label="Housing.com"><defs><radialGradient id="hgY" cx=".36" cy=".3" r=".78"><stop offset="0" stop-color="#fff3a6"/><stop offset=".35" stop-color="#ffd84a"/><stop offset=".8" stop-color="#f5b800"/><stop offset="1" stop-color="#d99a00"/></radialGradient><linearGradient id="hgP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a55ff"/><stop offset="1" stop-color="#4a17c4"/></linearGradient><radialGradient id="hgSh" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient><linearGradient id="hgG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><ellipse cx="32" cy="60" rx="20" ry="3" fill="url(#hgSh)"/><circle cx="32" cy="31" r="27" fill="#c98a00"/><circle cx="32" cy="29.5" r="27" fill="url(#hgY)"/><path d="M17.5 36.5L32 22l14.5 14.5" fill="none" stroke="#2c0a80" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 2)"/><path d="M17.5 36.5L32 22l14.5 14.5" fill="none" stroke="url(#hgP)" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 35L32 22l13 13" fill="none" stroke="#b79bff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity=".7" transform="translate(0 -2.4)"/><ellipse cx="25" cy="13.5" rx="14" ry="6.5" fill="url(#hgG)" transform="rotate(-24 25 13.5)"/></svg></div>
+      <h1><em>Designing</em> conversations<br><em>for</em> Houzy</h1>
+      <p class="lede">An AI conversational bot which helps you search property in natural language.</p>
       <a class="qr-card" href="https://kaifmir.github.io/house-pdp/" target="_blank" rel="noopener">
         <div id="qr" role="img" aria-label="QR code linking to the Houzy prototype"></div>
         <div><b>Try Houzy on your phone</b><span>Scan, or open kaifmir.github.io/house-pdp</span></div>
@@ -362,7 +739,7 @@
     <div class="fig-frame">
       <span class="fig-name">Houzy / Mobile / Search</span>
       <div class="demo" id="intro-demo" aria-label="The Houzy prototype playing a search: a buyer asks for homes in plain words and gets property cards back">
-        <img class="poster" src="houzy/story/s/home-nav.png" alt="">
+        <div class="demo-sb" aria-hidden="true"><b>9:41</b><span><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></svg><svg viewBox="0 0 16 12"><path d="M8 11.6l2.2-2.6a3.2 3.2 0 0 0-4.4 0z"/><path d="M8 4.9c1.9 0 3.7.7 5 1.9l-1.4 1.6A5.4 5.4 0 0 0 8 7.1c-1.4 0-2.7.5-3.6 1.3L3 6.8a7.3 7.3 0 0 1 5-1.9z"/><path d="M8 .6c3.1 0 6 1.2 8 3.1l-1.4 1.6A9.6 9.6 0 0 0 8 2.8 9.6 9.6 0 0 0 1.4 5.3L0 3.7A11.8 11.8 0 0 1 8 .6z"/></svg><svg viewBox="0 0 27 13"><rect x=".6" y=".6" width="22.8" height="11.8" rx="3.6" fill="none" stroke="currentColor" stroke-opacity=".38" stroke-width="1.2"/><rect x="2.4" y="2.4" width="14" height="8.2" rx="2"/><path d="M25 4.4v4.2c.9-.3 1.5-1.2 1.5-2.1s-.6-1.8-1.5-2.1z" fill-opacity=".45"/></svg></span></div><img class="poster" src="houzy/story/s/home-nav.png" alt="">
         <span class="tapper"><svg viewBox="0 0 24 24"><path d="M5 2.5v17.2l4.6-4.3 2.9 6.6 2.9-1.3-2.9-6.5 6.3-.3z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
       </div>
       <span class="caption" aria-hidden="true"></span>
@@ -373,8 +750,40 @@
       <div class="cursor c1"><div><svg width="18" height="22" viewBox="0 0 18 22"><path d="M1 1l15 9.5-6.6 1.4L13 20l-3.2 1.4-3.6-8.2L1 17.6z" fill="#7b61ff" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><em style="background:#7b61ff">Designer</em></div></div>
       <div class="cursor c2"><div><svg width="18" height="22" viewBox="0 0 18 22"><path d="M1 1l15 9.5-6.6 1.4L13 20l-3.2 1.4-3.6-8.2L1 17.6z" fill="#0fa958" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><em style="background:#0fa958">PM</em></div></div>
       <div class="cursor c3"><div><svg width="18" height="22" viewBox="0 0 18 22"><path d="M1 1l15 9.5-6.6 1.4L13 20l-3.2 1.4-3.6-8.2L1 17.6z" fill="#f24e1e" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><em style="background:#f24e1e">Engineer</em></div></div>
-      <div class="cursor c4"><div><svg width="18" height="22" viewBox="0 0 18 22"><path d="M1 1l15 9.5-6.6 1.4L13 20l-3.2 1.4-3.6-8.2L1 17.6z" fill="#171313" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><em style="background:#171313">Kaif Saleem</em></div></div>
+      <div class="cursor c4"><div><svg width="18" height="22" viewBox="0 0 18 22"><path d="M1 1l15 9.5-6.6 1.4L13 20l-3.2 1.4-3.6-8.2L1 17.6z" fill="#ffcf2e" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><em style="background:#ffcf2e;color:#1d1d1f">Kaif Saleem</em></div></div>
     </div>
+  </div>
+</template>
+
+<template id="raw-priya">
+  <div class="chap meet">
+    <h2>Meet <em>Priya</em></h2>
+    <img class="priya-ava" src="houzy/story/priya.svg" alt="Priya, an illustrated buyer persona">
+    <p>A home buyer with clear intent. She knows what she wants, a 2 BHK near her parents in Pune, under &#8377;1 Cr and ready soon, and she&#8217;s about to search for it.</p>
+    <div class="meet-tags"><span>2 BHK</span><span>Pune</span><span>Under &#8377;1 Cr</span><span>Ready to move</span></div>
+  </div>
+</template>
+
+<template id="raw-research">
+  <div class="chap research">
+    <span class="tag">Before designing</span>
+    <h2>We spoke to 20 buyers <em>to see how they think</em></h2>
+    <div class="pref">
+      <p class="pref-h">Preference breakdown</p>
+      <div class="pref-row"><span>Conversational AI</span><b>7/20 <small>(35%)</small></b><i style="--w:35%;--c:#30d158"></i></div>
+      <div class="pref-row"><span>Filters / structured UI</span><b>7/20 <small>(35%)</small></b><i style="--w:35%;--c:#0a84ff"></i></div>
+      <div class="pref-row"><span>Hybrid approach</span><b>6/20 <small>(30%)</small></b><i style="--w:30%;--c:#bf5af2"></i></div>
+    </div>
+    <p>No single way of searching won. Buyers split almost evenly, so Houzy had to sit alongside search, not replace it.</p>
+  </div>
+</template>
+
+<template id="raw-images">
+  <div class="chap">
+    <span class="tag">Images</span>
+    <h2>Image display <em>on Houzy</em></h2>
+    <p>Buyers decide with their eyes. When someone asks to see a home, Houzy answers in pictures, laid out by how many there are, so the photos do the persuading.</p>
+    <div class="lp-cue"><span class="lp-arw" data-beat="1" aria-hidden="true"><svg viewBox="0 0 24 40"><path d="M12 2v35M3.5 28.5L12 37l8.5-8.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="lp-txt" data-beat="1">Photos in the conversation</span></div>
   </div>
 </template>
 
@@ -383,6 +792,42 @@
     <span class="tag">Part 1</span>
     <h2>Designing <em>the conversation</em></h2>
     <p>One rule shaped every screen: a predictable shell around unpredictable answers. The header, composer, cards and error states never change shape, so whatever the AI says lands somewhere familiar.</p>
+    <div class="lp-cue"><span class="lp-arw" data-beat="1" aria-hidden="true"><svg viewBox="0 0 24 40"><path d="M12 2v35M3.5 28.5L12 37l8.5-8.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="lp-txt" data-beat="1">The landing page</span></div>
+  </div>
+</template>
+
+<template id="raw-followups">
+  <div class="chap fu-hero">
+    <span class="tag">Follow-ups</span>
+    <h2>Designing <em>follow-ups</em></h2>
+    <p>When a search comes back empty or a place name is unclear, Houzy never leaves the buyer stuck. It asks one short question and offers the next step.</p>
+    <div class="fu-kinds" data-beat="1">
+      <div><b>Nothing found</b><span>Three ways closer, each with a home count</span></div>
+      <div><b>One unclear place</b><span>&ldquo;Did you mean one of these?&rdquo;, labelled by type</span></div>
+      <div><b>Several unclear places</b><span>One list per place, paged one at a time</span></div>
+    </div>
+  </div>
+</template>
+
+<template id="raw-lightbox">
+  <div class="chap lbx-hero">
+    <span class="tag">Photos</span>
+    <h2>Lightbox <em>mode</em></h2>
+    <p>Tap any photo and the whole set opens full screen, room by room, without leaving the chat.</p>
+    <div class="lbx-strip" data-beat="1"><div class="lbx-belt"></div></div>
+    <p class="lbx-credit" data-beat="1">Photos via Wikimedia Commons. Bathrooms: Basile Morin (CC BY-SA 4.0), Nenad Stojkovic (CC BY 2.0), Smtzzz (CC BY-SA 4.0). Kitchens: Shixart1985 (CC BY 2.0).</p>
+  </div>
+</template>
+
+<template id="raw-uc">
+  <div class="uc">
+    <div class="uc-txt">
+      <span class="tag uc-tag"></span>
+      <div class="who"><img class="avatar" src="houzy/story/priya.svg" alt="">Priya</div>
+      <h2 class="uc-h"></h2>
+      <p class="uc-p"></p>
+    </div>
+    <div class="uc-ph"><img alt=""></div>
   </div>
 </template>
 
@@ -470,11 +915,13 @@
 </template>
 
 <template id="raw-end">
-  <div class="chap">
-    <span class="tag">The end</span>
-    <h2>Thanks for reading <em>the story of Houzy</em></h2>
-    <p><a class="cta" href="https://kaifmir.github.io/house-pdp/" target="_blank" rel="noopener">Try the live prototype ↗</a> &nbsp; <a href="designing-houzy.html" style="color:#fff">Read the craft details →</a></p>
-    <div class="foot" id="footnotes"></div>
+  <div class="chap thanks">
+    <img class="ava-thanks" src="houzy/story/priya.svg" alt="">
+    <h2>Thank you <em>for reading</em></h2>
+    <p>That was Houzy through Priya&#8217;s eyes. The full case study goes deeper into how the conversation was built to earn a buyer&#8217;s trust.</p>
+    <a class="next-cs" href="https://kaifmir.github.io/kaif-portfolio/case-studies/houzy.html">
+      <span>Next</span><b>Architecting trust through conversation</b><i aria-hidden="true">&rarr;</i>
+    </a>
   </div>
 </template>
 
@@ -484,7 +931,7 @@ const PROTO = 'houzy/proto/index.html?v=2';
 const SR = 'houzy/srp/';
 const PH = 'houzy/chat/hd/photos/';
 const FU = 'houzy/chat/hd/follow/';
-const PADDED = new Set([SR + 'noresults.png', SR + 'filterpanel.png', PH + 'pdp-gallery.png']);
+const PADDED = new Set([SR + 'noresults.png', SR + 'filterpanel.png', PH + 'pdp-gallery.png', 'houzy/chat/hd/pdp-native.png', 'houzy/story/gal-shot2.png']);   // shots captured without a status bar get one
 const HD = 'houzy/chat/hd/';
 const C = 'houzy/chat/s/', S = 'houzy/story/', T = 'houzy/story/s/', H = 'houzy/';
 const REFS = [];
@@ -494,6 +941,8 @@ const note = (t, b) => ({ kind: 'note', t, b });
 
 const SLIDES = [
   { raw: 'raw-canvas' },
+  { raw: 'raw-research' },
+  { raw: 'raw-priya' },
 
   // ---------- Prologue ----------
   { live: PROTO, poster: T + 'home-nav.png', beats: [
@@ -507,7 +956,7 @@ const SLIDES = [
 
   { raw: 'raw-part1' },
 
-  { img: C + 'first-hd.png', overlay: 'prompts', beats: [
+  { img: C + 'first-hd.png', overlay: 'prompts', label: 'The landing page', beats: [
     { say: "\"Hey, how can I help you today?\"", ring: [22, 37.5, 56, 9] },
     { say: "Oh nice, it gives me ideas.", ring: [0, 49, 100, 15],
       card: pin('Recognition over recall', 'Picking from options is easier than inventing a question from nothing.{ref} Prompts solve the blank page and quietly teach what Houzy can do.', 'Nielsen Norman Group, "Recognition rather than recall".') },
@@ -517,14 +966,9 @@ const SLIDES = [
       card: note('Honest by default', 'A BETA badge in the header and a disclaimer under the composer: "Houzy is an AI assistant and may occasionally make mistakes."') },
   ]},
 
-  { img: HD + 'about.png', beats: [
-    { say: "What does the little ⓘ do?", ring: [19, 6.8, 37, 6] },
-    { say: "\"Verify details before making any decisions.\" Good to know up front.", ring: [0, 63.2, 100, 36.8],
-      card: note('About the responses', 'Tapping the header opens a sheet: answers are guidance only, so verify with the listing agent or Housing.com. One button, "Understood".') },
-  ]},
 
   // your screenshots, with the prototype's own loading animation on the thinking step
-  { img: HD + 'typing.png', beats: [
+  { img: HD + 'typing.png', keyboard: { tap: [40, 89.6], from: 86.2, to: 47 }, beats: [
     { say: "I'll just type it the way I'd say it to a friend.", ring: [4, 47.3, 92, 7.5] },
     { say: "The send button just lit up.", ring: [84.5, 49, 8, 4.2],
       card: note('A composer that reacts', 'Send stays grey until there\'s something to send, then turns brand purple, the only purple on the screen.') },
@@ -536,7 +980,7 @@ const SLIDES = [
       card: pin('The labour illusion', 'People mind waits less, and value results more, when they can see work happening.{ref} The loader keeps moving and the line changes every 1.5 seconds, so the wait always says something.', 'Buell & Norton, "The labor illusion" (2011).') },
     { img: HD + 'skel-prop.png', say: "Cards are already taking shape.", ring: [4, 18.2, 93, 60.5],
       card: note('Skeletons that match the answer', 'A property search shows card skeletons; a question shows message skeletons. The shape of the answer arrives before the answer.') },
-    { img: HD + 'card.png', say: "RERA registered. Ready to move.", ring: [8.8, 44.2, 42.4, 3.2],
+    { img: HD + 'card-v.png', say: "RERA registered. Ready to move.", ring: [8.8, 44.2, 42.4, 3.2],
       card: pin('Authority bias', 'People trust signals from recognised authorities.{ref} RERA registration and status come first on every card, before the AI asks for any trust.', 'Robert Cialdini, Influence (1984).') },
     { say: "₹3 Cr is the biggest thing on the card. Easy to compare.", ring: [8.8, 66.6, 14, 3.4],
       card: note('Trust → identity → price → action', 'Tags, then the home, then price as the largest text, then one filled button. Six variants share this anatomy, including a no-image state.') },
@@ -550,15 +994,15 @@ const SLIDES = [
       card: pin('Progressive disclosure', 'Show what matters now, and offer the rest when it\'s needed.{ref} Results first, then a gentle next step: budget, BHK or locality.', 'Nielsen Norman Group, "Progressive disclosure" (2006).') },
     { img: HD + 'viewmore.png', say: "At the end of the row, \"View more\" opens every match.", ring: [52, 13, 43, 63],
       card: note('Escape hatch to search', '"View more" opens the full search results with the 11th listing in view, through a short transition, so the chat never traps anyone.') },
-    { img: HD + 'shortlist.png', say: "♥ Saved one for later.", ring: [4, 81.4, 92, 6.6],
+    { img: HD + 'shortlist-v.png', say: "♥ Saved one for later.", ring: [4, 81.4, 92, 6.6],
       card: note('Confirm in place', 'Shortlisting fills the heart and a toast confirms it, without leaving the conversation.') },
   ]},
 
-  { img: HD + 'card.png', beats: [
+  { img: HD + 'card-v.png', beats: [
     { say: "I'll contact this one—", ring: [41.5, 71.5, 31, 7.5] },
-    { img: HD + 'login-sheet.png', say: "—oh, it wants me to log in. WhatsApp works.", ring: [4, 89, 92, 7.5],
+    { img: HD + 'login-sheet.png?v=2', rise: { tap: [57, 75], from: 100, to: 34.4 }, say: "—oh, it wants me to log in. WhatsApp works.", ring: [4, 89, 92, 7.5],
       card: pin('Gradual engagement', 'Asking for commitment after people see value converts better than asking up front.{ref} Browsing and asking never need an account; only Contact, Brochure and Shortlist do.', 'Luke Wroblewski, "Sign up forms must die" (2008).') },
-    { img: HD + 'login-toast.png', say: "And I'm right back where I was.", ring: [4, 81, 91.5, 7],
+    { img: HD + 'login-toast-v.png', say: "And I'm right back where I was.", ring: [4, 81, 91.5, 7],
       card: note('The thread survives login', 'A toast confirms it; the cards and the conversation are exactly where they were. No reload.') },
     { img: C + 'card-contacted.png', say: "\"Someone will reach out to you soon.\"", ring: [3, 18, 80, 6.5] },
   ]},
@@ -567,7 +1011,7 @@ const SLIDES = [
     { overlay: 'shimmer', say: "Next morning I open Houzy again. While my chat loads, I can already see its shape.", ring: [3, 16.5, 94, 47],
       card: note('Chat loading skeleton', 'While the conversation history loads, message-shaped bars alternate right and left, mirroring the buyer\'s bubbles and Houzy\'s replies, so the screen never looks empty or broken.') },
     { img: C + 'older-today.png', say: "And the whole chat's still here.", ring: [40, 14.5, 20, 4.5] },
-    { img: HD + 'older-load.png', say: "Older messages load when I scroll up.", ring: [27, 15, 46.5, 4.5],
+    { img: C + 'older-load.png', say: "Older messages load when I scroll up.", ring: [27, 15, 46.5, 4.5],
       card: note('One thread, loaded on demand', 'Full history in a single chat. Older messages load on demand: after two weeks on Android, after five screens of scrolling on iOS.') },
     { img: C + 'bottom.png', say: "A little arrow takes me back down.", ring: [42, 82.3, 16, 7] },
     { img: HD + 'timeout.png', say: "In the lift. No signal.", ring: [5, 23, 90, 7.5],
@@ -575,88 +1019,101 @@ const SLIDES = [
     { img: HD + 'nonetwork.png', say: "Same place, same Retry.", ring: [78, 24.3, 14, 5] },
   ]},
 
-  // the gallery as designed, and the quick fix that shipped
-  { img: HD + 'card.png', beats: [
-    { say: "Let me tap the photo on this one.", ring: [4.4, 19.5, 72.7, 22.5] },
-    { img: HD + 'gallery-room.png', tap: [40, 31], say: "A full-screen gallery, right inside the chat.", ring: [1, 23.5, 98, 57.2],
-      card: note('The gallery I designed', 'Tapping a card\'s photo opens a native, full-screen viewer over the chat: photos grouped by room, arrows to move through them, and a close button that drops you back into the conversation.') },
-    { say: "\"Kitchen, 2 of 9.\" I always know where I am.", ring: [4, 7, 16, 5.5],
-      card: note('Organised by room', 'The header names the room and counts within it, so buyers browse the way they think: kitchen, bedrooms, balcony.') },
-    { say: "And I can still contact the seller from here.", ring: [4.6, 90.8, 90.9, 6.8],
-      card: note('No dead ends', 'Contact seller stays pinned at the bottom of every photo, so a buyer who likes what they see never has to go back to act.') },
-    { img: HD + 'card.png', kind: 'aside', say: "But that gallery needed more build time. So we shipped a quick fix…",
-      card: note('The limitation', 'A native gallery inside the chat needed room-level photo tags and more engineering time than the first release had. We needed a quick fix.') },
-    { img: HD + 'pdp-native.png', tap: [40, 31], say: "Tapping a card now opens the full property page, rendered natively inside Houzy.", ring: [3, 90.2, 94, 7.6],
-      card: note('The quick fix', 'Instead of building a new gallery, the existing property page renders natively inside Houzy, photos and all, with Ask Houzy docked at the bottom so the conversation comes along.') },
+  { img: HD + 'about.png', beats: [
+    { say: "What does the little ⓘ do?", ring: [19, 6.8, 37, 6] },
+    { say: "\"Verify details before making any decisions.\" Good to know up front.", ring: [0, 63.2, 100, 36.8],
+      card: note('About the responses', 'Tapping the header opens a sheet: answers are guidance only, so verify with the listing agent or Housing.com. One button, "Understood".') },
   ]},
 
-  // the property page inside Houzy: scroll up, the ask bar grows into follow-up pills
-  { img: HD + 'pdp-native.png', beats: [
-    { overlay: 'pdp-scroll', say: "I scroll up to read more about it.",
-      card: note('Scroll to expand', 'Any upward scroll expands the property page to full height. A compact header slides in at the top, and the bottom ask bar grows into suggested questions.') },
-    { overlay: 'pdp-pills', say: "Now there are questions about this home waiting at the bottom. I can swipe through them.", ring: [3, 83.2, 97, 6],
-      card: note('Follow-ups for the property you opened', 'These pills aren\'t general prompts. They\'re follow-up questions about the property the buyer just clicked on: its amenities, parking, pictures and possession. The set changes by type: resale asks about floor and facing, rent about price breakup and furnishing. They scroll sideways, and the ask bar is always there for anything else.') },
-    { overlay: 'pdp-pills', say: "It's the same property page I know, with a cross instead of a back arrow.", ring: [3.5, 2.6, 10, 4.6],
-      card: note('Same page, one change', 'Inside Houzy the existing property page is reused as it is. The one change: back became a close (×), so the page reads as a layer over the chat, and closing it drops the buyer straight back into the conversation.') },
-    { overlay: 'pdp-thinking', tap: [28, 86], inplace: true, say: "\"What amenities are there?\"", ring: [3, 84.5, 60, 4.4],
-      card: note('Asked in place', 'Tapping a pill sends it as a question about this home. Houzy thinks right there in the sheet; no new screen, no lost scroll position.') },
-    { overlay: 'pdp-reply', say: "The answer opens over the page. The home is still right there.", ring: [3, 56, 94, 30],
-      card: pin('The cost of switching context', 'Every time people leave a task, they pay to rebuild it.{ref} The question stays tied to the property, and the answer stays on top of it.', 'Rubinstein, Meyer & Evans, task switching (2001).') },
-    { overlay: 'pdp-pills', tap: [92.7, 59.4], inplace: true, say: "I close the answer, and I'm back on the property page.", ring: [3.5, 2.6, 10, 4.6],
-      card: note('Close goes back one step', 'The answer\'s × closes just the answer, back to the property page and its questions. The page\'s own × is the next step back.') },
-    { img: S + 'pdp-parent.png', tap: [8.1, 4.6], say: "Closing the page takes me back to the main chat, with my question and the answer saved there.", ring: [38, 19.5, 58, 9.5],
-      card: note('Saved for context', 'Questions asked on the property page are saved into the primary chat, with a small "↳ Evolvus Phase 1" quote and Houzy\'s answer below it, so the conversation remembers which home they were about.') },
+  // the gallery as designed, and the quick fix that shipped
+
+  // one card anatomy, every listing type: each scenario slides in over the card on screen
+  { img: HD + 'card-v.png', overlay: 'cases', beats: [
+    { say: "Not every home looks like this one.", ring: [4.4, 19.5, 72.7, 59.5] },
+    { cases: 1, say: "A resale flat says Verified, and when I can move in.",
+      card: note('Resale', 'Verified takes the place of RERA, and the possession date sits right beside it, so trust and timing read together.') },
+    { cases: 2, say: "Renting? The price turns monthly.",
+      card: note('Rent, in a project', 'Price reads per month, and furnishing takes the slot possession held: the detail renters check first.') },
+    { cases: 3, say: "No project? The card just loses that line.",
+      card: note('Rent, not in a project', 'Without a project the title is the configuration alone. The rhythm of the card stays the same, so nothing looks missing.') },
+    { cases: 4, say: "And with no photos yet, it still holds its shape.",
+      card: note('No image', 'A neutral placeholder keeps the card the same height, so the carousel never jumps, and the price shows the project\'s whole range.') },
   ]},
 
   // photos asked for in the chat: one rule per image count (from the Figma dev-mode annotations), then the gallery
-  { img: PH + 'loading.png', beats: [
-    { say: "\"Show me pics of the bedrooms.\"", ring: [29, 14.6, 65.5, 5.4] },
-    { say: "Running through the details…", ring: [4, 23.4, 64, 4.6],
+  { raw: 'raw-images' },
+  { uc: { dd: 1, tag: 'Photos in the conversation', h: '&ldquo;Show me pics of the bedrooms.&rdquo;', p: 'Photos arrive as part of Houzy&#8217;s reply, laid out by how many there are: a grid for four or more, then three, two or one.' }, img: PH + 'loading.png', label: 'Photos in the conversation', beats: [
+    { overlay: 'loading-photos', say: "\"Show me pics of the bedrooms.\"", ring: [29, 14.6, 65.5, 5.4] },
+    { overlay: 'loading-photos', say: "Running through the details…", ring: [4, 23.4, 64, 4.6],
       card: note('Loading', 'The line keeps rotating: "Looking around the neighborhood…", "Thinking through…", "Just a second…", "Searching for better answers…". The loader disappears if the user stops the request.') },
-    { img: PH + 'grid.png', enter: 'fade', say: "Four or more photos come back as a grid.", ring: [4.5, 30.7, 88.5, 34.5],
+    { img: PH + 'grid-rooms.png', enter: 'fade', chat: [
+        { r: [3.5, 24, 92, 5.6], at: 100 },
+        { r: [4.1, 30.4, 44.6, 17.5], at: 360, tile: 1 }, { r: [49.2, 30.4, 44.6, 17.5], at: 430, tile: 1 },
+        { r: [4.1, 47.9, 44.6, 17.6], at: 500, tile: 1 }, { r: [49.2, 47.9, 44.6, 17.6], at: 570, tile: 1 },
+        { r: [3.5, 65.5, 92, 11.6], at: 720 } ],
+      say: "Four or more photos come back as a grid.", ring: [4.5, 30.7, 88.5, 34.5],
       card: note('4+ images', '2×2 grid with a fixed 4:3 cover-fit on all four cells. Container 320px wide × ~240px tall, 4px gap, each cell 158×118px. When there are more than four, the fourth cell gets a scrim and a "+N" count.') },
     { say: "\"+12\" means there's more.", ring: [49.4, 48.3, 44, 17],
       card: note('+N opens the full gallery', 'The chat shows a taste, not the album. The fourth cell carries the count, so the complete set is one tap away and the conversation stays light.') },
-    { img: PH + 'one.png', enter: 'fade', say: "Just one photo of the kitchen? It shows as it is.", ring: [4.4, 28.3, 66.8, 26],
-      card: note('One image', 'Renders at its native aspect ratio, no crop. Max 240px wide, max 320px tall, min 120px tall. The ratio is read from the image metadata at render time.') },
-    { img: PH + 'two.png', enter: 'fade', say: "Two photos sit side by side, the same size.", ring: [4.5, 32.9, 88.8, 17],
-      card: note('Two images', 'Fixed 4:3 cover-fit on both cells, uniform size. Crop logic: geometric centre crop.') },
-    { img: PH + 'three.png', enter: 'fade', say: "Three? One big, two small.", ring: [4.6, 31.6, 89, 25.9],
+    { img: PH + 'three-living.png', enter: 'fade', say: "Three? One big, two small.", ring: [4.6, 31.6, 89, 25.9],
       card: note('Three images', 'No fixed ratio: each cell crops to fill its own slot (cover-fit per cell, not 4:3). A hero-selection rule decides which photo fills the large cell.') },
-    { img: HD + 'gallery-room.png', tap: [35, 44.5], say: "I tap one, and the gallery opens right over the chat.", ring: [1, 23.5, 98, 57.2],
-      card: note('The gallery I designed', 'A full-screen viewer that belongs to Houzy: the room and count in the header ("Kitchen, 2 of 9"), arrows to move through it, and contact actions pinned below, so liking a photo leads straight to acting on it.') },
-    { img: PH + 'three.png', kind: 'aside', say: "That isn't what shipped.",
-      alert: { t: 'The limitation', b: 'A Houzy-native gallery needed room-level photo tags and build time the release didn\'t have.', s: 'The property page already had a gallery buyers knew.' } },
-    { img: PH + 'pdp-gallery.png', tap: [35, 44.5], say: "Tapping a photo opens Housing.com's own gallery, sorted by room.", ring: [3, 12.8, 94, 4.6],
+    { img: PH + 'two-living.png', enter: 'fade', say: "Two photos sit side by side, the same size.", ring: [4.5, 32.9, 88.8, 17],
+      card: note('Two images', 'Fixed 4:3 cover-fit on both cells, uniform size. Crop logic: geometric centre crop.') },
+    { img: PH + 'one.png?v=2', enter: 'fade', say: "Just one photo of the kitchen? It shows as it is.", ring: [4.4, 28.3, 66.8, 26],
+      card: note('One image', 'Renders at its native aspect ratio, no crop. Max 240px wide, max 320px tall, min 120px tall. The ratio is read from the image metadata at render time.') },
+  ]},
+
+  // lightbox mode: a hero beat, then the photos open full screen, grouped by room
+  { raw: 'raw-lightbox' },
+  { uc: { dd: 1, tag: 'Lightbox mode', h: '&ldquo;I tap a photo, and the whole set opens.&rdquo;', p: 'A full-screen viewer grouped by room, with the room and count in the header and Contact pinned below.' }, img: HD + 'gallery-room.png', overlay: 'lightbox', label: 'Lightbox mode', beats: [
+    { lbx: 0, say: "I tap a photo, and the whole set opens full screen.", ring: [4, 22, 92, 50],
+      card: note('Grouped by room', 'Photos open in room order. The header names the room on screen, and the count below it is the photo\'s place in the property\'s whole set, so "4 / 9" means four of nine photos seen.') },
+    { lbx: 1, say: "I swipe to the next one.", ring: [4, 22, 92, 50] },
+    { lbx: 2, say: "That's the last of the kitchen…", ring: [4, 22, 92, 50] },
+    { lbx: 3, say: "…and the header has already moved on to the bathroom.", ring: [20, 6.5, 60, 7],
+      card: note('The header follows the photo', 'When a swipe crosses into the next room, the room name crossfades while the count keeps going. Buyers always know which room they are looking at, and how much of the set is left, without a separate tab bar.') },
+    { lbx: 6, say: "Living room next. Contact is always one tap away below.", ring: [6, 84, 88, 9] },
+  ]},
+  // what shipped instead of the designed lightbox: Housing.com's own gallery
+  { uc: { dd: 1, tag: 'What shipped', h: '&ldquo;The photos open in Housing.com&#8217;s own gallery.&rdquo;', p: 'A Houzy-native gallery needed room tags and build time the release didn&#8217;t have, so photos redirect to the gallery Housing.com already built.' }, img: PH + 'three-living.png', beats: [
+    { kind: 'aside', say: "That isn't what shipped.",
+      alert: { t: 'Photos redirect to Housing.com\'s native gallery', b: 'A Houzy-native gallery needed room-level photo tags and build time the release didn\'t have. So tapping a photo redirects buyers to the existing gallery Housing.com already built natively.', s: 'Buyers land somewhere familiar, with Contact pinned below.' } },
+    { img: PH + 'pdp-gallery.png', overlay: 'pdpgal', tap: [35, 44.5], hero: [4.6, 31.6, 44, 25.9], say: "Tapping a photo opens Housing.com's own gallery, sorted by room.", ring: [3, 12.8, 94, 4.6],
       card: note('The quick solve', 'We reused the property page\'s gallery as it is: the same room tabs and photos buyers already know from Housing.com. No new gallery to build, test or keep in sync.') },
     { say: "And a cross takes me straight back to the chat.", ring: [4, 7.6, 14, 4.6],
       card: note('A cross, not a back arrow', 'The only change to the Housing.com gallery: the back arrow became a cross. It closes the gallery instead of navigating away, so the buyer lands back in the conversation, the same rule as the property page inside Houzy.') },
   ]},
 
   // follow-ups: when a search can't run as asked, Houzy asks back with a short list instead of guessing
-  { img: FU + 'noresults.png', beats: [
-    { say: "\"Show me 3 BHK in Bandra West.\"", ring: [28.7, 15.4, 66.7, 5.4] },
-    { say: "Nothing in Bandra West right now…", ring: [4.5, 24.5, 84, 6],
+  { raw: 'raw-followups' },
+  { uc: { dd: 1, tag: 'Follow-ups', h: '&ldquo;Show me 3 BHK in Bandra West.&rdquo;', p: 'When a search comes back empty or a place name is unclear, Houzy asks one short question and offers the next step.' }, img: FU + 'noresults-n.png', overlay: 'fu-none', beats: [
+    { say: "\"Show me 3 BHK in Bandra West.\"", ring: [28.7, 15.2, 66.7, 5.3] },
+    { say: "Nothing in Bandra West right now…", ring: [4.5, 24.3, 84, 5.9],
       card: note('No dead end', 'An empty answer is still an answer. Houzy says what it couldn\'t find in one line, then moves straight to what it can do.') },
-    { say: "…but three ways closer, each with a count.", ring: [8.5, 58.5, 85, 26.3],
+    { say: "…but three ways closer, each with a count.", ring: [5, 55.9, 90, 29.8],
       card: note('Single-list follow-up', 'Each row changes one thing: nearby localities, one BHK up, one BHK down. The home count on every row tells the buyer the tap will never land on another empty result.') },
-    { say: "Or I just type something else.", ring: [9.2, 88.8, 83.4, 7.8],
+    { say: "Or I just type something else.", ring: [8.5, 87.6, 83, 7.7],
       card: pin('Hick\'s law', 'The more choices there are, the longer it takes to pick one.{ref} Three short options plus a free-text field keeps the follow-up quick to scan without boxing the buyer in.', 'W. E. Hick, "On the rate of gain of information" (1952).') },
-    { img: FU + 'single.png', enter: 'fade', say: "\"A 3BHK in Gurgaon.\" Which part of Gurgaon, though?", ring: [28.9, 18, 68.3, 7.9],
+    { img: FU + 'single-v2.png', overlay: 'plain', enter: 'fade', say: "\"A 3BHK in Gurgaon.\" Which part of Gurgaon, though?", ring: [28.6, 17.4, 66.7, 7.9],
       card: note('Did you mean one of these?', 'When a place name matches several things, Houzy asks once instead of guessing. Every row says what kind of match it is: locality, developer, city or landmark.') },
-    { say: "I tap the locality I meant.", ring: [9, 37.2, 84.8, 10.2],
-      card: note('One tap to answer', 'The whole row is the target, with a pressed state so the tap feels registered. The search then runs on the exact match, with no retyping.') },
-    { img: FU + 'multi.png', enter: 'fade', say: "\"Phase 4, 5, 6.\" Three places, all unclear.", ring: [28.8, 17.9, 65.8, 7.6],
+    { img: FU + 'multi-1-v2.png?v=2', overlay: 'plain', enter: 'fade', say: "\"Phase 4, 5, 6.\" Three places, all unclear.", ring: [28.6, 17.4, 66.7, 7.9],
       card: note('Multiple-list follow-up', 'When a message names several places, each gets its own list. "1 of 2" pages through them one question at a time instead of stacking every list at once.') },
-    { say: "Or I type it my way, and send lights up.", ring: [9.5, 87.4, 82, 7.6],
+    { img: FU + 'multi-2-v2.png', overlay: 'plain', enter: 'fade', say: "\"2 of 2\" asks about the next place. Skip moves on.", ring: [69, 29.6, 24, 4.6],
+      card: note('Skip, not stuck', 'Every list can be skipped, so one unclear place never blocks the rest of the search.') },
+    { img: FU + 'multi-typing-v2.png', overlay: 'plain', enter: 'fade', say: "Or I type it my way, and send lights up.", ring: [8.5, 87.6, 83, 7.7],
       card: note('Typing always wins', 'The field inside the follow-up stays live. As soon as the buyer types, send turns purple, and their own words replace the suggestions.') },
+    { img: FU + 'single-v2.png', overlay: 'plain', enter: 'fade', say: "Back on Gurgaon, I tap the locality I meant.", ring: [9.2, 36.2, 82.8, 9.8],
+      card: note('One tap to answer', 'The whole row is the target, with a pressed state so the tap feels registered. The search then runs on the exact match, with no retyping.') },
+    { img: FU + 'selected-v2.png', overlay: 'plain', tap: [50.5, 41.1], enter: 'fade', say: "It sends my pick as a message and confirms it.", ring: [3.5, 23.4, 87, 6.8],
+      card: note('The pick becomes the message', 'Tapping a row sends it as the buyer\'s own message, "Phase 2, Tulip Estate, Sector 57", and Houzy confirms the selection right below, so the chat keeps a clear record of what was chosen.') },
   ]},
 
   // ---------- Part 2 ----------
   { raw: 'raw-part2' },
+  { uc: { tag: 'Touchpoint 1 &middot; Landing on home', h: '&ldquo;I open the app, and Houzy is right there in the bottom bar.&rdquo;', p: 'The moment she lands, Houzy has its own tab in the bottom navigation. A one-time tooltip, &ldquo;Find homes, the easy way&rdquo;, points to it without interrupting her browsing.' }, img: T + 'home-nav-sb.png', overlay: 'tooltip', beats: [ { ring: [66, 89.4, 14, 6.6], card: note('One tab, one tooltip', 'Houzy gets a permanent place in the bottom nav. The tooltip shows once, on the first session, and closes on tap.') } ]},
 
   // 1 · zero results
-  { img: SR + 'noresults.png', beats: [
+  { uc: { tag: 'Touchpoint 2 &middot; No results for her filters', h: '&ldquo;I set every filter I care about, and got nothing.&rdquo;', p: 'When filters return zero homes, search offers Houzy instead of a dead end, and her filters travel into the chat.' }, img: SR + 'noresults.png', beats: [
     { say: "Back on search. \"No properties match your current filters.\"", ring: [3.5, 32.6, 73, 3.8] },
     { say: "\"Widen your search with Houzy.\" Okay.", ring: [4, 37.3, 92, 15.8],
       card: pin('Just-in-time help', 'Help lands best at the moment of struggle.{ref} Zero results is the strongest signal, so Houzy offers itself right where the empty list would be.', 'Nielsen Norman Group, "Contextual help" (2023).') },
@@ -665,43 +1122,32 @@ const SLIDES = [
   ]},
 
   // 2 · filter confusion
-  { img: SR + 'filterpanel.png', beats: [
+  { uc: { tag: 'Touchpoint 3 &middot; Changing filters', h: '&ldquo;I keep changing the localities. Nothing feels right.&rdquo;', p: 'After three filter changes in a row, a quiet nudge offers help narrowing it down.' }, img: SR + 'filterpanel.png', beats: [
     { say: "Saket, Malviya Nagar, Panchsheel… I keep changing the filters.", ring: [6.5, 43.5, 93.5, 6.1] },
-    { img: SR + 'filters-nudge.png', tap: [8.7, 9.5], enter: 'fade', say: "Third change in a row. \"Need help narrowing it down?\"", ring: [0, 83.4, 100, 16.6],
+    { img: SR + 'filters-list.png', sheet: SR + 'filters-sheet.png', tap: [8.7, 9.5], back: 1, say: "Third change in a row. \"Need help narrowing it down?\"", ring: [0, 79.8, 100, 20.2],
       card: note('Trigger: 3+ filter changes', 'Repeatedly changing filters is a sign the buyer can\'t express what they want in dropdowns. A sheet rises from the bottom of the results, without covering the listings.') },
     { img: SR + 'houzy-filters.png', tap: [50, 94.3], say: "It sums up where I've landed and asks what to change.", ring: [4.5, 17.3, 90, 11.4],
       card: note('Start from a summary', '"Here\'s where you\'ve landed: 3BHK in Saket, Malviya Nagar or Panchsheel, up to ₹3Cr, ready to move." Reflecting the filters back turns a dead end into a conversation.') },
   ]},
 
   // 3 · passive scrolling
-  { img: SR + 'scrolling-base.png', arrive: 'scroll', beats: [
-    { sheet: SR + 'scrolling-sheet.png', say: "Twenty listings in, I still haven't tapped one. \"Looking for something specific?\"", ring: [0, 83, 100, 17],
+  { uc: { tag: 'Touchpoint 4 &middot; Endless scrolling', h: '&ldquo;Twenty listings in, and I haven&#8217;t opened a single one.&rdquo;', p: 'Long scrolling without a tap is a sign of hesitation, so Houzy asks if she is looking for something specific.' }, img: SR + 'scrolling-base.png', arrive: 'scroll', beats: [
+    { sheet: SR + 'scrolling-sheet-p.png', say: "Twenty listings in, I still haven't tapped one. \"Looking for something specific?\"", ring: [0, 79.7, 100, 20.3],
       card: note('Trigger: passive scrolling', 'Twenty listings scrolled with no taps means the buyer is browsing without conviction. Houzy waits for that signal before it speaks up.') },
     { img: SR + 'houzy-scrolling.png', tap: [50, 93.8], say: "\"Still scrolling?\" It recaps what I've been looking at.", ring: [5, 17.5, 90, 8.6],
       card: note('Recap, then ask', '"You\'re at 3BHK in Saket or Malviya Nagar, up to ₹3Cr, ready to move. Tell me what\'s missing." The buyer never has to re-explain.') },
   ]},
 
   // 4 · too many results
-  { img: SR + 'toomany-base.png', beats: [
-    { sheet: SR + 'toomany-sheet.png', say: "Hundreds of matches. \"Too many options? I can help narrow down.\"", ring: [0, 83.3, 100, 16.7],
+  { uc: { tag: 'Touchpoint 5 &middot; Too many options', h: '&ldquo;Hundreds of matches. Where do I even start?&rdquo;', p: 'When results run into the hundreds, Houzy offers to narrow them down by what matters most to her.' }, img: SR + 'toomany-base.png', beats: [
+    { sheet: SR + 'toomany-sheet-p.png', say: "Hundreds of matches. \"Too many options? I can help narrow down.\"", ring: [0, 80, 100, 20],
       card: note('Trigger: too many results', 'When a search returns more than 200 listings, Houzy offers to narrow them down by what matters most.') },
     { img: SR + 'houzy-toomany.png', tap: [50, 94], say: "\"Tell me what matters most to you.\" That's easier than another filter.", ring: [4.5, 17.8, 90, 11.3],
       card: note('Trigger rules', '<ul><li>Zero results beats filter confusion, which beats passive scrolling.</li><li>One prompt per trigger per session, with a 2-minute cooldown.</li><li>Counts reset when locality, city or service changes.</li></ul>') },
   ]},
 
-  // ---------- Part 3 ----------
-  { raw: 'raw-part3' },
-
-  { img: S + 'gal-shot2.png', beats: [
-    { say: "\"Can I see the bedrooms?\" It took me to the property's gallery…", ring: [3, 7, 94, 6] },
-    { say: "Wait. Why did it send me away? Are these even real?",
-      card: pin('Ambiguity aversion', 'People avoid options with missing information.{ref} In testing, buyers asked for photos up front, and the redirect plus the wording made some think the images were fake.', 'Daniel Ellsberg, "Risk, ambiguity and the Savage axioms" (1961).') },
-  ]},
-
-
   { raw: 'raw-outcomes' },
   { raw: 'raw-journey', chart: true },
-  { raw: 'raw-next' },
   { raw: 'raw-end' },
 ];
 
@@ -718,6 +1164,38 @@ function makeRing() {
   ring.innerHTML = `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path pathLength="1" d="${d}"/></svg>`;
   return ring;
 }
+// keep elements that stay, transition their new state in place (FLIP for position), bring new ones in, dissolve the rest
+function reconcile(box, fresh, sel, enterCls) {
+  const before = new Map(); box.querySelectorAll(sel).forEach(e => before.set(e.dataset.i, { e, r: e.getBoundingClientRect() }));
+  const br = box.getBoundingClientRect(), list = [], keepIds = new Set();
+  [...fresh.children].forEach(f => {
+    if (!f.matches(sel)) { const same = [...box.children].find(c => !c.matches(sel) && c.className === f.className);
+      if (same && same.innerHTML === f.innerHTML) list.push(same); else { if (same) f.classList.add('swap-in'); list.push(f); } return; }   // a changed header (next touchpoint) swaps in
+    const was = before.get(f.dataset.i);
+    if (was) { keepIds.add(f.dataset.i); was.e.className = f.className.replace(/\benter\b/, '').trim(); was.e.innerHTML = f.innerHTML; list.push(was.e); }
+    else { f.classList.remove('enter'); f.classList.add(enterCls); list.push(f); }
+  });
+  const leaving = [...before.values()].filter(x => !keepIds.has(x.e.dataset.i));
+  box.replaceChildren(...list);
+  if (getComputedStyle(box).position === 'static') box.style.position = 'relative';
+  leaving.forEach(({ e, r }) => { e.classList.add('leave'); Object.assign(e.style, { left: (r.left - br.left) + 'px', top: (r.top - br.top) + 'px', width: r.width + 'px' }); box.appendChild(e); setTimeout(() => e.remove(), 480); });
+  list.forEach(e => { const was = before.get(e.dataset && e.dataset.i); if (!was || !e.matches(sel)) return;
+    const r = e.getBoundingClientRect(), dy = was.r.top - r.top, dx = was.r.right - r.right;
+    if (Math.abs(dy) > 1 || Math.abs(dx) > 1) e.animate([{ translate: dx + 'px ' + dy + 'px' }, { translate: '0 0' }], { duration: 550, easing: 'cubic-bezier(.2,.7,.2,1)' }); });
+}
+// every screenshot shows whole inside the one phone frame: wider shots fit the width (never cropped at the sides)
+// and the space below takes the screenshot's own bottom colour
+const FIT = new Map();
+function fitScreen(screen, im) {
+  const apply = v => { if (!v) return; im.classList.add('fitw'); screen.style.background = v; };
+  if (FIT.has(im.src)) return apply(FIT.get(im.src));
+  const go = () => { const ar = im.naturalWidth / im.naturalHeight; let v = null;
+    if (ar > 0.522) { try { const c = document.createElement('canvas'); c.width = 4; c.height = 4; const x = c.getContext('2d');
+      x.drawImage(im, im.naturalWidth * .5, im.naturalHeight - 3, 2, 2, 0, 0, 4, 4); const d = x.getImageData(1, 1, 1, 1).data; v = 'rgb(' + d[0] + ',' + d[1] + ',' + d[2] + ')'; } catch (e) { v = '#fff'; } }
+    FIT.set(im.src, v); apply(v); };
+  im.complete && im.naturalWidth ? go() : im.addEventListener('load', go, { once: true });
+}
+function setCases(cs, n) { cs.dataset.n = n; cs.parentElement?.querySelector('.cases-blur')?.classList.toggle('on', n > 0); requestAnimationFrame(() => cs.parentElement?.querySelector('.cases-blur')?.classList.toggle('on', n > 0)); [...cs.children].forEach((c, i) => { c.classList.toggle('in', i < n); c.classList.toggle('back', i < n - 1); }); }
 function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
 
 function renderScene(s) {
@@ -727,16 +1205,23 @@ function renderScene(s) {
   const side = el('div', 'side');
   // narration: current + up to two previous lines
   const said = s.beats.slice(0, bi + 1).map((b, i) => ({ b, i })).filter(x => x.b.say);
-  narr.appendChild(el('div', 'who', '<span class="avatar">P</span>Priya'));
+  if (s.label) narr.appendChild(el('p', 'sec-lbl', s.label));
+  if (si >= 20) scene.classList.add('no-rim');   // from the touchpoints on, phones show without the gradient rim
+  if (s.uc) { scene.classList.add('uc-scene'); narr.appendChild(el('span', 'tag uc-tag', s.uc.tag)); }
+  narr.appendChild(el('div', 'who', '<img class="avatar" src="houzy/story/priya.svg" alt="">Priya'));
   said.slice(-3).forEach(({ b, i }) => {
-    const d = el('p', 'say' + (b.kind ? ' ' + b.kind : '') + (i < bi ? ' old' : ' enter'), b.say);
+    const d = el('p', 'say' + (b.kind ? ' ' + b.kind : '') + (i < bi ? ' old' : ' enter'), b.say); d.dataset.i = si + ':' + i;
     if (i === bi) d.id = 'current-say';
     narr.appendChild(d);
   });
+  if (s.uc) { let H = s.uc.h, Pp = s.uc.p;
+    if (s.uc.dd) { let c = null; for (let k = 0; k <= bi; k++) if (s.beats[k].card) c = s.beats[k].card; if (c) { H = c.t; Pp = c.b; } }   // design direction on the left: the current decision is the header
+    narr.appendChild(el('h2', 'uc-h', H)); narr.appendChild(el('p', 'uc-p', Pp));
+    const cur = s.beats[bi]; if (cur && cur.say) { const c = el('div', 'card callout', cur.say); c.dataset.i = si + ':s' + bi; side.appendChild(c); } }
   // cards: latest two, newest last
   const cards = s.beats.slice(0, bi + 1).map((b, i) => ({ c: b.card, i })).filter(x => x.c).slice(-2);
-  cards.forEach(({ c, i }) => {
-    const d = el('div', 'card ' + c.kind + (i < bi ? ' old' : ''), (c.kind === 'note' ? '<span class="lbl">Design decision</span>' : '') + '<b class="t">' + c.t + '</b>' + c.b);
+  if (!s.uc || !s.uc.dd) cards.forEach(({ c, i }) => {
+    const d = el('div', 'card ' + c.kind + (i < bi ? ' old' : ''), (c.kind === 'note' ? '<span class="lbl">Design decision</span>' : '') + '<b class="t">' + c.t + '</b>' + c.b); d.dataset.i = si + ':' + i;
     side.appendChild(d);
   });
   let img = s.img || s.wide;
@@ -753,7 +1238,7 @@ function renderScene(s) {
     if (s.live) {
       if (s.poster) { const pimg = el('img', 'poster'); pimg.src = s.poster; pimg.alt = ''; screen.appendChild(pimg); }
     } else {
-      im.src = img; im.alt = 'Houzy screen'; screen.appendChild(im);
+      im.src = img; im.alt = 'Houzy screen'; screen.appendChild(im); fitScreen(screen, im);
       if (PADDED.has(img)) { screen.classList.add('padded'); const sb = el('img', 'sb'); sb.src = SR + 'statusbar.png'; sb.alt = ''; screen.appendChild(sb); }
     }
     // every phone shares one size; screenshots are cover-fitted into it
@@ -762,7 +1247,13 @@ function renderScene(s) {
     if (s.beats[bi] && s.beats[bi].overlay) ov = s.beats[bi].overlay;
     screen.dataset.ov = ov || '';
     if (ov === 'prompts') screen.appendChild(promptRows());
+    if (ov === 'lightbox') { let i = 0; for (let k = 0; k <= bi; k++) if (s.beats[k].lbx != null) i = s.beats[k].lbx; screen.appendChild(lightbox(i));
+      screen.classList.add('dark'); }   // the viewer owns the whole screen: no white screenshot or rim behind it
     if (ov === 'loading') screen.appendChild(loadingRow());
+    if (ov === 'loading-photos') screen.appendChild(loadingRow(PHOTO_STATUS_TEXTS));
+    if (ov === 'pdpgal') screen.appendChild(pdpGallery());
+    if (ov === 'tooltip') screen.appendChild(el('div', 'tt', '<span class="tt-b"><svg viewBox="0 0 16 16"><path d="M8 1.2c.22 1.9 1.05 3.5 2.5 4.8 1.35 1.2 2.95 1.95 4.8 2.2-1.85.25-3.45 1-4.8 2.2C9.05 11.7 8.22 13.3 8 15.2c-.22-1.9-1.05-3.5-2.5-4.8C4.15 9.2 2.55 8.45.7 8.2c1.85-.25 3.45-1 4.8-2.2C6.95 4.7 7.78 3.1 8 1.2z" fill="#a78bfa"/></svg>Find homes, the easy way<i>&times;</i></span><i class="tt-c"></i><i class="tt-pulse"></i>'));
+    if (ov && ov.indexOf('fu-') === 0) screen.appendChild(fuSheet(ov.slice(3)));
     if (bi === 0 && s.arrive === 'scroll') {
       screen.classList.add('arrive-scroll');
       const g = el('div', 'gest swipe', '<svg class="cursor-ico" viewBox="0 0 24 24"><path d="M5 2.5v17.2l4.6-4.3 2.9 6.6 2.9-1.3-2.9-6.5 6.3-.3z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>');
@@ -770,9 +1261,12 @@ function renderScene(s) {
       setTimeout(() => g.remove(), 2000);
     }
     if (ov === 'shimmer') screen.appendChild(el('div', 'skeleton-shimmer'));
+    if (ov === 'cases') { let n = 0; for (let k = 0; k <= bi; k++) if (s.beats[k].cases != null) n = s.beats[k].cases;
+      const cs = el('div', 'cases', ['resale', 'rent-project', 'rent', 'no-image'].map((f, i) => '<img class="case cs' + (i + 1) + '" src="houzy/story/cases/' + f + '.png?v=2" alt="">').join(''));
+      screen.appendChild(el('div', 'cases-blur')); setCases(cs, n); screen.appendChild(cs); }
     if (ov === 'pdp-scroll') screen.appendChild(pdpScene('pills', true));
     if (ov && ov.indexOf('pdp-') === 0 && ov !== 'pdp-scroll') screen.appendChild(pdpScene(ov.slice(4), false));
-    if (ov === 'carousel') { const c = el('div', 'carousel'); const card = '<img class="c" src="' + HD + 'carousel-card.png" alt="">'; c.innerHTML = '<div class="track">' + card + card + card + '<img class="v" src="' + HD + 'carousel-viewmore.png" alt="View more"></div>'; screen.appendChild(c); }
+    if (ov === 'carousel') { const c = el('div', 'carousel'); const card = n => '<img class="c" src="' + HD + 'carousel-card' + n + '.png" alt="">'; c.innerHTML = '<div class="track">' + card('') + card('-2') + card('-3') + '<img class="v" src="' + HD + 'carousel-viewmore.png" alt="View more"></div>'; screen.appendChild(c); }
     const r = s.drive ? null : s.beats[bi].ring;
     let sheet = null;
     if (s.beats[bi] && s.beats[bi].sheet) {
@@ -796,10 +1290,12 @@ const PROMPTS = {
   r2: [['compare', 'Compare localities', 'coral'], ['review', 'Check locality reviews', 'yellow'], ['variant9', 'Show me under construction projects', 'purple'], ['price', 'Check locality price trends', 'pink'], ['bhk', 'Show project pictures of Opus', 'blue']],
 };
 const TYPING_STATUS_TEXTS = ['Thinking...', 'Finding the answers...', 'Searching properties...', 'Looking that up...', 'One sec...', 'Checking...'];
-function loadingRow() {
-  const box = el('div', 'loading-row', '<div class="loader-5"><span></span></div><span class="shimmer">' + TYPING_STATUS_TEXTS[0] + '</span>');
+// the photo request rotates the lines the product shows while it fetches pictures
+const PHOTO_STATUS_TEXTS = ['Running through the details…', 'Looking around the neighborhood…', 'Thinking through…', 'Just a second…', 'Searching for better answers…'];
+function loadingRow(texts = TYPING_STATUS_TEXTS) {
+  const box = el('div', 'loading-row', '<div class="loader-5"><span></span></div><span class="shimmer">' + texts[0] + '</span>');
   const t = box.querySelector('.shimmer'); let i = 0;
-  const iv = setInterval(() => { if (!box.isConnected) return clearInterval(iv); i = (i + 1) % TYPING_STATUS_TEXTS.length; t.textContent = TYPING_STATUS_TEXTS[i]; }, 1500);
+  const iv = setInterval(() => { if (!box.isConnected) return clearInterval(iv); i = (i + 1) % texts.length; t.textContent = texts[i]; }, 1500);
   return box;
 }
 const PD = 'houzy/chat/hd/pdp/';
@@ -819,6 +1315,71 @@ function pdpScene(state, animate) {
     // scroll just far enough to reveal the last pill
     setTimeout(() => { const row = wrap.querySelector('.row'); const extra = row.scrollWidth - wrap.clientWidth + wrap.clientWidth * .042; if (extra > 0) row.style.setProperty('--shift', -extra + 'px'); }, 0);
   }
+  return box;
+}
+// lightbox mode: one photo per entry; the header follows the room of whatever photo is on screen
+const LB = 'houzy/story/lightbox/';
+const LBX = [['Kitchen', 'kitchen-1'], ['Kitchen', 'kitchen-2'], ['Kitchen', 'kitchen-3'], ['Bathroom', 'bathroom-1'], ['Bathroom', 'bathroom-2'], ['Bathroom', 'bathroom-3'],
+  ['Living room', 'living-1'], ['Living room', 'living-2'], ['Bedroom', 'bedroom-1']];   // bathroom photos: Wikimedia Commons, credited on the lightbox hero
+function lightbox(start) {
+  const chev = d => '<svg viewBox="0 0 24 24"><path d="' + d + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const box = el('div', 'lbx',
+    '<div class="lbx-sb"><span>12:00</span><span><svg viewBox="0 0 18 12"><path d="M0 12h18V0z" fill="currentColor"/></svg><svg viewBox="0 0 16 12"><path d="M8 12 0 3.5a11.5 11.5 0 0 1 16 0z" fill="currentColor"/></svg><svg viewBox="0 0 8 14"><rect x="0" y="1.5" width="8" height="12.5" rx="1.2" fill="currentColor"/><rect x="2.5" y="0" width="3" height="2" fill="currentColor"/></svg></span></div>' +
+    '<div class="lbx-hd"><span class="ic">' + chev('M6 6l12 12M18 6L6 18') + '</span><div class="lbx-ttl"><b class="lbx-room"></b><span class="lbx-n"></span></div>' +
+    '<span class="end"><span class="ic">' + chev('M12 3v12M7 8l5-5 5 5M5 14v5h14v-5') + '</span></span></div>' +
+    '<div class="lbx-view" aria-label="Swipe for more photos"><div class="lbx-track">' + LBX.map(([r, f]) => '<img src="' + LB + f + '.jpg?v=2" alt="' + r + '">').join('') + '</div></div>' +
+    '<div class="lbx-cta"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z" fill="currentColor"/></svg>Contact seller</div>');
+  const track = box.querySelector('.lbx-track'), room = box.querySelector('.lbx-room'), num = box.querySelector('.lbx-n');
+  box._go = i => {
+    i = Math.max(0, Math.min(LBX.length - 1, i)); box.dataset.i = i;
+    track.style.transform = 'translateX(calc(' + (-i) + ' * (100% - 5.5cqw)))';   // one photo plus its gap
+    const r = LBX[i][0];
+    if (room.textContent && room.textContent !== r) { room.classList.add('swap'); setTimeout(() => { room.textContent = r; room.classList.remove('swap'); }, 200); } else room.textContent = r;
+    num.textContent = (i + 1) + ' / ' + LBX.length;   // position across every photo of the property
+  };
+  // swipe: drag the photo sideways
+  const view = box.querySelector('.lbx-view'); let x0 = null;
+  view.addEventListener('pointerdown', e => { x0 = e.clientX; view.setPointerCapture(e.pointerId); });
+  view.addEventListener('pointerup', e => { if (x0 == null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 30) box._go(+box.dataset.i + (dx < 0 ? 1 : -1)); });
+  track.style.transition = 'none'; box._go(start || 0); requestAnimationFrame(() => requestAnimationFrame(() => { track.style.transition = ''; }));
+  return box;
+}
+// Housing.com's gallery, rebuilt sharp: room tabs, a photo per card tagged with its room; it opens on Kitchen and scrolls on into Bathroom
+const PGX = [['Elevation', ['elevation-1', 'elevation-2', 'elevation-3', 'elevation-4', 'elevation-5']], ['Kitchen', ['kitchen-2', 'kitchen-3', 'kitchen-4', 'kitchen-1']], ['Bathroom', ['bathroom-1', 'bathroom-2', 'bathroom-3']]];
+// follow-up sheets, rebuilt so every list shares one inset, row height and composer
+const FU_SHEETS = {
+  none: { cover: 46, title: 'Try adjusting your search', rows: [['Search nearby localities', 'Khar West, Santacruz We…', '9 homes'], ['Check 4 BHK', 'Same location', '5 homes'], ['Check 2BHK', 'Same location', '13 homes']], input: 'Something else' },
+  single: { cover: 25.4, title: 'Did you mean one of these?', rows: [['Phase 2, Sector 57', 'Locality'], ['Phase 2, Sector 57', 'Developer'], ['Phase 2, Sector 57', 'City'], ['Phase 2, Sector 57', 'City'], ['Phase 2, Sector 57', 'Landmark']], pressed: 0, input: 'Something else', live: 1 },
+  multi: { cover: 25.6, title: 'Did you mean one of these?', pager: '1 of 2', rows: [['Phase 2, Sector 57', 'Developer'], ['Phase 2, Sector 57', 'Developer'], ['Phase 2, Sector 57', 'Developer'], ['Phase 2, Sector 57', 'Developer'], ['Phase 2, Sector 57', 'Landmark']], input: 'User starts typing something', typed: 1, live: 1 } };
+function fuSheet(kind) {
+  const d = FU_SHEETS[kind], ic = p => '<svg viewBox="0 0 24 24"><path d="' + p + '" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const rows = d.rows.map((r, i) => '<div class="fu-row' + (i === d.pressed ? ' on' : '') + '"><div><b>' + r[0] + '</b><span>' + r[1] + (r[2] ? '<i></i>' + r[2] : '') + '</span></div>' + ic('M5 12h14M13 6l6 6-6 6') + '</div>').join('');
+  const end = d.pager ? '<span class="fu-pg">' + ic('M15 6l-6 6 6 6') + d.pager + ic('M9 6l6 6-6 6') + '</span>' : ic('M6 6l12 12M18 6L6 18');
+  const box = el('div', 'fu');
+  box.style.top = d.cover + '%';
+  box.innerHTML = '<div class="fu-sheet"><div class="fu-hd"><b>' + d.title + '</b>' + end + '</div><div class="fu-rows">' + rows + '</div>' +
+    '<div class="fu-in' + (d.typed ? ' typed' : '') + '"><span>' + d.input + '</span><i class="' + (d.live ? 'live' : '') + '"><svg viewBox="0 0 24 24"><path d="M5 5l15 7-15 7 3.5-7z" fill="currentColor"/></svg></i></div></div>';
+  return box;
+}
+function pdpGallery() {
+  const ic = d => '<svg viewBox="0 0 24 24"><path d="' + d + '" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const tabs = PGX.map(([r, f], i) => '<span class="pg-tab" data-i="' + i + '">' + r + ' (' + f.length + ')</span>').join('') + '<span class="pg-tab">Master Plan</span>';
+  const secs = PGX.map(([r, f], i) => '<section class="pg-sec" data-i="' + i + '"><h4>' + r + ' (' + f.length + ')</h4>' + f.map(n => '<figure><img src="' + LB + n + '.jpg?v=2" alt="' + r + '"><span>' + r + '</span></figure>').join('') + '</section>').join('');
+  const box = el('div', 'pg', '<div class="pg-sb"><span>12:00</span><span>&#9650; &#9673; &#9646;</span></div>' +
+    '<div class="pg-hd"><span class="pg-x">' + ic('M6 6l12 12M18 6L6 18') + '</span><b>Gallery (28)</b><span class="pg-ic">' + ic('M18 8a3 3 0 1 0-2.8-4M6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm12 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8.6 13.5l6.8 4M15.4 6.5l-6.8 4') + ic('M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z') + '</span></div>' +
+    '<div class="pg-tabs"><div class="pg-row">' + tabs + '</div><i class="pg-ul"></i></div><div class="pg-scroll"><div class="pg-in">' + secs + '</div></div>' +
+    '<div class="pg-cta"><span><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z" fill="currentColor"/></svg>Contact seller</span></div>');
+  const sc = box.querySelector('.pg-scroll'), ul = box.querySelector('.pg-ul'), tb = [...box.querySelectorAll('.pg-tab[data-i]')];
+  const rel = e => e.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop;
+  const mark = () => { const secs = [...box.querySelectorAll('.pg-sec')]; let a = 0; secs.forEach((s, i) => { if (rel(s) - sc.scrollTop < sc.clientHeight * .35) a = i; });
+    tb.forEach((t, i) => t.classList.toggle('on', i === a)); const t = tb[a]; if (t) { ul.style.left = t.offsetLeft + 'px'; ul.style.width = t.offsetWidth + 'px'; } };
+  sc.addEventListener('scroll', mark, { passive: true });
+  let tries = 0; const go = () => { if (!box.isConnected) { if (tries++ < 240) requestAnimationFrame(go); return; } const k = box.querySelector('.pg-sec[data-i="1"]'); if (!k || !sc.clientHeight) return requestAnimationFrame(go);
+    sc.scrollTop = rel(k); mark();
+    const to = rel(box.querySelector('.pg-sec[data-i="2"]')), from = sc.scrollTop, t0 = performance.now() + 1500, D = 3200, E = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    const tick = t => { if (!box.isConnected) return; const q = Math.min(1, Math.max(0, (t - t0) / D)); sc.scrollTop = from + (to - from) * E(q); if (q < 1) requestAnimationFrame(tick); };
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) requestAnimationFrame(tick); };
+  requestAnimationFrame(go);
   return box;
 }
 function promptRows() {
@@ -873,25 +1434,53 @@ function drawLink() {
 function render() {
   const s = SLIDES[si];
   document.body.classList.toggle('on-canvas', s.raw === 'raw-canvas');
-  const keep = lastSi === si && !s.raw && stage.querySelector('.scene, .wide');
-  if (!keep) stage.innerHTML = '';
+  // phone scene to phone scene: auto animate — the frame stays, the screen crossfades, text and cards morph
+  const isPhone = x => x && !x.raw && !x.wide && !x.live;
+  const morph = lastSi !== -1 && lastSi !== si && Math.abs(lastSi - si) === 1 && isPhone(s) && isPhone(SLIDES[lastSi]) && !!stage.querySelector('.scene:not(.scene-out)');
+  const rawStay = s.raw && lastSi === si && !s.chart && s.raw !== 'raw-canvas' ? stage.querySelector('.raw:not(.scene-out)') : null;   // a beat on a text slide updates in place
+  const keep = rawStay || ((lastSi === si || morph) && !s.raw && stage.querySelector('.scene:not(.scene-out), .wide:not(.scene-out)'));
+  const fromAva = SLIDES[lastSi] && SLIDES[lastSi].raw === 'raw-priya' && si === lastSi + 1 ? stage.querySelector('.priya-ava') : null;
+  const avaFrom = fromAva ? fromAva.getBoundingClientRect() : null;
+  const fromLbl = si === lastSi + 1 && SLIDES[si].label ? stage.querySelector('.lp-txt.shown') : null;
+  // leaving the lightbox hero forward: the strip photo nearest the centre will fly into the gallery
+  const stripFrom = SLIDES[lastSi] && SLIDES[lastSi].raw === 'raw-lightbox' && si === lastSi + 1 && stage.querySelector('.lbx-strip.shown') ? (() => { let best = null;
+    // the photo that flies must be the one the gallery opens on, so take the nearest copy of that photo in the strip
+    const first = LB + LBX[0][1], strip = stage.querySelector('.lbx-strip').getBoundingClientRect();
+    stage.querySelectorAll('.lbx-belt img').forEach(im => { if (!im.getAttribute('src').startsWith(first)) return; const r = im.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - innerWidth / 2); if (r.width && (!best || d < best.d)) best = { d, r, src: im.getAttribute('src'), el: im }; });
+    if (best) { const r = best.r, L = Math.min(Math.max(r.left, strip.left), strip.right - r.width); best.r = { left: L, top: r.top, width: r.width, height: r.height }; }   // lift it from inside the visible strip
+    return best; })() : null;
+  const lblFrom = fromLbl ? { r: fromLbl.getBoundingClientRect(), fs: parseFloat(getComputedStyle(fromLbl).fontSize), html: fromLbl.innerHTML } : null;
+  if (!keep) {
+    const old = stage.firstElementChild;
+    stage.querySelectorAll('.scene-out').forEach(e => e.remove());
+    if (old && lastSi !== -1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const r = old.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+      [...stage.children].forEach(c => { if (c !== old) c.remove(); });
+      Object.assign(old.style, { left: (r.left - sr.left) + 'px', top: (r.top - sr.top) + 'px', width: r.width + 'px', height: r.height + 'px' });
+      old.classList.add('scene-out'); old.querySelectorAll('[id]').forEach(e => e.removeAttribute('id'));
+      setTimeout(() => old.remove(), 420);
+    } else stage.innerHTML = '';
+  }
   if (s.raw) {
-    const wrap = el('div', 'raw'); wrap.appendChild(document.getElementById(s.raw).content.cloneNode(true)); stage.appendChild(wrap);
+    let wrap = rawStay; if (wrap) wrap.classList.remove('arrive'); else { wrap = el('div', 'raw' + (lastSi !== si ? ' arrive' : '')); wrap.appendChild(document.getElementById(s.raw).content.cloneNode(true)); stage.appendChild(wrap); }
     wrap.querySelectorAll('[data-beat]').forEach(e => e.classList.toggle('shown', bi >= +e.dataset.beat));
+    if (s.raw === 'raw-lightbox') { const belt = wrap.querySelector('.lbx-belt'); if (belt && !belt.children.length) belt.innerHTML = LBX.map(([r, f]) => '<img src="' + LB + f + '.jpg?v=2" alt="">').join('').repeat(2); }   // twice over, so the drift loops
+    if (s.raw === 'raw-uc' && s.uc && wrap.querySelector('.uc-h') && !wrap.querySelector('.uc-h').textContent) { wrap.querySelector('.uc-tag').innerHTML = s.uc.tag; wrap.querySelector('.uc-h').innerHTML = s.uc.h; wrap.querySelector('.uc-p').innerHTML = s.uc.p; wrap.querySelector('.uc-ph img').src = s.uc.img; }
     if (s.raw === 'raw-canvas') introDemo(wrap.querySelector('#intro-demo'));
     if (s.raw === 'raw-canvas') { try { const q = qrcode(0, 'M'); q.addData('https://kaifmir.github.io/house-pdp/'); q.make(); wrap.querySelector('#qr').innerHTML = q.createSvgTag({ cellSize: 6, margin: 0, scalable: true }); } catch (e) {} }
-    if (s.raw === 'raw-end') wrap.querySelector('#footnotes').innerHTML = '<ol>' + REFS.map(r => '<li>' + r + '</li>').join('') + '</ol>';
+    if (s.raw === 'raw-end' && wrap.querySelector('#footnotes')) wrap.querySelector('#footnotes').innerHTML = '<ol>' + REFS.map(r => '<li>' + r + '</li>').join('') + '</ol>';
     if (s.chart) {
       const pts = [...wrap.querySelectorAll('.pt')], n = Math.min(pts.length, bi + 1);
       pts.forEach((p, i) => p.style.opacity = i < n ? 1 : .12);
       const line = wrap.querySelector('#jline'); line.setAttribute('points', line.getAttribute('points').trim().split(/\s+/).slice(0, n).join(' '));
       wrap.querySelectorAll('[data-beat]').forEach(e => e.classList.toggle('shown', n >= pts.length));
     }
-  } else if (lastSi === si && stage.querySelector('.scene, .wide')) {
-    const cur = stage.firstElementChild, fresh = renderScene(s);
+  } else if ((lastSi === si || morph) && stage.querySelector('.scene:not(.scene-out), .wide:not(.scene-out)')) {
+    const cur = stage.querySelector('.scene:not(.scene-out), .wide:not(.scene-out)'), fresh = renderScene(s);
+    cur.classList.remove('arrive');   // the arrival choreography plays once per scene, never on a swapped-in screen
     const lk = cur.querySelector('svg.link'); if (lk) lk.dataset.k = ''; // new beat: draw the arrow fresh
-    cur.querySelector('.narr').replaceWith(fresh.querySelector('.narr'));
-    cur.querySelector('.side').replaceWith(fresh.querySelector('.side'));
+    reconcile(cur.querySelector('.narr'), fresh.querySelector('.narr'), '.say', 'emerge');
+    reconcile(cur.querySelector('.side'), fresh.querySelector('.side'), '.card', 'rise');
     if (s.live) {
       const screen = cur.querySelector('.screen'); screen.querySelector('.ring')?.remove();
       const ring = fresh.querySelector('.ring'); if (ring) screen.appendChild(ring);
@@ -899,18 +1488,28 @@ function render() {
     } else {
       const old = cur.querySelector('.screen, img.big'), nw = fresh.querySelector('.screen, img.big');
       const oldSrc = old.querySelector ? (old.querySelector('img') || old).getAttribute('src') : null, newSrc = (nw.querySelector ? (nw.querySelector('img') || nw) : nw).getAttribute('src');
-      if (old.classList.contains('screen') && oldSrc === newSrc && old.dataset.ov === nw.dataset.ov) { old.querySelector('.ring')?.remove(); const ring = nw.querySelector('.ring'); if (ring) old.appendChild(ring); }
+      if (old.classList.contains('screen') && oldSrc === newSrc && old.dataset.ov === nw.dataset.ov) { old.querySelector('.ring')?.remove(); const ring = nw.querySelector('.ring'); if (ring) old.appendChild(ring);
+        const oc = old.querySelector('.cases'), nc = nw.querySelector('.cases'); if (oc && nc) setCases(oc, +nc.dataset.n);
+        const ol = old.querySelector('.lbx'), nl = nw.querySelector('.lbx'); if (ol && nl) ol._go(+nl.dataset.i); }   // a beat slides the lightbox on
       else {
         const cb = s.beats[bi];
         const forward = lastBi === bi - 1;
-        if (forward && old.classList.contains('screen') && (cb.tap || cb.swipe)) playGesture(old, nw, cb);
+        if (!morph && forward && old.classList.contains('screen') && cb.rise) keyboardIn(old, nw, cb.rise);   // tap, then the bottom sheet slides up
+        else if (!morph && forward && old.classList.contains('screen') && (cb.tap || cb.swipe)) playGesture(old, nw, cb);
+        else if (morph && si === lastSi + 1 && s.keyboard && old.classList.contains('screen')) keyboardIn(old, nw, s.keyboard);
+        else if (!morph && forward && cb.chat && old.classList.contains('screen')) chatIn(old, nw, cb.chat);
+        else if (morph && old.classList.contains('screen')) {   // the old screen sits on top and dissolves into the new one
+          const top = old.cloneNode(true); top.querySelectorAll('.ring').forEach(e => e.remove()); old.replaceWith(nw);
+          top.className = 'screen-xfade'; nw.appendChild(top); setTimeout(() => top.remove(), 620);
+        } else if (s.uc && s.uc.dd && old.classList.contains('screen')) pushScreen(old, nw, !forward);
         else old.replaceWith(nw);
       }
     }
     requestAnimationFrame(drawLink); setTimeout(drawLink, 60);
   } else {
-    stage.appendChild(renderScene(s));
-    const im = stage.querySelector('.screen img'); if (im) { im.complete ? drawLink() : im.addEventListener('load', drawLink); }
+    const sc = renderScene(s); if (lastSi !== si) sc.classList.add('arrive'); stage.appendChild(sc);
+    sc.querySelector('.screen')?.addEventListener('animationend', () => { const lk = sc.querySelector('svg.link'); if (lk) lk.dataset.k = ''; drawLink(); }, { once: true });   // re-aim the arrow once the phone has landed
+    const im = sc.querySelector('.screen img'); if (im) { im.complete ? drawLink() : im.addEventListener('load', drawLink); }
     requestAnimationFrame(() => requestAnimationFrame(drawLink));
   }
   // a beat can stop the story: the phone dims and a tip card lands on top of it
@@ -919,8 +1518,35 @@ function render() {
   stage.querySelector('.scene')?.classList.toggle('alerting', !!al);
   if (scr && al) {
     scr.appendChild(el('div', 'alert-dim'));
-    scr.parentElement.appendChild(el('div', 'alert-card', '<svg class="warn" viewBox="0 0 64 58" aria-hidden="true"><path d="M27.7 4.5a5 5 0 0 1 8.6 0l25.4 44a5 5 0 0 1-4.3 7.5H6.6a5 5 0 0 1-4.3-7.5z" fill="#ffc531"/><rect x="29" y="19" width="6" height="20" rx="3" fill="#171313"/><circle cx="32" cy="46" r="3.6" fill="#171313"/></svg><div><span class="eyebrow">#Limitation</span><h3>' + al.t + '</h3><p>' + al.b + '</p>' + (al.s ? '<p>' + al.s + '</p>' : '') + '</div>'));
+    const side = stage.querySelector('.scene:not(.scene-out) .side');   // the limitation reads as one more card in the side column, in the story's own card style
+    if (side) side.appendChild(el('div', 'card note alert-card', '<span class="lbl lim"><svg viewBox="0 0 64 58" aria-hidden="true"><path d="M27.7 4.5a5 5 0 0 1 8.6 0l25.4 44a5 5 0 0 1-4.3 7.5H6.6a5 5 0 0 1-4.3-7.5z" fill="currentColor"/><rect x="29" y="19" width="6" height="20" rx="3" fill="#ffd60a"/><circle cx="32" cy="46" r="3.6" fill="#ffd60a"/></svg>Limitation</span><b class="t">' + al.t.replace(/^The limitation$/i, 'Why the designed gallery didn\'t ship') + '</b><p>' + al.b + '</p>' + (al.s ? '<p class="al-s">' + al.s + '</p>' : '')));
   }
+  if (avaFrom && !matchMedia('(prefers-reduced-motion: reduce)').matches) {   // Priya travels from her intro into the story
+    const to = stage.querySelector('.scene:not(.scene-out) .who .avatar');
+    if (to) { const tr = to.getBoundingClientRect(), fly = el('img', 'ava-fly'); fly.src = 'houzy/story/priya.svg'; fly.alt = '';
+      Object.assign(fly.style, { left: avaFrom.left + 'px', top: avaFrom.top + 'px', width: avaFrom.width + 'px', height: avaFrom.height + 'px' });
+      document.body.appendChild(fly); to.style.opacity = '0';
+      const dx = tr.left - avaFrom.left, dy = tr.top - avaFrom.top, k = tr.width / avaFrom.width;
+      fly.animate([{ transform: 'none' }, { transform: `translate(${dx}px, ${dy}px) scale(${k})` }], { duration: 900, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' })
+        .onfinish = () => { to.style.opacity = ''; fly.remove(); }; } }
+  if (lblFrom && !matchMedia('(prefers-reduced-motion: reduce)').matches) {   // the chapter's cue becomes the screen's side label
+    const to = stage.querySelector('.scene:not(.scene-out) .uc-tag') || stage.querySelector('.scene:not(.scene-out) .sec-lbl');
+    if (to) { const tr = to.getBoundingClientRect(), k = parseFloat(getComputedStyle(to).fontSize) / lblFrom.fs, fly = el('span', 'lbl-fly', lblFrom.html);
+      Object.assign(fly.style, { left: lblFrom.r.left + 'px', top: lblFrom.r.top + 'px', fontSize: lblFrom.fs + 'px' });
+      document.body.appendChild(fly); to.style.visibility = 'hidden';
+      fly.animate([{ transform: 'none', color: '#f5f5f7' }, { transform: `translate(${tr.left - lblFrom.r.left}px, ${tr.top - lblFrom.r.top}px) scale(${k})`, color: getComputedStyle(to).color }], { duration: 900, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' })
+        .onfinish = () => { to.style.visibility = ''; fly.remove(); }; } }
+  if (stripFrom && !matchMedia('(prefers-reduced-motion: reduce)').matches) {   // the photo leaves the strip and becomes the gallery
+    // the phone fades in where it stands instead of rising, so the photo lands on its final spot
+    const scn = stage.querySelector('.scene:not(.scene-out)'); if (scn) { scn.classList.add('from-strip'); void scn.offsetWidth; }
+    const lb = stage.querySelector('.scene:not(.scene-out) .lbx'), view = lb && lb.querySelector('.lbx-view'), tgt = lb && lb.querySelectorAll('.lbx-track img')[+lb.dataset.i];
+    if (stripFrom.el) stripFrom.el.style.visibility = 'hidden';   // one photo, not two: it leaves the strip as it takes off
+    if (view && tgt) { const tr = tgt.getBoundingClientRect(), rad = getComputedStyle(tgt).borderTopLeftRadius, a = stripFrom.r, fly = el('img', 'lbx-fly'); fly.src = stripFrom.src; fly.alt = '';
+      Object.assign(fly.style, { left: a.left + 'px', top: a.top + 'px', width: a.width + 'px', height: a.height + 'px', borderRadius: '14px' });
+      document.body.appendChild(fly); view.style.opacity = '0';
+      fly.animate([{ left: a.left + 'px', top: a.top + 'px', width: a.width + 'px', height: a.height + 'px', borderRadius: '14px' },
+                   { left: tr.left + 'px', top: tr.top + 'px', width: tr.width + 'px', height: tr.height + 'px', borderRadius: rad }], { duration: 850, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' })
+        .onfinish = () => { view.style.opacity = ''; fly.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, fill: 'forwards' }).onfinish = () => fly.remove(); }; } }
   document.getElementById('count').textContent = (si + 1) + ' / ' + SLIDES.length;
   document.getElementById('bar').style.width = ((si + bi / (beatsOf(s) + 1)) / (SLIDES.length - 1) * 100) + '%';
   document.getElementById('prev').disabled = si === 0 && bi === 0;
@@ -933,6 +1559,60 @@ function render() {
 }
 let lastSi = -1, lastBi = -1, gesture = null;
 // a cursor glides to a spot and clicks (tap) or drags up (swipe), then the next screen takes over
+// a reply arriving in a real chat: the loader clears, the message lands, photos load in one by one, then the follow-up
+function chatIn(old, nw, steps) {
+  if (gesture) { clearTimeout(gesture); gesture = null; }
+  const under = old.cloneNode(true); under.querySelectorAll('.gest, .ring').forEach(e => e.remove()); under.className = 'screen-xfade';
+  old.replaceWith(nw); nw.appendChild(under);
+  const ring = nw.querySelector('.ring'); if (ring) ring.style.visibility = 'hidden';
+  const im = nw.querySelector(':scope > img'); let bg = '#f6f6f6';
+  try { const c = document.createElement('canvas'); c.width = c.height = 1; const x = c.getContext('2d'); x.drawImage(im, im.naturalWidth * .02, im.naturalHeight * .5, 1, 1, 0, 0, 1, 1); const d = x.getImageData(0, 0, 1, 1).data; if (d[3] > 250) bg = `rgb(${d[0]},${d[1]},${d[2]})`; } catch (e) {}
+  const lk = stage.querySelector('svg.link'); if (lk) lk.style.opacity = '0';
+  const E = 'cubic-bezier(.2,.7,.2,1)'; let end = 0;
+  steps.forEach(st => {
+    const [l, t, w, hh] = st.r, cov = el('div', 'chat-cov' + (st.tile ? ' tile' : ''));
+    Object.assign(cov.style, { left: l + '%', top: t + '%', width: w + '%', height: hh + '%', background: bg });
+    nw.insertBefore(cov, under);
+    if (st.tile) { const sk = el('i', 'chat-sk'); cov.appendChild(sk); sk.animate([{ opacity: 0, transform: 'scale(.94)' }, { opacity: 1, transform: 'none' }], { duration: 200, delay: 150, easing: E, fill: 'both' }); }
+    cov.animate([{ opacity: 1 }, { opacity: 0 }], { duration: st.tile ? 300 : 260, delay: st.at, easing: E, fill: 'forwards' });
+    end = Math.max(end, st.at + 320);
+  });
+  under.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: E, fill: 'forwards' });
+  gesture = setTimeout(() => { gesture = null; nw.querySelectorAll('.chat-cov, .screen-xfade').forEach(e => e.remove()); if (ring) ring.style.visibility = ''; if (lk) lk.style.opacity = ''; drawLink(); }, end + 40);
+}
+// tap the composer, then the keyboard rises the way it does on a phone: composer and keys travel up together
+function keyboardIn(old, nw, k) {
+  if (gesture) { clearTimeout(gesture); gesture = null; }
+  old.querySelector('.ring')?.remove();
+  const svg = stage.querySelector('svg.link'); if (svg) { svg.innerHTML = ''; svg.dataset.k = ''; }
+  const cur = el('div', 'gest tap', '<span class="ripple"></span><svg class="cursor-ico" viewBox="0 0 24 24"><path d="M5 2.5v17.2l4.6-4.3 2.9 6.6 2.9-1.3-2.9-6.5 6.3-.3z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>');
+  cur.style.setProperty('--x', k.tap[0] + '%'); cur.style.setProperty('--y', k.tap[1] + '%'); old.appendChild(cur);
+  gesture = setTimeout(() => {
+    gesture = null; if (!old.isConnected) return;
+    const src = nw.querySelector('img').getAttribute('src');
+    const base = nw.querySelector('img'); base.style.clipPath = `inset(0 0 ${100 - k.to}% 0)`;
+    const kb = el('div', 'kb-rise', '<img src="' + src + '" alt="">'); kb.style.clipPath = `inset(${k.to}% 0 0 0)`;
+    const under = old.cloneNode(true); under.querySelectorAll('.gest, .ring').forEach(e => e.remove()); under.className = 'screen-xfade kb-under';
+    old.replaceWith(nw); nw.insertBefore(under, base.nextSibling); nw.appendChild(kb);
+    const ring = nw.querySelector('.ring'); if (ring) ring.style.opacity = '0';
+    const E = 'cubic-bezier(.32,.72,0,1)';
+    kb.animate([{ transform: `translateY(${k.from - k.to}%)` }, { transform: 'none' }], { duration: 480, easing: E });
+    under.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 420, easing: E, fill: 'forwards' });
+    setTimeout(() => { base.style.clipPath = ''; kb.remove(); under.remove(); if (ring) ring.style.opacity = ''; drawLink(); }, 520);
+  }, 900);
+}
+function pushScreen(old, nw, back) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { old.replaceWith(nw); return; }
+  const under = old.cloneNode(true); under.querySelectorAll('.gest, .ring').forEach(e => e.remove()); under.className = 'screen-push'; under.removeAttribute('style');
+  old.replaceWith(nw); nw.appendChild(under);
+  const E = { duration: 520, easing: 'cubic-bezier(.32,.72,0,1)', fill: 'forwards' }, ring = nw.querySelector('.ring'); if (ring) ring.style.visibility = 'hidden';
+  const kids = [...nw.children].filter(c => c !== under && !c.classList.contains('ring'));
+  if (back) { under.style.zIndex = 9; under.animate([{ transform: 'none' }, { transform: 'translateX(100%)' }], E).onfinish = () => under.remove();
+    kids.forEach(c => c.animate([{ transform: 'translateX(-28%)', filter: 'brightness(.9)' }, { transform: 'none', filter: 'none' }], { ...E, fill: 'none' })); }
+  else { under.style.zIndex = 0; kids.forEach(c => { c.style.zIndex = c.style.zIndex || 1; c.animate([{ transform: 'translateX(100%)' }, { transform: 'none' }], { ...E, fill: 'none' }); });
+    under.animate([{ transform: 'none', filter: 'none' }, { transform: 'translateX(-28%)', filter: 'brightness(.88)' }], E).onfinish = () => under.remove(); }
+  setTimeout(() => { if (ring) ring.style.visibility = ''; const lk = stage.querySelector('svg.link'); if (lk) lk.dataset.k = ''; drawLink(); }, 560);
+}
 function playGesture(old, nw, b) {
   if (gesture) { clearTimeout(gesture); gesture = null; }
   old.querySelector('.ring')?.remove();
@@ -947,6 +1627,28 @@ function playGesture(old, nw, b) {
     gesture = null;
     if (!old.isConnected) return;
     nw.style.setProperty('--ox', x + '%'); nw.style.setProperty('--oy', y + '%');
+    if (b.hero && !matchMedia('(prefers-reduced-motion: reduce)').matches) {   // the tapped photo grows into the full-screen viewer, as in an app
+      const [l, t, w, hh] = b.hero, under = old.cloneNode(true); under.querySelectorAll('.gest, .ring').forEach(e => e.remove()); under.className = 'screen-xfade hero-under';
+      old.replaceWith(nw); nw.insertBefore(under, nw.firstChild);
+      const kids = [...nw.children].filter(c => c !== under && !c.classList.contains('ring'));
+      const E = { duration: 520, easing: 'cubic-bezier(.32,.72,0,1)' };
+      kids.forEach(c => { if (getComputedStyle(c).position === 'static') { c.style.position = 'relative'; c.dataset.hp = '1'; } c.style.zIndex = c.style.zIndex || '1'; });
+      setTimeout(() => kids.forEach(c => { if (c.dataset.hp) { c.style.position = ''; delete c.dataset.hp; } if (c.style.zIndex === '1') c.style.zIndex = ''; }), 560);
+      kids.forEach(c => c.animate([{ clipPath: `inset(${t}% ${100 - l - w}% ${100 - t - hh}% ${l}% round 12px)` }, { clipPath: 'inset(0% 0% 0% 0% round 0px)' }], E));
+      under.animate([{ opacity: 1, filter: 'brightness(1)' }, { opacity: 0, filter: 'brightness(.6)' }], { ...E, fill: 'forwards' });
+      setTimeout(() => under.remove(), 560); setTimeout(drawLink, 560); return;
+    }
+    if (b.tap && !b.inplace && b.enter !== 'fade' && !matchMedia('(prefers-reduced-motion: reduce)').matches) {   // a tap navigates like an app: the next screen pushes in from the right (back pops from the left)
+      const under = old.cloneNode(true); under.querySelectorAll('.gest, .ring').forEach(e => e.remove()); under.className = 'screen-push'; under.removeAttribute('style');
+      old.replaceWith(nw); nw.appendChild(under);
+      const E = { duration: 460, easing: 'cubic-bezier(.32,.72,0,1)', fill: 'forwards' };
+      const kids = [...nw.children].filter(c => c !== under && !c.classList.contains('ring') && !c.classList.contains('sheet-up'));
+      if (b.back) { under.style.zIndex = 9; under.animate([{ transform: 'none' }, { transform: 'translateX(100%)' }], E).onfinish = () => under.remove();
+        kids.forEach(c => c.animate([{ transform: 'translateX(-28%)', filter: 'brightness(.9)' }, { transform: 'none', filter: 'none' }], { ...E, fill: 'none' })); }
+      else { under.style.zIndex = 0; kids.forEach(c => { c.style.zIndex = c.style.zIndex || 1; c.animate([{ transform: 'translateX(100%)' }, { transform: 'none' }], { ...E, fill: 'none' }); });
+        under.animate([{ transform: 'none', filter: 'none' }, { transform: 'translateX(-28%)', filter: 'brightness(.88)' }], E).onfinish = () => under.remove(); }
+      setTimeout(drawLink, 520); return;
+    }
     if (!b.inplace) nw.classList.add(b.enter === 'fade' ? 'fade-in' : b.tap ? 'zoom-in' : 'scroll-in');
     old.replaceWith(nw);
     setTimeout(drawLink, 520);
@@ -954,6 +1656,7 @@ function playGesture(old, nw, b) {
   gesture = setTimeout(swap, b.tap ? 950 : 1000);
 }
 // ---------- intro: the prototype plays a search and stops on the property cards ----------
+const SB = 44;   // status bar height inside the intro phone, in 375-wide app pixels
 function introDemo(demo) {
   const f = document.createElement('iframe');
   f.src = PROTO; f.title = 'Houzy prototype'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
@@ -965,7 +1668,7 @@ function introDemo(demo) {
   const say = t => { cap.textContent = t; cap.classList.toggle('on', !!t); };
   const point = async (target, d) => { // glide the cursor onto an element inside the frame, then press
     const r = target.getBoundingClientRect(), s = demo.clientWidth / 375;
-    tap.style.transform = `translate(${(r.left + r.width / 2) * s}px, ${(r.top + r.height / 2) * s}px)`;
+    tap.style.transform = `translate(${(r.left + r.width / 2) * s}px, ${(r.top + r.height / 2 + SB) * s}px)`;   /* the frame's status bar sits above the app */
     tap.classList.add('on'); await sleep(800);
     tap.classList.remove('press'); void tap.offsetWidth; tap.classList.add('press'); await sleep(220);
     target.click(); await sleep(300); tap.classList.remove('on');
@@ -1108,7 +1811,7 @@ document.addEventListener('keydown', e => {
   if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); next(); }
   if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
 });
-stage.addEventListener('click', e => { if (!e.target.closest('a,button')) next(); });
+stage.addEventListener('click', e => { if (!e.target.closest('a,button,.lbx')) next(); });   // the lightbox takes its own clicks and swipes
 addEventListener('resize', drawLink);
 addEventListener('hashchange', () => { fromHash(); render(); });
 // footnote numbers are assigned as slides are defined, in reading order
